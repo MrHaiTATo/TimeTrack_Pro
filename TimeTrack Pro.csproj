@@ -8,6 +8,27 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86;x64</Platforms>
+    <StartupObject>TimeTrack_Pro.App</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.3.2" />
+    <PackageReference Include="HandyControl" Version="3.5.1" />
+    <PackageReference Include="log4net" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Quartz" Version="3.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Code\Command\" />
+    <Folder Include="Code\Helpers\" />
+    <Folder Include="Code\Messaging\" />
+    <Folder Include="Code\Views\" />
+    <Folder Include="Resource\" />
+    <Folder Include="Converter\" />
+    <Folder Include="Helper\" />
+    <Folder Include="UserControl\" />
+    <Folder Include="ViewModel\" />
+  </ItemGroup>
 
 </Project>
