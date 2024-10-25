@@ -12,15 +12,80 @@ using System.Windows.Media.Media3D;
 using System.IO;
 using System.Reflection.Metadata;
 using HandyControl.Controls;
+using System.Xml;
+using HandyControl.Properties.Langs;
+using System.Data;
+using System.Security.Policy;
+using System.Collections;
 
 namespace TimeTrack_Pro.Model
 {
     public class SheetTemplate
-    {
+    {       
+        public static string? FilePath { get; set; }
+
+        public static readonly AttendanceRule DefaultRule = new AttendanceRule
+        {
+            RuleName = "白班",
+            Inter_dayTime = new TimeSpan(0, 0, 0),
+            SerialNumber = 0,
+            AlarmsTimes = 6,
+            AttendanceWay = 0,
+            StatsUnit = 0,
+            StatsWay = 0,
+            ShiftMode = 0,
+            AllowLate = 0,
+            AllowEarly = 0,
+            Shifts = new Shift[][] { 
+                /*星期日*/
+                new Shift[3] {
+                    new Shift { Id = 18, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new Shift { Id = 19, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 20, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期一*/
+                new Shift[3] {
+                    new Shift { Id = 0, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 }, 
+                    new Shift { Id = 1, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 2, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 } 
+                },
+                /*星期二*/
+                new Shift[3] {
+                    new Shift { Id = 3, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new Shift { Id = 4, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 5, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期三*/
+                new Shift[3] {
+                    new Shift { Id = 6, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new Shift { Id = 7, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 8, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期四*/
+                new Shift[3] {
+                    new Shift { Id = 9, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new Shift { Id = 10, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 11, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期五*/
+                new Shift[3] {
+                    new Shift { Id = 12, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new Shift { Id = 13, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 14, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期六*/
+                new Shift[3] {
+                    new Shift { Id = 15, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new Shift { Id = 16, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new Shift { Id = 17, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                }                
+            }
+        };        
+
         /// <summary>
         /// 创建考勤统计表模板
         /// </summary>
-        public static void CreateAttendanceStatisticsSheet()
+        public static void CreateAttendanceStatisticsSheet(AttendanceCenter center)
         {
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
@@ -30,20 +95,34 @@ namespace TimeTrack_Pro.Model
             //创建一个新的Excel包
             using (ExcelPackage package = new ExcelPackage())
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                //应用样式
-                CreateAttendanceStatisticsSheet(worksheet);
+                DateTime select = new DateTime(2024, 8, 1);
+                var datas = center.GetEmployeeAndAttendanceDataByDateTime(select);                
+                foreach (var employee in center.Employees)
+                {
+                    var Eattendances = datas.Where(e => e.UserIndex == employee.Index).ToList();
+                    if (Eattendances.Count() == 0)
+                        continue;
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(employee.Name + "_" + employee.Id);
+                    AttendanceRule rule;
+                    if (Eattendances.FirstOrDefault().Class < Rules.RuleList.Count())
+                        rule = Rules.RuleList.Find(r => r.SerialNumber == Eattendances.FirstOrDefault().Class);
+                    else
+                        rule = DefaultRule;
+                    //应用样式
+                    CreateAttendanceStatisticsSheet(worksheet, employee, Eattendances, rule);                    
+                }                
                 //保存Excel文件
                 FileInfo file = new FileInfo(@"F:\文档\考勤统计表.xlsx");
                 package.SaveAs(file);
             }                        
         }
 
-        public static void CreateAttendanceStatisticsSheet(ExcelWorksheet worksheet)
+        public static void CreateAttendanceStatisticsSheet(ExcelWorksheet worksheet, Employee employee, List<AttendanceData> attendances, AttendanceRule attendanceRule)
         {
+            AttendanceRule rule = attendanceRule;
             string[] columns = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S" };
             (string, string)[] values;
-
+            List<AttendanceData?> dayData;
             for (int i = 1; i < 19; i++)
             {
                 worksheet.Columns[i].Width = 7;
@@ -55,37 +134,46 @@ namespace TimeTrack_Pro.Model
             worksheet.Rows[26].Height = 6.75;
             worksheet.Columns[19].Width = 1.5;
             worksheet.Cells["A1:S26"].Style.Numberformat.Format = "@";
-
+            
             // 第一行
             SetMergeCellsStyle(worksheet, "A1:R1");
             worksheet.Cells["A1:R1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
             worksheet.Cells["A1:R1"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(153, 204, 255));
+            SetBorderCellStyle(worksheet.Cells["A1:R1"], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
+            SetBorderColor(worksheet.Cells["A1:R1"], Color.Blue, Color.Empty, Color.Blue, Color.Empty);
 
             // 第二行
             SetGeneral1_1(worksheet.Cells["A2"], 10);
             worksheet.Cells["A2"].Value = "姓名";
+            SetBorderCellStyle(worksheet.Cells["A2"], ExcelBorderStyle.None, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
+            SetBorderColor(worksheet.Cells["A2"], Color.Empty, Color.Empty, Color.Blue, Color.Empty);
             SetMergeCellsStyle(worksheet, "B2:D2");
             SetGeneral1_3(worksheet.Cells["B2:D2"], 10);
+            worksheet.Cells["B2:D2"].Value = employee.Name; 
 
             SetGeneral1_1(worksheet.Cells["E2"], 10);
             worksheet.Cells["E2"].Value = "工号";
             SetMergeCellsStyle(worksheet, "F2:G2");
             SetGeneral1_3(worksheet.Cells["F2:G2"], 10);
+            worksheet.Cells["F2:G2"].Value = employee.Id;
 
             SetGeneral1_1(worksheet.Cells["H2"], 10);
             worksheet.Cells["H2"].Value = "部门";
             SetMergeCellsStyle(worksheet, "I2:K2");
             SetGeneral1_3(worksheet.Cells["I2:K2"], 10);
+            worksheet.Cells["I2:K2"].Value = "公司";
 
             SetGeneral1_1(worksheet.Cells["L2"], 10);
             worksheet.Cells["L2"].Value = "班次";
             SetMergeCellsStyle(worksheet, "M2:O2");
             SetGeneral1_3(worksheet.Cells["M2:O2"], 10);
+            worksheet.Cells["M2:O2"].Value = rule.RuleName;
 
             SetGeneral1_1(worksheet.Cells["P2"], 10);
             worksheet.Cells["P2"].Value = "日期";
             SetMergeCellsStyle(worksheet, "Q2:R2");
-            SetGeneral1_3(worksheet.Cells["Q2:R2"], 10);            
+            SetGeneral1_3(worksheet.Cells["Q2:R2"], 10);
+            worksheet.Cells["Q2:R2"].Value = "2024-08";
 
             //第三、四行
             values = new (string, string)[] { ("A3:B3", "出勤(天)"), ("C3:D3", "工作时间(时分)"), ("E3:F3", "加班(时分)"), ("G3:H3", "迟到/早退"),
@@ -129,9 +217,14 @@ namespace TimeTrack_Pro.Model
                     continue;
                 SetGeneral1_3(worksheet.Cells[$"{item}5"], 10);
                 SetBorderCellStyle(worksheet.Cells[$"{item}5"], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
-                SetBorderColor(worksheet.Cells[$"{item}5"], Color.Blue, Color.Empty, Color.Blue, Color.Blue);
+                SetBorderColor(worksheet.Cells[$"{item}5"], Color.Blue, Color.Empty, Color.Blue, Color.Blue);                
             }
-
+            var dData = attendances.GroupBy(a => a.ClockTime.Day);//通过日期进行分组
+            //实际出勤
+            worksheet.Cells["A5"].Value = dData.Count();
+            //标准
+            worksheet.Cells["B5"].Value = GetDays(8);
+            
             SetMergeCellsStyle(worksheet, "Q5:R5");
             SetGeneral1_3(worksheet.Cells["Q5:R5"], 10);
             SetBorderCellStyle(worksheet.Cells["Q5:R5"], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
@@ -141,15 +234,21 @@ namespace TimeTrack_Pro.Model
             SetMergeCellsStyle(worksheet, "A6:R6");
             worksheet.Cells["A6:R6"].Style.Fill.PatternType = ExcelFillStyle.Solid;
             worksheet.Cells["A6:R6"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(153, 204, 255));
+            SetBorderCellStyle(worksheet.Cells["A6:R6"], ExcelBorderStyle.None, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
+            SetBorderColor(worksheet.Cells["A6:R6"], Color.Empty, Color.Empty, Color.Blue, Color.Empty);
 
             //第七行
             SetMergeCellsStyle(worksheet, "A7:R7");
             SetGeneral1_1(worksheet.Cells["A7:R7"], 14);
             worksheet.Cells["A7:R7"].Value = "考\x20\x20\x20\x20\x20勤\x20\x20\x20\x20\x20表";
             worksheet.Cells["A7:R7"].Style.Font.Bold = true;
+            SetBorderCellStyle(worksheet.Cells["A7:R7"], ExcelBorderStyle.None, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
+            SetBorderColor(worksheet.Cells["A7:R7"], Color.Empty, Color.Empty, Color.Blue, Color.Empty);
 
             //第八到二十五行
-            string[] days = GetDaysByWeek();
+            string[] days = GetDaysByWeek(8);
+            int week = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0;
+            TimeSpan start, end, total;            
             for (int i = 0; i < 2; i++)
             {
                 string seat = $"{(char)('A' + i * 9)}8:{(char)('A' + i * 9)}9";
@@ -210,23 +309,86 @@ namespace TimeTrack_Pro.Model
 
                 for (int j = 0; j < 16; j++)
                 {
+                    //选择当天的打卡数据                             
+                    //清洗数据，如果一个时间段有多次打卡，选择最早的记录
+                    dayData = attendances.Where(a => a.ClockTime.Day == j + 1 + i * 16)//找到当天的数据记录
+                                         .GroupBy(a => a.ShiftClass)//通过班次分组
+                                         .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())//对每个分组进行时间排列，选择最早的记录
+                                         .OrderBy(a => a.ClockTime)//对已选择的记录再进行时间排列
+                                         .ToList();
+                    week = -1;
                     seat = $"{(char)('A' + i * 9)}{10 + j}";
                     SetGeneral1_1(worksheet.Cells[seat], 10);
                     SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin);
                     SetBorderColor(worksheet.Cells[seat], Color.Blue);
                     if (j + i * 16 < days.Count())
                     {
+                        week = GetWeek(8, j + 1 + i * 16);
                         worksheet.Cells[seat].Value = days[j + i * 16];
                         if (days[j + i * 16].Contains("日") || days[j + i * 16].Contains("六"))
                             worksheet.Cells[seat].Style.Font.Color.SetColor(Color.Red);
                     }
 
+                    start = TimeSpan.Zero;
+                    end = TimeSpan.Zero;
+                    total = TimeSpan.Zero;
                     for (int k = 0; k < 6; k++)
                     {
                         seat = $"{(char)('B' + i * 9 + k)}{10 + j}";
                         SetGeneral1_3(worksheet.Cells[seat], 10);
                         SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin);
                         SetBorderColor(worksheet.Cells[seat], Color.Blue);
+                        var att = dayData.Find(a => a.ShiftClass == (ShiftClass)k);
+                        if (att != null)
+                        {
+                            worksheet.Cells[seat].Value = att.ClockTime.ToString("HH:mm");
+                            if (week >= 0)
+                            {
+                                //从规定的标准中，选择对应星期的班次
+                                Shift s = rule.Shifts[week][k / 2];
+                                TimeSpan t = (k % 2 == 0) ? s.StartTime : s.EndTime;
+                                if (k % 2 == 0)
+                                {
+                                    //比较，选择正确的时间段。迟到
+                                    if (att.ClockTime.TimeOfDay > t)
+                                    {
+                                        worksheet.Cells[seat].Style.Font.Color.SetColor(Color.Red);
+                                        start = att.ClockTime.TimeOfDay;
+                                        lateMin += (int)(start - t).TotalMinutes;
+                                        lateNum++;
+                                    }
+                                    else
+                                    {
+                                        start = s.StartTime;
+                                    }
+                                }
+                                else
+                                {
+                                    //比较，选择正确的时间段。早退
+                                    if (att.ClockTime.TimeOfDay < t)
+                                    {
+                                        worksheet.Cells[seat].Style.Font.Color.SetColor(Color.Red);
+                                        end = att.ClockTime.TimeOfDay;
+                                        lateMin += (int)(t - end).TotalMinutes;
+                                        lateNum++;
+                                    }
+                                    else
+                                    {
+                                        end = s.EndTime;
+                                    }
+                                    //时间段不全或者后者小于前者，则不计算
+                                    if (end != TimeSpan.Zero && start != TimeSpan.Zero && end > start)
+                                        total += end - start;
+                                    start = TimeSpan.Zero;
+                                    end = TimeSpan.Zero;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            start = TimeSpan.Zero;
+                            end = TimeSpan.Zero;
+                        }
                     }
 
                     for (int k = 0; k < 2; k++)
@@ -235,27 +397,54 @@ namespace TimeTrack_Pro.Model
                         SetGeneral1_2(worksheet.Cells[seat], 10);
                         SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
                         SetBorderColor(worksheet.Cells[seat], Color.Blue, Color.Blue, Color.Blue, Color.Empty);
+                        if (k == 0 && total != TimeSpan.Zero)
+                        {
+                            hour += total.Hours;
+                            min += total.Minutes;
+                            worksheet.Cells[seat].Value = total.ToString().Substring(0, 5);
+                        }
                     }
                 }
             }
 
+            worksheet.Cells["C5"].Value = string.Format($"{hour + min / 60}:{min % 60}");
+            hour = 0; min = 0;
+            for (int k = 1; k <= GetDays(8); k++)
+            {
+                foreach (var s in rule.Shifts[GetWeek(8, k)])
+                {
+                    if (s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
+                    {
+                        var time = s.EndTime - s.StartTime;
+                        hour += time.Hours;
+                        min += time.Minutes;
+                    }
+                }
+            }
+            worksheet.Cells["D5"].Value = string.Format($"{hour + min / 60}:{min % 60}");
+            worksheet.Cells["E5"].Value = "0:0";
+            worksheet.Cells["F5"].Value = "0:00";            
+            worksheet.Cells["G5"].Value = lateNum;                                    
+            worksheet.Cells["H5"].Value = lateMin;
             //最右边
             SetMergeCellsStyle(worksheet, "S1:S26");
             worksheet.Cells["S1:S26"].Style.Fill.PatternType = ExcelFillStyle.Solid;
             worksheet.Cells["S1:S26"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(153, 204, 255));
             SetBorderCellStyle(worksheet.Cells["S1:S26"], ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin);
+            SetBorderColor(worksheet.Cells["S1:S26"], Color.Blue, Color.Blue, Color.Empty, Color.Blue);
 
             //最下边
             SetMergeCellsStyle(worksheet, "A26:R26");
             worksheet.Cells["A26:R26"].Style.Fill.PatternType = ExcelFillStyle.Solid;
             worksheet.Cells["A26:R26"].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(153, 204, 255));
             SetBorderCellStyle(worksheet.Cells["A26:R26"], ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
+            SetBorderColor(worksheet.Cells["A26:R26"], Color.Empty, Color.Blue, Color.Blue, Color.Empty);
         }
 
         /// <summary>
         /// 创建异常考勤统计表模板
         /// </summary>
-        public static void CreatAttendanceExceptionSheet(int rows = 0)
+        public static void CreatAttendanceExceptionSheet(AttendanceCenter center)
         {
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
@@ -266,18 +455,20 @@ namespace TimeTrack_Pro.Model
             using (ExcelPackage package = new ExcelPackage())
             {                
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("异常考勤");
-                CreatAttendanceExceptionSheet(worksheet, rows);
+                CreatAttendanceExceptionSheet(worksheet, center);
                 //保存Excel文件
                 FileInfo file = new FileInfo(@"F:\文档\考勤异常表.xlsx");
                 package.SaveAs(file);
             }
         }
 
-        public static void CreatAttendanceExceptionSheet(ExcelWorksheet worksheet,int rows)
+        public static void CreatAttendanceExceptionSheet(ExcelWorksheet worksheet, AttendanceCenter center)
         {            
             (string, string)[] values;
             string seat;
-            
+            DateTime select = new DateTime(2024, 8, 1);
+            var datas = center.GetEmployeeAndAttendanceDataByDateTime(select);
+
             worksheet.Columns[13].Width = 30;
 
             // 第一行
@@ -297,6 +488,7 @@ namespace TimeTrack_Pro.Model
             worksheet.Cells["A2:B2"].Value = "统计日期：";
             worksheet.Cells["C2:D2"].Style.Numberformat.Format = "@";
             worksheet.Cells["C2:D2"].Style.Font.Bold = true;
+            worksheet.Cells["C2:D2"].Value = select.ToString("yyyy-MM");
 
             //第三、四行
             SetGeneral1_6(worksheet.Cells["A3:K4"], 10);
@@ -311,24 +503,24 @@ namespace TimeTrack_Pro.Model
                 worksheet.Cells[position].Value = content;
             }
 
-            for (int i = 0; i < 3; i++)
+            for (int k = 0; k < 3; k++)
             {
-                seat = $"{(char)('F' + i * 2)}3";
+                seat = $"{(char)('F' + k * 2)}3";
                 worksheet.Cells[seat].Value = "班段";
                 SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
                 SetBorderColor(worksheet.Cells[seat], Color.Green, Color.Green, Color.Green, Color.Empty);
             
-                seat = $"{(char)('G' + i * 2)}3";
-                worksheet.Cells[seat].Value = i + 1;
+                seat = $"{(char)('G' + k * 2)}3";
+                worksheet.Cells[seat].Value = k + 1;
                 SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin);
                 SetBorderColor(worksheet.Cells[seat], Color.Green, Color.Green, Color.Empty, Color.Green);
 
-                seat = $"{(char)('F' + i * 2)}4";
+                seat = $"{(char)('F' + k * 2)}4";
                 worksheet.Cells[seat].Value = "上班";
                 SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin);
                 SetBorderColor(worksheet.Cells[seat], Color.Green);
 
-                seat = $"{(char)('G' + i * 2)}4";
+                seat = $"{(char)('G' + k * 2)}4";
                 worksheet.Cells[seat].Value = "下班";
                 SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin);
                 SetBorderColor(worksheet.Cells[seat], Color.Green);
@@ -343,27 +535,98 @@ namespace TimeTrack_Pro.Model
             worksheet.Cells["M3"].Value = "备份";
             SetBorderCellStyle(worksheet.Cells["M4"], ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
             SetBorderColor(worksheet.Cells["M4"], Color.Empty, Color.Green, Color.Green, Color.Green);
-
-            for (int i = 0; i < rows; i++)
+            
+            var attendances = datas.Where(a => a.ClockState == ClockState.EXCEPTION)                                   
+                                   .GroupBy(a => a.UserIndex)
+                                   .OrderBy(g => g.Key);
+            int i = 0;            
+            AttendanceRule rule = null;
+            Employee employee = null;
+            foreach (var item in attendances)
             {
-                seat = $"A{5 + i}:E{5 + i}";
-                SetGeneral1_5(worksheet.Cells[seat], 10);
-                SetBorderCellStyle(worksheet.Cells[seat]);
-                SetBorderColor(worksheet.Cells[seat], Color.Green);                                
+                var groups = item.GroupBy(a => a.ClockTime.Date);
+                employee = center.Employees.Find(e => e.Index == item.Key);
+                foreach (var val in groups)
+                {
+                    var sort = val.GroupBy(a => a.ShiftClass)
+                                  .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())
+                                  .OrderBy(a => a.ClockTime)
+                                  .ToList();
+                    rule = Rules.RuleList.Find(r => r.SerialNumber == val.FirstOrDefault().Class);
 
-                seat = $"F{5 + i}:M{5 + i}";
-                SetGeneral1_4(worksheet.Cells[seat], 10);
-                SetBorderCellStyle(worksheet.Cells[seat]);
-                SetBorderColor(worksheet.Cells[seat], Color.Green);
+                    seat = $"A{5 + i}:E{5 + i}";
+                    SetGeneral1_5(worksheet.Cells[seat], 10);
+                    SetBorderCellStyle(worksheet.Cells[seat]);
+                    SetBorderColor(worksheet.Cells[seat], Color.Green);
 
-                worksheet.Cells[$"A{5 + i}:M{5 + i}"].Style.Numberformat.Format = "@";
-            }
+                    seat = $"F{5 + i}:M{5 + i}";
+                    SetGeneral1_4(worksheet.Cells[seat], 10);
+                    SetBorderCellStyle(worksheet.Cells[seat]);
+                    SetBorderColor(worksheet.Cells[seat], Color.Green);
+
+                    worksheet.Cells[$"A{5 + i}:M{5 + i}"].Style.Numberformat.Format = "@";
+
+                    //工号
+                    worksheet.Cells[$"A{5 + i}"].Value = employee.Id;
+                    //姓名
+                    worksheet.Cells[$"B{5 + i}"].Value = employee.Name;
+                    //部门
+                    worksheet.Cells[$"C{5 + i}"].Value = "公司";
+                    //班次                
+                    worksheet.Cells[$"D{5 + i}"].Value = rule.RuleName;
+                    //日期
+                    worksheet.Cells[$"E{5 + i}"].Value = val.Key.ToString("MM-dd");
+                    TimeSpan norm = TimeSpan.Zero;
+                    foreach (var s in sort)
+                    {
+                        switch (s.ShiftClass)
+                        {
+                            case ShiftClass.ONE_CLOCK_ON:
+                                //班段1，上班
+                                worksheet.Cells[$"F{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
+                                norm += s.ClockTime.TimeOfDay - rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][0].StartTime; 
+                                break;
+                            case ShiftClass.ONE_CLOCK_OFF:
+                                //班段1，下班
+                                worksheet.Cells[$"G{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
+                                norm += rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][0].EndTime - s.ClockTime.TimeOfDay;
+                                break;
+                            case ShiftClass.TWO_CLOCK_ON:
+                                //班段2，上班
+                                worksheet.Cells[$"H{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
+                                norm += s.ClockTime.TimeOfDay - rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][1].StartTime;
+                                break;
+                            case ShiftClass.TWO_CLOCK_OFF:
+                                //班段2，下班
+                                worksheet.Cells[$"I{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
+                                norm += rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][1].EndTime - s.ClockTime.TimeOfDay;
+                                break;
+                            case ShiftClass.THREE_CLOCK_ON:
+                                //班段3，上班
+                                worksheet.Cells[$"J{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
+                                norm += s.ClockTime.TimeOfDay - rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][2].StartTime;
+                                break;
+                            case ShiftClass.THREE_CLOCK_OFF:
+                                //班段3，下班
+                                worksheet.Cells[$"K{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
+                                norm += rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][2].EndTime - s.ClockTime.TimeOfDay;
+                                break;
+                            case ShiftClass.VOIDANCE:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    worksheet.Cells[$"L{5 + i}"].Value = norm.ToString().Substring(0, 5);
+                    i++;
+                }
+            }            
         }
 
         /// <summary>
         /// 创建考勤汇总表模板
         /// </summary>
-        public static void CreatAttendanceSummarySheet(int rows = 0)
+        public static void CreatAttendanceSummarySheet(AttendanceCenter center)
         {
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
@@ -374,27 +637,29 @@ namespace TimeTrack_Pro.Model
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("考勤汇总");
-                CreatAttendanceSummarySheet(worksheet, rows);
+                CreatAttendanceSummarySheet(worksheet, center);
                 //保存Excel文件
                 FileInfo file = new FileInfo(@"F:\文档\考勤汇总表.xlsx");
                 package.SaveAs(file);
             }
         }
 
-        public static void CreatAttendanceSummarySheet(ExcelWorksheet worksheet, int rows)
+        public static void CreatAttendanceSummarySheet(ExcelWorksheet worksheet, AttendanceCenter center)
         {
             (string, string)[] values;
             string seat;
+            DateTime select = new DateTime(2024, 8, 1);
+            var datas = center.GetEmployeeAndAttendanceDataByDateTime(select);
 
             worksheet.Rows[1].Height = 26.25;
             worksheet.Rows[2].Height = 18;
-            for (int i = 1; i <= 24; i++)
+            for (int k = 1; k <= 24; k++)
             {
-                worksheet.Columns[5 + i].Width = 7;
+                worksheet.Columns[5 + k].Width = 7;
             }
-            for (int i = 0; i < 6; i++)
+            for (int k = 0; k < 6; k++)
             {
-                worksheet.Columns[5 + i].Width = 5.5;
+                worksheet.Columns[5 + k].Width = 5.5;
             }
             worksheet.Columns[15].Width = 5;
 
@@ -412,6 +677,7 @@ namespace TimeTrack_Pro.Model
             worksheet.Cells["A2:B2"].Value = "统计日期";
             SetMergeCellsStyle(worksheet, "D2:G2");
             worksheet.Cells["D2:G2"].Style.Numberformat.Format = "yyyy-MM";
+            worksheet.Cells["D2:G2"].Value = select.ToString("yyyy-MM");
             SetMergeCellsStyle(worksheet, "K2:X2");
             worksheet.Cells["K2:X2"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
             worksheet.Cells["K2:X2"].Style.Border.Right.Color.SetColor(Color.FromArgb(0,128,0));
@@ -431,31 +697,150 @@ namespace TimeTrack_Pro.Model
                 worksheet.Cells[position].Value = content;
             }
 
-            //循环绘制下一行
-            for (int i = 0; i < rows; i++)
+            var attendances = datas.GroupBy(a => a.UserIndex).OrderBy(g => g.Key);
+            int i = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0;
+            TimeSpan start = TimeSpan.Zero, end = TimeSpan.Zero, total = TimeSpan.Zero;
+            //循环绘制下一行    
+            foreach (var item in attendances)
             {
+                var attsByday = item.GroupBy(a => a.ClockTime.Day);                               
+                var selects = attsByday.SelectMany(g =>
+                {
+                    return g.GroupBy(a => a.ShiftClass)
+                            .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())
+                            .OrderBy(a => a.ClockTime)
+                            .ToList();
+                });                
+                Employee employee = center.Employees.Find(a => a.Index == selects.FirstOrDefault().UserIndex);
+                AttendanceRule rule = Rules.RuleList.Find(r => r.SerialNumber == selects.FirstOrDefault().Class);
                 seat = $"A{5 + i}:X{5 + i}";
                 SetBorderCellStyle(worksheet.Cells[seat]);
                 SetBorderColor(worksheet.Cells[seat], Color.Green);
                 worksheet.Cells[seat].Style.Numberformat.Format = "@";//将数字作为文本处理
                 if (i % 2 == 0)
-                {                   
-                    SetGeneral1_8(worksheet.Cells[seat], 10);                   
+                {
+                    SetGeneral1_8(worksheet.Cells[seat], 10);
                 }
                 else
                 {
                     seat = $"A{5 + i}:P{5 + i}";
                     SetGeneral1_1(worksheet.Cells[seat], 10);
                     seat = $"Q{5 + i}:X{5 + i}";
-                    SetGeneral1_9(worksheet.Cells[seat], 10);                    
+                    SetGeneral1_9(worksheet.Cells[seat], 10);
                 }
-            }
+                //工号
+                worksheet.Cells[$"A{5 + i}"].Value = employee.Id;
+                //姓名
+                worksheet.Cells[$"B{5 + i}"].Value = employee.Name;
+                //部门
+                worksheet.Cells[$"C{5 + i}"].Value = "公司";
+                //班次
+                worksheet.Cells[$"D{5 + i}"].Value = rule.RuleName;
+                //出勤，标准
+                worksheet.Cells[$"E{5 + i}"].Value = GetDays(8);
+                //出勤，实际
+                worksheet.Cells[$"F{5 + i}"].Value = attsByday.Count();
+                //工作，标准
+                hour = 0; min = 0;
+                for (int k = 1; k <= GetDays(8); k++)
+                {
+                    foreach (var s in rule.Shifts[GetWeek(8, k)])
+                    {
+                        if (s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
+                        {
+                            var time = s.EndTime - s.StartTime;
+                            hour += time.Hours;
+                            min += time.Minutes;
+                        }
+                    }
+                }
+                worksheet.Cells[$"K{5 + i}"].Value = string.Format("{0:000}:{1:00}", hour + min / 60, min % 60);
+                //工作，实际
+                hour = 0; min = 0;
+                foreach (var attdance in selects.GroupBy(a => a.ClockTime.Date))
+                {
+                    int week = GetWeek(attdance.Key.Month, attdance.Key.Day);
+                    for (int k = 0; k < 6; k++)
+                    {
+                        var att = attdance.ToList().Find(a => a.ShiftClass == (ShiftClass)k);
+                        if (att != null)
+                        {                            
+                            if (week >= 0)
+                            {
+                                //从规定的标准中，选择对应星期的班次
+                                Shift s = rule.Shifts[week][k / 2];                                
+                                if (k % 2 == 0)
+                                {
+                                    //比较，选择正确的时间段。迟到
+                                    if (att.ClockTime.TimeOfDay > s.StartTime)
+                                    {                                        
+                                        start = att.ClockTime.TimeOfDay;
+                                        lateMin += (int)(start - s.StartTime).TotalMinutes;
+                                        lateNum++;
+                                    }
+                                    else
+                                    {
+                                        start = s.StartTime;
+                                    }
+                                }
+                                else
+                                {
+                                    //比较，选择正确的时间段。早退
+                                    if (att.ClockTime.TimeOfDay < s.EndTime)
+                                    {                                        
+                                        end = att.ClockTime.TimeOfDay;
+                                        lateMin += (int)(s.EndTime - end).TotalMinutes;
+                                        lateNum++;
+                                    }
+                                    else
+                                    {
+                                        end = s.EndTime;
+                                    }
+                                    //时间段不全或者后者小于前者，则不计算
+                                    if (end != TimeSpan.Zero && start != TimeSpan.Zero && end > start)
+                                        total += end - start;
+
+                                    start = TimeSpan.Zero;
+                                    end = TimeSpan.Zero;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            start = TimeSpan.Zero;
+                            end = TimeSpan.Zero;
+                        }
+                    }
+                    if(total != TimeSpan.Zero)
+                    {
+                        hour += total.Hours;
+                        min += total.Minutes;
+                        total = TimeSpan.Zero;  
+                    }
+                }
+                worksheet.Cells[$"L{5 + i}"].Value = string.Format("{0:000}:{1:00}",hour + min / 60, min % 60);
+                //加班，正常
+                worksheet.Cells[$"M{5 + i}"].Value = "00:00";
+                //加班，特殊
+                worksheet.Cells[$"N{5 + i}"].Value = "00:00";
+                //迟到，次
+                worksheet.Cells[$"O{5 + i}"].Value = lateNum;
+                //迟到，分
+                worksheet.Cells[$"P{5 + i}"].Value = lateMin;
+
+                hour = 0; 
+                min = 0; 
+                lateNum = 0; 
+                lateMin = 0;
+
+                i++;
+            }                    
         }
 
         /// <summary>
         /// 创建考勤原始表模板
         /// </summary>
-        public static void CreatOriginalAttendanceSheet(int rows)
+        public static void CreatOriginalAttendanceSheet(AttendanceCenter center)
         {
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
@@ -466,37 +851,48 @@ namespace TimeTrack_Pro.Model
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("原始考勤表");
-                CreatOriginalAttendanceSheet(worksheet, rows);
+                CreatOriginalAttendanceSheet(worksheet, center);
                 //保存Excel文件
                 FileInfo file = new FileInfo(@"F:\文档\考勤原始表.xlsx");
                 package.SaveAs(file);
             }
         }
 
-        public static void CreatOriginalAttendanceSheet(ExcelWorksheet worksheet, int rows)
+        public static void CreatOriginalAttendanceSheet(ExcelWorksheet worksheet, AttendanceCenter center)
         {
             (string, string)[] values;
             string seat;
             DateTime time = DateTime.Now;
-            int days = GetDays();
+            int days = GetDays(8);
+            DateTime select = new DateTime(2024, 8, 1);
+            var datas = center.GetEmployeeAndAttendanceDataByDateTime(select);
+            int rows = datas.GroupBy(a => a.UserIndex).Count();
             //表格总体设置
             worksheet.Cells[1, 1, rows * 4, days].Style.Numberformat.Format = "@";
-            worksheet.Cells[1, 1, rows * 4, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            worksheet.Cells[1, 1, rows * 4, days].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            for (int i = 0; i < days; i++)
+            //worksheet.Cells[1, 1, rows * 4, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            //worksheet.Cells[1, 1, rows * 4, days].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            for (int k = 0; k < days; k++)
             {
-                worksheet.Columns[i + 1].Width = 5.5;
+                worksheet.Columns[k + 1].Width = 6;
             }
+            int i = 0;
             //循环构建多个表格
-            for (int i = 0; i < rows; i++)
+            foreach (var employee in center.Employees)
             {
+                var Eattendances = datas.Where(e => e.UserIndex == employee.Index).ToList();
+                if (Eattendances.Count() == 0)
+                    continue;
+
+                var rule = Rules.RuleList.Find(r => r.SerialNumber == Eattendances.FirstOrDefault().Class);
                 worksheet.Rows[1 + i * 4].Height = 29.25;
                 worksheet.Rows[4 + i * 4].Height = 76.5;
+                worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.Font.Bold = true;
 
                 //第一行
                 seat = $"A{1 + i * 4}:D{1 + i * 4}";
-                SetMergeCellsStyle(worksheet, seat);               
+                SetMergeCellsStyle(worksheet, seat);
                 worksheet.Cells[seat].Value = "原始考勤记录表：";
 
                 for (int j = 0; j < 2; j++)
@@ -507,7 +903,7 @@ namespace TimeTrack_Pro.Model
                     worksheet.Cells[$"{(char)('L' + j * 8)}{1 + i * 4}"].Value = "年";
                     worksheet.Cells[$"{(char)('M' + j * 8)}{1 + i * 4}"].Value = time.Month.ToString("00");
                     worksheet.Cells[$"{(char)('N' + j * 8)}{1 + i * 4}"].Value = "月";
-                    if(j == 0)
+                    if (j == 0)
                         worksheet.Cells[$"{(char)('O' + j * 8)}{1 + i * 4}"].Value = 1;
                     else
                         worksheet.Cells[$"{(char)('O' + j * 8)}{1 + i * 4}"].Value = days;
@@ -521,15 +917,15 @@ namespace TimeTrack_Pro.Model
                                                   ($"T{2 + i * 4}:A{(char)('A' + days - 26 - 1)}{2 + i * 4}","注：浅青色区域为数据区") };
                 foreach (var (position, content) in values)
                 {
-                    SetMergeCellsStyle (worksheet, position);
+                    SetMergeCellsStyle(worksheet, position);
                     SetGeneral2_0(worksheet.Cells[position], 10);
                     SetBorderCellStyle(worksheet.Cells[position], ExcelBorderStyle.Thin);
                     SetBorderColor(worksheet.Cells[position], Color.Black);
                     worksheet.Cells[position].Value = content;
                 }
 
-                values = new (string, string)[] { ($"C{2 + i * 4}:D{2 + i * 4}", ""), ($"G{2 + i * 4}:I{2 + i * 4}",""), ($"L{2 + i * 4}:N{2 + i * 4}",""),
-                                                  ($"Q{2 + i * 4}:S{2 + i * 4}","") };
+                values = new (string, string)[] { ($"C{2 + i * 4}:D{2 + i * 4}", employee.Id.ToString("0000")), ($"G{2 + i * 4}:I{2 + i * 4}", employee.Name), ($"L{2 + i * 4}:N{2 + i * 4}","公司"),
+                                                  ($"Q{2 + i * 4}:S{2 + i * 4}", rule.RuleName) };
                 foreach (var (position, content) in values)
                 {
                     SetMergeCellsStyle(worksheet, position);
@@ -541,17 +937,29 @@ namespace TimeTrack_Pro.Model
                 //第三、四行
                 for (int j = 0; j < days; j++)
                 {
-                    SetGeneral2_0(worksheet.Cells[3 + i * 4, j + 1], 10);
+                    var dayData = Eattendances.Where(e => e.ClockTime.Day == j + 1)
+                                              .GroupBy(e => e.ShiftClass)
+                                              .Select(g => g.OrderBy(e => e.ClockTime).FirstOrDefault())
+                                              .OrderBy(e => e.ClockTime)
+                                              .ToList();
+                    SetGeneral2_0(worksheet.Cells[3 + i * 4, j + 1], 12);
                     SetBorderCellStyle(worksheet.Cells[3 + i * 4, j + 1], ExcelBorderStyle.Thin);
                     SetBorderColor(worksheet.Cells[3 + i * 4, j + 1], Color.Black);
                     worksheet.Cells[3 + i * 4, j + 1].Value = j + 1;
 
-                    SetGeneral1_5(worksheet.Cells[4 + i * 4, j + 1], 10);
+                    SetGeneral1_5(worksheet.Cells[4 + i * 4, j + 1], 8);
+                    worksheet.Cells[4 + i * 4, j + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
                     SetBorderCellStyle(worksheet.Cells[4 + i * 4, j + 1], ExcelBorderStyle.Thin);
                     SetBorderColor(worksheet.Cells[4 + i * 4, j + 1], Color.Black);
-                    worksheet.Cells[4 + i * 4, j + 1].Value = "";
+                    string val = "";
+                    foreach (var item in dayData)
+                    {
+                        val += item.ClockTime.ToString("HH:mm") + "\x20";
+                    }
+                    worksheet.Cells[4 + i * 4, j + 1].Value = val;
                 }
-            }         
+                i++;
+            }                
         }
 
         /// <summary>
@@ -570,6 +978,7 @@ namespace TimeTrack_Pro.Model
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("排班表");
                 CreatAttendanceSheet(worksheet);
+                
                 //保存Excel文件
                 FileInfo file = new FileInfo(@"F:\文档\考勤排班表.xlsx");
                 package.SaveAs(file);
@@ -578,7 +987,7 @@ namespace TimeTrack_Pro.Model
 
         public static void CreatAttendanceSheet(ExcelWorksheet worksheet)
         {
-            CreatAttendanceSheet(worksheet, 0, 0);
+            CreatAttendanceSheet(worksheet, 0, 1);
         }
 
         public static void CreatAttendanceSheet(ExcelWorksheet worksheet, int x, int y)
@@ -660,7 +1069,7 @@ namespace TimeTrack_Pro.Model
                  /*第四行*/
                 ($"{(char)('A' + x)}{4 + y}",""), ($"{(char)('B' + x)}{4 + y}:{(char)('C' + x)}{4 + y}",""), ($"{(char)('D' + x)}{4 + y}",""),
                 ($"{(char)('E' + x)}{4 + y}:{(char)('F' + x)}{4 + y}",""), ($"{(char)('G' + x)}{4 + y}:{(char)('H' + x)}{4 + y}",""),
-                ($"{(char)('I' + x)}{4 + y}",""), ($"{(char)('J' + x)}{4 + y}",""),
+                ($"{(char)('I' + x)}{4 + y}",""), ($"{(char)('J' + x)}{4 + y}","")
             };
             foreach (var (position, content) in values)
             {
@@ -729,6 +1138,32 @@ namespace TimeTrack_Pro.Model
         }
 
         /// <summary>
+        /// 获取当月某天的星期
+        /// </summary>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        public static int GetWeek(int day)
+        {
+            day = (day < 0 || day > 31) ? 1 : day;
+            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, day);
+            return (int)firstDayOfMonth.DayOfWeek;
+        }
+
+        /// <summary>
+        ///  获取某月某天的星期
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        public static int GetWeek(int month,int day)
+        {
+            month = (month < 0 || month > 12) ? DateTime.Today.Month : month;
+            day = (day < 0 || day > 31) ? 1 : day;
+            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, month, day);
+            return (int)firstDayOfMonth.DayOfWeek;
+        }
+
+        /// <summary>
         /// 获取当月天数并按星期进行排列的集合
         /// </summary>
         /// <returns></returns>
@@ -748,7 +1183,34 @@ namespace TimeTrack_Pro.Model
             string[] weeks = { "日", "一", "二", "三", "四", "五", "六" };
             for (int i = 0; i < daysInMonth; i++)
             {
-                days[i] = string.Format("{0:00}",i + 1) + " " + weeks[(int)dayOfWeek + i % 7];
+                days[i] = string.Format("{0:00}",i + 1) + " " + weeks[((int)dayOfWeek + i) % 7];
+            }
+            return days;
+        }
+
+        /// <summary>
+        /// 获取某月天数并按星期进行排列的集合
+        /// </summary>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        private static string[] GetDaysByWeek(int month)
+        {
+            month = (month > 12 || month < 1) ? DateTime.Today.Month : month;
+            // 获取当前月份第一天
+            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, month, 1);
+            // 获取这一天时星期几
+            DayOfWeek dayOfWeek = firstDayOfMonth.DayOfWeek;
+            // 获取下个月的第一天
+            DateTime firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
+            // 获取本月最后一天
+            DateTime lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
+            // 获取本月的天数
+            int daysInMonth = lastDayOfMonth.Day;
+            string[] days = new string[daysInMonth];
+            string[] weeks = { "日", "一", "二", "三", "四", "五", "六" };
+            for (int i = 0; i < daysInMonth; i++)
+            {
+                days[i] = string.Format("{0:00}", i + 1) + " " + weeks[((int)dayOfWeek + i) % 7];
             }
             return days;
         }

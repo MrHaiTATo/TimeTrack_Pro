@@ -18,6 +18,7 @@ namespace TimeTrack_Pro
     /// </summary>
     public partial class MainWindow : Window
     {
+        private AttendanceCenter center;
         public MainWindow()
         {
             InitializeComponent();
@@ -34,28 +35,42 @@ namespace TimeTrack_Pro
         }
 
         private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
-        {
-            SheetTemplate.CreateAttendanceStatisticsSheet();
+        {           
+            SheetTemplate.CreateAttendanceStatisticsSheet(center);
         }
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatAttendanceExceptionSheet(10);
+            SheetTemplate.CreatAttendanceExceptionSheet(center);
         }
 
         private void btn_SummarySheet_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatAttendanceSummarySheet(10);
+            SheetTemplate.CreatAttendanceSummarySheet(center);
         }
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatOriginalAttendanceSheet(10);
+            SheetTemplate.CreatOriginalAttendanceSheet(center);
         }
 
         private void btn_AttendanceSheetBeta_Click_1(object sender, RoutedEventArgs e)
         {
             SheetTemplate.CreatAttendanceSheet();
+        }
+
+        private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)
+        {
+            string attendancePath = @"F:\文档\BakRcdData.TXT";
+            string employeePath = @"F:\文档\BakUseData.TXT";
+            center = new AttendanceCenter(attendancePath, employeePath);
+        }
+
+        private void btn_ShiftReadBeta_Click(object sender, RoutedEventArgs e)
+        {
+            string path = @"F:\文档\考勤排班表.xls";
+            Rules.GetRuleList(path);
+            var rules = Rules.RuleList;
         }
     }
 }

@@ -7,22 +7,15 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace TimeTrack_Pro.Model
-{
-    //定义员工实体
-    public class Employee
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public List<ShiftPreference> Preferences { get; set; }
-    }
-
+{    
     //定义班次实体
     public class Shift
     {
         public int Id {  set; get; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
+        public int Type { get; set; }
     }
 
     //定义员工偏好
@@ -54,9 +47,12 @@ namespace TimeTrack_Pro.Model
             var schedules = await Task.Run(() =>
             {
                 return employees.SelectMany(employee =>
-                    shifts.OrderBy(shift =>
-                        employee.Preferences.Any(p => p.ShiftId == shift.Id) ? 0 : 1)
-                        .Select(shift => (employee, shift))).ToList();
+                    shifts.OrderBy(shift => { 
+                        if(employee.Preferences == null)
+                            return 1;
+                        return employee.Preferences.Any(p => p.ShiftId == shift.Id) ? 0 : 1; 
+                    }).Select(shift => (employee, shift))).ToList();
+                        
             });
 
             stopwatch.Stop();
