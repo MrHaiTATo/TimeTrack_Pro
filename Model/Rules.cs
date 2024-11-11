@@ -27,48 +27,48 @@ namespace TimeTrack_Pro.Model
                 ShiftMode = 0,
                 AllowLate = 0,
                 AllowEarly = 0,
-                Shifts = new Shift[][] { 
+                Classes = new ClassSection[][] { 
                     /*星期日*/
-                    new Shift[3] {
-                        new Shift { Id = 18, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 19, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 20, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     },
                     /*星期一*/
-                    new Shift[3] {
-                        new Shift { Id = 0, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 1, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 2, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     },
                     /*星期二*/
-                    new Shift[3] {
-                        new Shift { Id = 3, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 4, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 5, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     },
                     /*星期三*/
-                    new Shift[3] {
-                        new Shift { Id = 6, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 7, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 8, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     },
                     /*星期四*/
-                    new Shift[3] {
-                        new Shift { Id = 9, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 10, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 11, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     },
                     /*星期五*/
-                    new Shift[3] {
-                        new Shift { Id = 12, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 13, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 14, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     },
                     /*星期六*/
-                    new Shift[3] {
-                        new Shift { Id = 15, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 16, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 17, Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = -1 }
                     }
                 }
             },
@@ -79,53 +79,53 @@ namespace TimeTrack_Pro.Model
                 SerialNumber = 1,
                 AlarmsTimes = 7,
                 AttendanceWay = 1,
-                StatsUnit = 1,
+                StatsUnit = 0,
                 StatsWay = 0,
                 ShiftMode = 0,
                 AllowLate = 0,
                 AllowEarly = 0,
-                Shifts = new Shift[7][] { 
+                Classes = new ClassSection[7][] { 
                     /*星期日*/
-                    new Shift[3] {
-                        new Shift { Id = 18, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 19, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 20, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     },
                     /*星期一*/
-                    new Shift[3] {
-                        new Shift { Id = 0, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 1, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 2, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     },
                     /*星期二*/
-                    new Shift[3] {
-                        new Shift { Id = 3, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 4, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 5, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     },
                     /*星期三*/
-                    new Shift[3] {
-                        new Shift { Id = 6, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 7, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 8, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     },
                     /*星期四*/
-                    new Shift[3] {
-                        new Shift { Id = 9, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 10, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 11, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     },
                     /*星期五*/
-                    new Shift[3] {
-                        new Shift { Id = 12, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 13, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 14, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     },
                     /*星期六*/
-                    new Shift[3] {
-                        new Shift { Id = 15, Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                        new Shift { Id = 16, Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
-                        new Shift { Id = 17, Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                    new ClassSection[3] {
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 0, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
                     }
                 }
             }
@@ -211,47 +211,46 @@ namespace TimeTrack_Pro.Model
                         rule.ShiftMode = Convert.ToInt32(worksheet.Cells[$"G{5 + num * 15}"].Value);
                         rule.AllowLate = Convert.ToInt32(worksheet.Cells[$"I{5 + num * 15}"].Value);
                         rule.AllowEarly = Convert.ToInt32(worksheet.Cells[$"J{5 + num * 15}"].Value);
-                        rule.Shifts = new Shift[7][];
-                        Shift[] shifts;
+                        rule.Classes = new ClassSection[7][];
+                        ClassSection[] classes;
                         for (int i = 0; i < 7; i++)
                         {
-                            shifts = new Shift[3];
+                            classes = new ClassSection[3];
                             if (i < 6)
-                                rule.Shifts[i + 1] = shifts;
+                                rule.Classes[i + 1] = classes;
                             else
-                                rule.Shifts[0] = shifts;
+                                rule.Classes[0] = classes;
                             for (int j = 0; j < 3; j++)
                             {
-                                shifts[j] = new Shift();
+                                classes[j] = new ClassSection();
 
-                                shifts[j].Id = j + i * 3;
-                                shifts[j].Name = string.Format($"班段{j + 1}");
+                                classes[j].Name = string.Format($"班段{j + 1}");
                                 obj = worksheet.Cells[$"{(char)('B' + j * 3)}{9 + num * 15 + i}"].Value;
                                 if (obj != null && Regex.IsMatch(obj.ToString(), timeStr))
                                 {
-                                    shifts[j].StartTime = TimeSpan.Parse(obj.ToString());
+                                    classes[j].StartTime = TimeSpan.Parse(obj.ToString());
                                 }
                                 else
                                 {
-                                    shifts[j].StartTime = TimeSpan.Zero;
+                                    classes[j].StartTime = TimeSpan.Zero;
                                 }
                                 obj = worksheet.Cells[$"{(char)('C' + j * 3)}{9 + num * 15 + i}"].Value;
                                 if (obj != null && Regex.IsMatch(obj.ToString(), timeStr))
                                 {
-                                    shifts[j].EndTime = TimeSpan.Parse(obj.ToString());
+                                    classes[j].EndTime = TimeSpan.Parse(obj.ToString());
                                 }
                                 else
                                 {
-                                    shifts[j].EndTime = TimeSpan.Zero;
+                                    classes[j].EndTime = TimeSpan.Zero;
                                 }
                                 obj = worksheet.Cells[$"{(char)('D' + j * 3)}{9 + num * 15 + i}"].Value;
                                 if (obj != null && Regex.IsMatch(obj.ToString(), @"^[0-1]$"))
                                 {
-                                    shifts[j].Type = Convert.ToInt32(obj);
+                                    classes[j].Type = Convert.ToInt32(obj);
                                 }
                                 else
                                 {
-                                    shifts[j].Type = -1;
+                                    classes[j].Type = -1;
                                 }
                             }
                         }
@@ -266,13 +265,13 @@ namespace TimeTrack_Pro.Model
         {                       
             XmlDocument document = new XmlDocument();
             document.Load(path);
-            XmlElement table = document["Workbook"]["Worksheet"]["Table"];
-            var rows = table.ChildNodes.Cast<XmlNode>().ToList().Where(n => n.Name == "Row");
+            XmlElement? table = document["Workbook"]?["Worksheet"]?["Table"];
+            var rows = table?.ChildNodes.Cast<XmlNode>().ToList().Where(n => n.Name == "Row");
             string numStr = @"^[0-9]+$";
             string timeStr = @"^[0-9]{2}:[0-9]{2}$";
             string str;
             list.Clear();
-            for (int i = 0; i < rows.Count() / 15; i++)
+            for (int i = 0; i < rows?.Count() / 15; i++)
             {
                 AttendanceRule rule = new AttendanceRule();
                 str = rows.ElementAt(1 + i * 15).ChildNodes[1].InnerText;
@@ -325,49 +324,48 @@ namespace TimeTrack_Pro.Model
                     continue;
                 rule.AllowEarly = Convert.ToInt32(str);
 
-                rule.Shifts = new Shift[7][];
-                Shift[] shifts;
+                rule.Classes = new ClassSection[7][];
+                ClassSection[] classes;
                 for (int j = 0; j < 7; j++)
                 {
-                    shifts = new Shift[3];
+                    classes = new ClassSection[3];
                     if (j < 6)
-                        rule.Shifts[j + 1] = shifts;
+                        rule.Classes[j + 1] = classes;
                     else
-                        rule.Shifts[0] = shifts;
+                        rule.Classes[0] = classes;
                     for (int k = 0; k < 3; k++)
                     {
-                        shifts[k] = new Shift();
-
-                        shifts[k].Id = k + j * 3;
-                        shifts[k].Name = string.Format($"班段{k + 1}");
+                        classes[k] = new ClassSection();
+                        
+                        classes[k].Name = string.Format($"班段{k + 1}");
                         str = rows.ElementAt(8 + i * 15 + j).ChildNodes[1 + k * 3].InnerText;
                         if(!string.IsNullOrEmpty(str) && Regex.IsMatch(str, timeStr))
                         {
-                            shifts[k].StartTime = TimeSpan.Parse(str);
+                            classes[k].StartTime = TimeSpan.Parse(str);
                         }
                         else
                         {
-                            shifts[k].StartTime = TimeSpan.Zero;
+                            classes[k].StartTime = TimeSpan.Zero;
                         }
 
                         str = rows.ElementAt(8 + i * 15 + j).ChildNodes[2 + k * 3].InnerText;
                         if (!string.IsNullOrEmpty(str) && Regex.IsMatch(str, timeStr))
                         {
-                            shifts[k].EndTime = TimeSpan.Parse(str);
+                            classes[k].EndTime = TimeSpan.Parse(str);
                         }
                         else
                         {
-                            shifts[k].EndTime = TimeSpan.Zero;
+                            classes[k].EndTime = TimeSpan.Zero;
                         }
 
                         str = rows.ElementAt(8 + i * 15 + j).ChildNodes[3 + k * 3].InnerText;
                         if (!string.IsNullOrEmpty(str) && Regex.IsMatch(str, @"^[0-1]$"))
                         {
-                            shifts[k].Type = Convert.ToInt32(str);
+                            classes[k].Type = Convert.ToInt32(str);
                         }
                         else
                         {
-                            shifts[k].Type = -1;
+                            classes[k].Type = -1;
                         }
                     }
                 }

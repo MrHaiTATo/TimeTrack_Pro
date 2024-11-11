@@ -27,7 +27,7 @@
                 </Grid.RowDefinitions>
                 <ListBox Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" BorderThickness="0" SelectionMode="Single" Style="{DynamicResource ListBoxTransparent}"/>
             </Grid>
-            <TabControl Grid.Column="1">
+            <TabControl x:Name="tabCtls" Grid.Column="1">
                 <TabItem Header="示例演示" FontSize="16">
                     <Grid>
                         <StackPanel Margin="767,10,10,10">
@@ -44,11 +44,14 @@
                             <Button x:Name="btn_AttendanceSheetBeta" Content="考勤排班表测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_AttendanceSheetBeta_Click_1"/>
                             <Button x:Name="btn_DataReadBeta" Content="数据读取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_DataReadBeta_Click"/>
                             <Button x:Name="btn_ShiftReadBeta" Content="排班数据获取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_ShiftReadBeta_Click"/>
+                            <Button x:Name="btn_OriginalReadBeta" Content="原始数据获取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_OriginalReadBeta_Click"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
-                <TabItem Header="TabItem">
-                    <Grid/>
+                <TabItem Header="网页测试">
+                    <Grid>
+                        <WebBrowser x:Name="web" />
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Grid>

@@ -11,7 +11,7 @@ namespace TimeTrack_Pro.Model
 		/// <summary>
 		/// 规则名称
 		/// </summary>
-		public string RuleName { get; set; }
+		public string? RuleName { get; set; }
 				
 		/// <summary>
 		/// 跨天时间
@@ -61,7 +61,7 @@ namespace TimeTrack_Pro.Model
 		/// <summary>
 		/// 上、下班标准
 		/// </summary>
-        public Shift[][] Shifts { get; set; }
+        public ClassSection[][]? Classes { get; set; }
 
     }
 }

@@ -7,12 +7,9 @@ using TimeTrack_Pro.Model.Base;
 
 namespace TimeTrack_Pro.Model
 {
-
-    //定义员工实体
-    public class Employee : EmployeeBase
+    public class ClassSection : TimeSlotBase
     {
-        public string? Department { get; set; }
-        public string? ShiftName { get; set; }                
+        public string? Name { get; set; }
+        public int Type { get; set; }
     }
-
 }

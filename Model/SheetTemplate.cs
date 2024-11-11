@@ -36,48 +36,48 @@ namespace TimeTrack_Pro.Model
             ShiftMode = 0,
             AllowLate = 0,
             AllowEarly = 0,
-            Shifts = new Shift[][] { 
+            Classes = new ClassSection[][] { 
                 /*星期日*/
-                new Shift[3] {
-                    new Shift { Id = 18, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                    new Shift { Id = 19, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 20, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                 },
                 /*星期一*/
-                new Shift[3] {
-                    new Shift { Id = 0, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 }, 
-                    new Shift { Id = 1, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 2, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 } 
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 }, 
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 } 
                 },
                 /*星期二*/
-                new Shift[3] {
-                    new Shift { Id = 3, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                    new Shift { Id = 4, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 5, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                 },
                 /*星期三*/
-                new Shift[3] {
-                    new Shift { Id = 6, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                    new Shift { Id = 7, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 8, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                 },
                 /*星期四*/
-                new Shift[3] {
-                    new Shift { Id = 9, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                    new Shift { Id = 10, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 11, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                 },
                 /*星期五*/
-                new Shift[3] {
-                    new Shift { Id = 12, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                    new Shift { Id = 13, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 14, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                 },
                 /*星期六*/
-                new Shift[3] {
-                    new Shift { Id = 15, Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-                    new Shift { Id = 16, Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-                    new Shift { Id = 17, Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                 }                
             }
         };        
@@ -247,8 +247,8 @@ namespace TimeTrack_Pro.Model
 
             //第八到二十五行
             string[] days = GetDaysByWeek(8);
-            int week = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0;
-            TimeSpan start, end, total;            
+            int week = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
+            TimeSpan start, end, total, overTime;            
             for (int i = 0; i < 2; i++)
             {
                 string seat = $"{(char)('A' + i * 9)}8:{(char)('A' + i * 9)}9";
@@ -332,6 +332,7 @@ namespace TimeTrack_Pro.Model
                     start = TimeSpan.Zero;
                     end = TimeSpan.Zero;
                     total = TimeSpan.Zero;
+                    overTime = TimeSpan.Zero;
                     for (int k = 0; k < 6; k++)
                     {
                         seat = $"{(char)('B' + i * 9 + k)}{10 + j}";
@@ -345,16 +346,17 @@ namespace TimeTrack_Pro.Model
                             if (week >= 0)
                             {
                                 //从规定的标准中，选择对应星期的班次
-                                Shift s = rule.Shifts[week][k / 2];
-                                TimeSpan t = (k % 2 == 0) ? s.StartTime : s.EndTime;
+                                ClassSection s = rule.Classes[week][k / 2];
+                                TimeSpan t;                                
                                 if (k % 2 == 0)
                                 {
+                                    t = s.StartTime + new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
                                     //比较，选择正确的时间段。迟到
                                     if (att.ClockTime.TimeOfDay > t)
                                     {
                                         worksheet.Cells[seat].Style.Font.Color.SetColor(Color.Red);
-                                        start = att.ClockTime.TimeOfDay;
-                                        lateMin += (int)(start - t).TotalMinutes;
+                                        start = att.ClockTime.TimeOfDay - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
+                                        lateMin += (int)(att.ClockTime.TimeOfDay - t).TotalMinutes;
                                         lateNum++;
                                     }
                                     else
@@ -364,12 +366,13 @@ namespace TimeTrack_Pro.Model
                                 }
                                 else
                                 {
+                                    t = s.EndTime - new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
                                     //比较，选择正确的时间段。早退
                                     if (att.ClockTime.TimeOfDay < t)
                                     {
                                         worksheet.Cells[seat].Style.Font.Color.SetColor(Color.Red);
-                                        end = att.ClockTime.TimeOfDay;
-                                        lateMin += (int)(t - end).TotalMinutes;
+                                        end = att.ClockTime.TimeOfDay + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
+                                        lateMin += (int)(t - att.ClockTime.TimeOfDay).TotalMinutes;
                                         lateNum++;
                                     }
                                     else
@@ -378,10 +381,15 @@ namespace TimeTrack_Pro.Model
                                     }
                                     //时间段不全或者后者小于前者，则不计算
                                     if (end != TimeSpan.Zero && start != TimeSpan.Zero && end > start)
-                                        total += end - start;
+                                    {
+                                        if(s.Type == 0)//正常
+                                            total += end - start;
+                                        else if(s.Type == 1)//加班
+                                            overTime += end - start;
+                                    }
                                     start = TimeSpan.Zero;
                                     end = TimeSpan.Zero;
-                                }
+                                }                                
                             }
                         }
                         else
@@ -401,7 +409,15 @@ namespace TimeTrack_Pro.Model
                         {
                             hour += total.Hours;
                             min += total.Minutes;
+
                             worksheet.Cells[seat].Value = total.ToString().Substring(0, 5);
+                        }
+                        if(k == 1 && overTime != TimeSpan.Zero)
+                        {
+                            overH += overTime.Hours;
+                            overM += overTime.Minutes;
+
+                            worksheet.Cells[seat].Value = overTime.ToString().Substring(0, 5);
                         }
                     }
                 }
@@ -411,9 +427,9 @@ namespace TimeTrack_Pro.Model
             hour = 0; min = 0;
             for (int k = 1; k <= GetDays(8); k++)
             {
-                foreach (var s in rule.Shifts[GetWeek(8, k)])
+                foreach (var s in rule.Classes[GetWeek(8, k)])
                 {
-                    if (s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
+                    if (s.Type == 0 && s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
                     {
                         var time = s.EndTime - s.StartTime;
                         hour += time.Hours;
@@ -422,7 +438,7 @@ namespace TimeTrack_Pro.Model
                 }
             }
             worksheet.Cells["D5"].Value = string.Format($"{hour + min / 60}:{min % 60}");
-            worksheet.Cells["E5"].Value = "0:0";
+            worksheet.Cells["E5"].Value = string.Format($"{overH + overM / 60}:{overM % 60}");
             worksheet.Cells["F5"].Value = "0:00";            
             worksheet.Cells["G5"].Value = lateNum;                                    
             worksheet.Cells["H5"].Value = lateMin;
@@ -584,32 +600,32 @@ namespace TimeTrack_Pro.Model
                             case ShiftClass.ONE_CLOCK_ON:
                                 //班段1，上班
                                 worksheet.Cells[$"F{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
-                                norm += s.ClockTime.TimeOfDay - rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][0].StartTime; 
+                                norm += s.ClockTime.TimeOfDay - rule.Classes[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][0].StartTime; 
                                 break;
                             case ShiftClass.ONE_CLOCK_OFF:
                                 //班段1，下班
                                 worksheet.Cells[$"G{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
-                                norm += rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][0].EndTime - s.ClockTime.TimeOfDay;
+                                norm += rule.Classes[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][0].EndTime - s.ClockTime.TimeOfDay;
                                 break;
                             case ShiftClass.TWO_CLOCK_ON:
                                 //班段2，上班
                                 worksheet.Cells[$"H{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
-                                norm += s.ClockTime.TimeOfDay - rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][1].StartTime;
+                                norm += s.ClockTime.TimeOfDay - rule.Classes[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][1].StartTime;
                                 break;
                             case ShiftClass.TWO_CLOCK_OFF:
                                 //班段2，下班
                                 worksheet.Cells[$"I{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
-                                norm += rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][1].EndTime - s.ClockTime.TimeOfDay;
+                                norm += rule.Classes[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][1].EndTime - s.ClockTime.TimeOfDay;
                                 break;
                             case ShiftClass.THREE_CLOCK_ON:
                                 //班段3，上班
                                 worksheet.Cells[$"J{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
-                                norm += s.ClockTime.TimeOfDay - rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][2].StartTime;
+                                norm += s.ClockTime.TimeOfDay - rule.Classes[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][2].StartTime;
                                 break;
                             case ShiftClass.THREE_CLOCK_OFF:
                                 //班段3，下班
                                 worksheet.Cells[$"K{5 + i}"].Value = s.ClockTime.ToString("HH:mm");
-                                norm += rule.Shifts[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][2].EndTime - s.ClockTime.TimeOfDay;
+                                norm += rule.Classes[GetWeek(s.ClockTime.Month, s.ClockTime.Day)][2].EndTime - s.ClockTime.TimeOfDay;
                                 break;
                             case ShiftClass.VOIDANCE:
                                 break;
@@ -744,7 +760,7 @@ namespace TimeTrack_Pro.Model
                 hour = 0; min = 0;
                 for (int k = 1; k <= GetDays(8); k++)
                 {
-                    foreach (var s in rule.Shifts[GetWeek(8, k)])
+                    foreach (var s in rule.Classes[GetWeek(8, k)])
                     {
                         if (s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
                         {
@@ -768,7 +784,7 @@ namespace TimeTrack_Pro.Model
                             if (week >= 0)
                             {
                                 //从规定的标准中，选择对应星期的班次
-                                Shift s = rule.Shifts[week][k / 2];                                
+                                ClassSection s = rule.Classes[week][k / 2];                                
                                 if (k % 2 == 0)
                                 {
                                     //比较，选择正确的时间段。迟到
@@ -937,11 +953,11 @@ namespace TimeTrack_Pro.Model
                 //第三、四行
                 for (int j = 0; j < days; j++)
                 {
-                    var dayData = Eattendances.Where(e => e.ClockTime.Day == j + 1)
-                                              .GroupBy(e => e.ShiftClass)
-                                              .Select(g => g.OrderBy(e => e.ClockTime).FirstOrDefault())
-                                              .OrderBy(e => e.ClockTime)
-                                              .ToList();
+                    var dayData = Eattendances.Where(e => e.ClockTime.Day == j + 1);
+                                              //.GroupBy(e => e.ShiftClass)
+                                              //.Select(g => g.OrderBy(e => e.ClockTime).FirstOrDefault())
+                                              //.OrderBy(e => e.ClockTime)
+                                              //.ToList();
                     SetGeneral2_0(worksheet.Cells[3 + i * 4, j + 1], 12);
                     SetBorderCellStyle(worksheet.Cells[3 + i * 4, j + 1], ExcelBorderStyle.Thin);
                     SetBorderColor(worksheet.Cells[3 + i * 4, j + 1], Color.Black);

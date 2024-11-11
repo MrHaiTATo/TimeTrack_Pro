@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Quartz;
+using TimeTrack_Pro.Code;
 using TimeTrack_Pro.Model;
 
 namespace TimeTrack_Pro
@@ -19,9 +20,11 @@ namespace TimeTrack_Pro
     public partial class MainWindow : Window
     {
         private AttendanceCenter center;
+        private OriginalDataHandle originalDataHandle;
         public MainWindow()
         {
             InitializeComponent();
+            web.Navigate(new Uri("http://192.168.1.3"));
         }
 
         private async void btn_demo_Click(object sender, RoutedEventArgs e)
@@ -71,6 +74,11 @@ namespace TimeTrack_Pro
             string path = @"F:\文档\考勤排班表.xls";
             Rules.GetRuleList(path);
             var rules = Rules.RuleList;
+        }
+
+        private void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
+        {
+            originalDataHandle = new OriginalDataHandle(@"F:\文档\考勤原始表.xlsx");
         }
     }
 }

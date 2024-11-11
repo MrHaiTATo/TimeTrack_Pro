@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using HandyControl.Tools.Extension;
 using System.Globalization;
 using System.Diagnostics;
@@ -16,8 +18,9 @@ namespace TimeTrack_Pro.Model
         private List<AttendanceData> attendanceDatas;
         public List<AttendanceData> AttendanceDatas { get { return attendanceDatas; } }
 
-        private List<Employee> employees;
-        public List<Employee> Employees { get { return employees; } }
+        private List<BakUseData> employees;
+        public List<BakUseData> Employees { get { return employees; } }
+        
 
         public AttendanceCenter(string attendanceFile, string employeeFile) 
         {
@@ -75,7 +78,7 @@ namespace TimeTrack_Pro.Model
             }
             using (StreamReader reader = new StreamReader(employeeFile))
             {
-                employees = new List<Employee>();
+                employees = new List<BakUseData>();
                 while (!reader.EndOfStream)
                 {
                     row = reader.ReadLine();
@@ -84,7 +87,7 @@ namespace TimeTrack_Pro.Model
                     cells = row.Split('|');
                     try
                     {
-                        Employee employee = new Employee();
+                        BakUseData employee = new BakUseData();
                         if (Regex.IsMatch(cells[0].Trim(), @"^[0-9]+$"))
                             employee.Number = Convert.ToInt32(cells[0].Trim());
                         employee.Name = cells[1].Trim();
@@ -129,5 +132,7 @@ namespace TimeTrack_Pro.Model
         {
             return attendanceDatas.Where(a => a.ClockTime.Year == selectTime.Year && a.ClockTime.Month == selectTime.Month).ToList();                                                            
         }
+
+       
     }
 }

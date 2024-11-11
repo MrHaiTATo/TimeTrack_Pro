@@ -7,12 +7,10 @@ using TimeTrack_Pro.Model.Base;
 
 namespace TimeTrack_Pro.Model
 {
-
-    //定义员工实体
-    public class Employee : EmployeeBase
+    public class BakUseData : Employee
     {
-        public string? Department { get; set; }
-        public string? ShiftName { get; set; }                
+        public int Number { get; set; }
+        public int Index { get; set; }
+        public DateTime CreatedTime { get; set; }
     }
-
 }
