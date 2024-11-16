@@ -3,10 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TimeTrack_Pro"
-        xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="TimeTrack_Pro.MainWindow"
+        xmlns:local="clr-namespace:TimeTrack_Pro.UserControl"
+        xmlns:hc="https://handyorg.github.io/handycontrol" xmlns:local1="clr-namespace:TimeTrack_Pro" x:Name="window" x:Class="TimeTrack_Pro.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
+    <Window.CommandBindings>
+        <CommandBinding Command="SystemCommands.MaximizeWindowCommand" Executed="WindowMaximizeCommand"/>
+        <CommandBinding Command="ApplicationCommands.Copy" Executed="CopyCommand"/>
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -25,7 +29,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" BorderThickness="0" SelectionMode="Single" Style="{DynamicResource ListBoxTransparent}"/>
+                <ListBox Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=6}" BorderThickness="0" SelectionMode="Single" Style="{DynamicResource ListBoxTransparent}"/>
             </Grid>
             <TabControl x:Name="tabCtls" Grid.Column="1">
                 <TabItem Header="示例演示" FontSize="16">
@@ -45,7 +49,30 @@
                             <Button x:Name="btn_DataReadBeta" Content="数据读取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_DataReadBeta_Click"/>
                             <Button x:Name="btn_ShiftReadBeta" Content="排班数据获取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_ShiftReadBeta_Click"/>
                             <Button x:Name="btn_OriginalReadBeta" Content="原始数据获取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_OriginalReadBeta_Click"/>
+                            <Button Command="SystemCommands.MaximizeWindowCommand" Content="最大化"  HorizontalAlignment="Left" Margin="0,10,0,0">
+                                <Button.Triggers>
+                                    <EventTrigger RoutedEvent="Button.Click">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    AutoReverse="True"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    From="1.0"
+                                                    To="0.0"
+                                                    Duration="0:0:1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Button.Triggers>
+                            </Button>
                         </StackPanel>
+                        <!--<TextBox x:Name="tbxDemo" HorizontalAlignment="Left" Margin="268,21,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="218">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="D" Modifiers="Alt" Command="SystemCommands.MaximizeWindowCommand"></KeyBinding>
+                                <MouseBinding Gesture="LeftClick" MouseAction="RightClick" Command="SystemCommands.RestoreWindowCommand"></MouseBinding>
+                            </TextBox.InputBindings>
+                        </TextBox>-->
+                        <!--<Button Content="Copy" Command="ApplicationCommands.Copy" HorizontalAlignment="Left" Margin="268,68,0,0" VerticalAlignment="Top"/>-->
                     </Grid>
                 </TabItem>
                 <TabItem Header="网页测试">
@@ -53,9 +80,14 @@
                         <WebBrowser x:Name="web" />
                     </Grid>
                 </TabItem>
+                <TabItem Header="考情规则设置测试">
+                    <Grid>
+                        <local:AttendanceRuleSet Margin="10,10,10,10"/>
+                    </Grid>
+                </TabItem>
             </TabControl>
         </Grid>
-        
-        
+
+
     </Grid>
 </Window>

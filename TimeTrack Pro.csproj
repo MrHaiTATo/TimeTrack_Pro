@@ -21,15 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Code\Command\" />
-    <Folder Include="Code\Helpers\" />
-    <Folder Include="Code\Messaging\" />
-    <Folder Include="Code\Views\" />
     <Folder Include="Resource\" />
     <Folder Include="Converter\" />
     <Folder Include="Helper\" />
-    <Folder Include="UserControl\" />
-    <Folder Include="ViewModel\" />
   </ItemGroup>
 
 </Project>

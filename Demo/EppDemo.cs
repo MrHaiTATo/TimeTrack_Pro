@@ -1,16 +1,14 @@
-﻿using System;
+﻿using OfficeOpenXml.Style;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using System.Drawing;
-using OfficeOpenXml.ConditionalFormatting;
-using HandyControl.Tools.Extension;
-using System.IO;
 
-namespace TimeTrack_Pro.Model
+namespace TimeTrack_Pro.Demo
 {
     public class EppDemo
     {
@@ -29,7 +27,7 @@ namespace TimeTrack_Pro.Model
                 // 设置单元格的值
                 worksheet.Cells["A1"].Value = "标题";
                 worksheet.Cells["A2"].Value = 123456789;
-                worksheet.Cells["A3"].Value = DateTime.Now;               
+                worksheet.Cells["A3"].Value = DateTime.Now;
 
                 //应用样式
                 ApplyStyles(worksheet);
@@ -56,7 +54,7 @@ namespace TimeTrack_Pro.Model
                 worksheet.Rows[26].Height = 8;
                 worksheet.Columns[19].Width = 1;
                 //应用样式
-                
+
 
                 //保存Excel文件
                 FileInfo file = new FileInfo(@"F:\文档\styledExcelDemo2.xlsx");

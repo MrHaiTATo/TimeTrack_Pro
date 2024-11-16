@@ -12,7 +12,7 @@ namespace TimeTrack_Pro.Model
     public class Employee : EmployeeBase
     {
         public string? Department { get; set; }
-        public string? ShiftName { get; set; }                
+        public string? RuleName { get; set; }                
     }
 
 }

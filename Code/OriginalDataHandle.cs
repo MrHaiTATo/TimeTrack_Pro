@@ -14,7 +14,7 @@ namespace TimeTrack_Pro.Code
     {
         private List<OriginalData>? originalDatas;
         public List<OriginalData>? OriginalDatas { get { return originalDatas; } }
-
+        
         public OriginalDataHandle(string path)
         {
             init(path);
@@ -47,7 +47,7 @@ namespace TimeTrack_Pro.Code
                     if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
                         continue;
 
-                    data.Number = Convert.ToInt32(message);
+                    data.Id = Convert.ToInt32(message);
                     message = worksheet.Cells[$"G{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         continue;
@@ -85,7 +85,10 @@ namespace TimeTrack_Pro.Code
             }
         }
 
-
-
+        public void FilterByRule(AttendanceRule rule)
+        {
+            
+        }
+        
     }
 }

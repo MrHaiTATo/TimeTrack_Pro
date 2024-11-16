@@ -10,7 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Quartz;
 using TimeTrack_Pro.Code;
-using TimeTrack_Pro.Model;
+using TimeTrack_Pro.Demo;
 
 namespace TimeTrack_Pro
 {
@@ -19,17 +19,20 @@ namespace TimeTrack_Pro
     /// </summary>
     public partial class MainWindow : Window
     {
-        private AttendanceCenter center;
+        private BakDatasHandle center;
         private OriginalDataHandle originalDataHandle;
+
+        public WindowState State { get => WindowState.Minimized; }
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
             web.Navigate(new Uri("http://192.168.1.3"));
         }
 
         private async void btn_demo_Click(object sender, RoutedEventArgs e)
         {
-            await Model.Demo.demo1();
+            await SmartDemo.Demo.demo1();
         }
 
         private void btn_Excel_Click(object sender, RoutedEventArgs e)
@@ -66,7 +69,7 @@ namespace TimeTrack_Pro
         {
             string attendancePath = @"F:\文档\BakRcdData.TXT";
             string employeePath = @"F:\文档\BakUseData.TXT";
-            center = new AttendanceCenter(attendancePath, employeePath);
+            center = new BakDatasHandle(attendancePath, employeePath);
         }
 
         private void btn_ShiftReadBeta_Click(object sender, RoutedEventArgs e)
@@ -78,7 +81,17 @@ namespace TimeTrack_Pro
 
         private void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
         {
-            originalDataHandle = new OriginalDataHandle(@"F:\文档\考勤原始表.xlsx");
+            originalDataHandle = new OriginalDataHandle(@"F:\文档\考勤原始表.xlsx");                        
+        }
+
+        private void WindowMaximizeCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+        }
+
+        private void CopyCommand(object sender, ExecutedRoutedEventArgs e)
+        {            
+                   
         }
     }
 }

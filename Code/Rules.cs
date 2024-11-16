@@ -7,16 +7,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
+using TimeTrack_Pro.Model;
 
-namespace TimeTrack_Pro.Model
+namespace TimeTrack_Pro.Code
 {
     public class Rules
     {
-		private static List<AttendanceRule> list = new List<AttendanceRule>
-        { 
-			new AttendanceRule
-			{
+        private static List<AttendanceRule> list = new List<AttendanceRule>
+        {
+            new AttendanceRule
+            {
                 RuleName = "月",
                 Inter_dayTime = new TimeSpan(0, 0, 0),
                 SerialNumber = 0,
@@ -131,11 +131,11 @@ namespace TimeTrack_Pro.Model
             }
         };
 
-		public static List<AttendanceRule> RuleList
-		{
-			get { return list; }
-			set { list = value; }
-		}
+        public static List<AttendanceRule> RuleList
+        {
+            get { return list; }
+            set { list = value; }
+        }
 
         public static void GetRuleList(string path)
         {
@@ -143,7 +143,7 @@ namespace TimeTrack_Pro.Model
             {
                 _getRuleListFromXlsx(path);
             }
-            catch 
+            catch
             {
                 _getRuleListFromXml(path);
             }
@@ -262,7 +262,7 @@ namespace TimeTrack_Pro.Model
         }
 
         private static void _getRuleListFromXml(string path)
-        {                       
+        {
             XmlDocument document = new XmlDocument();
             document.Load(path);
             XmlElement? table = document["Workbook"]?["Worksheet"]?["Table"];
@@ -290,7 +290,7 @@ namespace TimeTrack_Pro.Model
                 rule.Inter_dayTime = TimeSpan.Parse(str);
 
                 str = rows.ElementAt(4 + i * 15).ChildNodes[0].InnerText;
-                if(string.IsNullOrEmpty(str) || !Regex.IsMatch(str, numStr))
+                if (string.IsNullOrEmpty(str) || !Regex.IsMatch(str, numStr))
                     continue;
                 rule.AlarmsTimes = Convert.ToInt32(str);
 
@@ -336,10 +336,10 @@ namespace TimeTrack_Pro.Model
                     for (int k = 0; k < 3; k++)
                     {
                         classes[k] = new ClassSection();
-                        
+
                         classes[k].Name = string.Format($"班段{k + 1}");
                         str = rows.ElementAt(8 + i * 15 + j).ChildNodes[1 + k * 3].InnerText;
-                        if(!string.IsNullOrEmpty(str) && Regex.IsMatch(str, timeStr))
+                        if (!string.IsNullOrEmpty(str) && Regex.IsMatch(str, timeStr))
                         {
                             classes[k].StartTime = TimeSpan.Parse(str);
                         }
@@ -370,8 +370,7 @@ namespace TimeTrack_Pro.Model
                     }
                 }
                 list.Add(rule);
-            }                        
+            }
         }
-
     }
 }

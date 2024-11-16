@@ -34,7 +34,7 @@ namespace TimeTrack_Pro.Model
 		public int AttendanceWay { get; set; }
        
 		/// <summary>
-		/// 统计单位
+		/// 允许误差
 		/// </summary>
 		public int StatsUnit { get; set; }
 

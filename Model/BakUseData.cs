@@ -7,7 +7,7 @@ using TimeTrack_Pro.Model.Base;
 
 namespace TimeTrack_Pro.Model
 {
-    public class BakUseData : Employee
+    public class BakUseData : EmployeeBase
     {
         public int Number { get; set; }
         public int Index { get; set; }
