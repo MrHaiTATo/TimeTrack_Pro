@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using Quartz;
 using TimeTrack_Pro.Code;
 using TimeTrack_Pro.Demo;
+using TimeTrack_Pro.Helper.EPPlus;
 
 namespace TimeTrack_Pro
 {
@@ -42,28 +43,31 @@ namespace TimeTrack_Pro
 
         private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreateAttendanceStatisticsSheet(center.GetStatisticsDatas(2024, 8));
+            string fileName = @"F:\文档\考勤统计表.xlsx";
+            ExcelHelper Sheet = new ExcelHelper(fileName);
+            Sheet.CreateAtdStatiSheets(center.GetStatisticsDatas(2024, 8));
+            //SheetTemplate.CreateAttendanceStatisticsSheet(center.GetStatisticsDatas(2024, 8));
             //SheetTemplate.CreateAttendanceStatisticsSheet(center);
         }
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatAttendanceExceptionSheet(center);
+            //SheetTemplate.CreatAttendanceExceptionSheet(center);
         }
 
         private void btn_SummarySheet_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatAttendanceSummarySheet(center);
+            //SheetTemplate.CreatAttendanceSummarySheet(center);
         }
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatOriginalAttendanceSheet(center);
+            //SheetTemplate.CreatOriginalAttendanceSheet(center);
         }
 
         private void btn_AttendanceSheetBeta_Click_1(object sender, RoutedEventArgs e)
         {
-            SheetTemplate.CreatAttendanceSheet();
+            //SheetTemplate.CreatAttendanceSheet();
         }
 
         private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)

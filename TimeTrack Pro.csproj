@@ -24,8 +24,6 @@
     <Folder Include="Resource\" />
     <Folder Include="Converter\" />
     <Folder Include="Helper\" />
-    <Folder Include="Converter\" />
-    <Folder Include="Helper\" />
   </ItemGroup>
 
 </Project>
