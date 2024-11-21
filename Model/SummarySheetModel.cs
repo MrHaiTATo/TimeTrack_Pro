@@ -12,6 +12,6 @@ namespace TimeTrack_Pro.Model
         /// 日期
         /// </summary>
         public string? Date { get; set; }
-        List<SummaryData> Datas { get; set; }
+        public List<SummaryData> Datas { get; set; }
     }
 }
