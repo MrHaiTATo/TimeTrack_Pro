@@ -499,7 +499,7 @@ namespace TimeTrack_Pro.Code
 
         public static void CreateAttendanceStatisticsSheet(ExcelWorksheet worksheet, StatisticsData statistic)
         {            
-            (string, string)[] values;
+            (string, string)[] values;//
             for (int i = 1; i < 19; i++)
             {
                 worksheet.Columns[i].Width = 7;
