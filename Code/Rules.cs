@@ -13,6 +13,64 @@ namespace TimeTrack_Pro.Code
 {
     public class Rules
     {
+        public static readonly AttendanceRule DefaultRule = new AttendanceRule
+        {
+            RuleName = "白班",
+            Inter_dayTime = new TimeSpan(0, 0, 0),
+            SerialNumber = 0,
+            AlarmsTimes = 6,
+            AttendanceWay = 0,
+            StatsUnit = 0,
+            StatsWay = 0,
+            ShiftMode = 0,
+            AllowLate = 0,
+            AllowEarly = 0,
+            Classes = new ClassSection[][] { 
+                /*星期日*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期一*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期二*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期三*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期四*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期五*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期六*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                }
+            }
+        };
+
         private static List<AttendanceRule> list = new List<AttendanceRule>
         {
             new AttendanceRule
@@ -136,6 +194,8 @@ namespace TimeTrack_Pro.Code
             get { return list; }
             set { list = value; }
         }
+
+
 
         public static void GetRuleList(string path)
         {

@@ -8,37 +8,69 @@ namespace TimeTrack_Pro.Model
 {
     public class SummaryData : Employee
     {
-        //标准出勤
+        /// <summary>
+        /// 标准出勤
+        /// </summary>
         public string? StdAtd { get; set; }
-        //实际出勤
+        /// <summary>
+        /// 实际出勤
+        /// </summary>
         public string? AtlAtd { get; set; }
-        //事假
+        /// <summary>
+        /// 事假
+        /// </summary>
         public string? MtrVct { get; set; }
-        //病假
+        /// <summary>
+        /// 病假
+        /// </summary>
         public string? SkeVct { get; set; }
-        //旷工
+        /// <summary>
+        /// 旷工
+        /// </summary>
         public string? Absentee { get; set; }
-        //出差
+        /// <summary>
+        /// 出差
+        /// </summary>
         public string? Errand { get; set; }
-        //标准工作时间
+        /// <summary>
+        /// 标准工作时间
+        /// </summary>
         public string? SadWorkTime { get; set; }
-        //实际工作时间
+        /// <summary>
+        /// 实际工作时间
+        /// </summary>
         public string? AtlWorkTime { get; set; }
-        //加项工资-标准
+        /// <summary>
+        /// 加项工资-标准
+        /// </summary>
         public string? AddWages_Std { get; set; }
-        //加项工资-加班
+        /// <summary>
+        /// 加项工资-加班
+        /// </summary>
         public string? AddWages_WorkOt { get; set; }
-        //加项工资-津贴
+        /// <summary>
+        /// 加项工资-津贴
+        /// </summary>
         public string? AddWages_Sbd { get; set; }
-        //减项工资-迟早
+        /// <summary>
+        /// 减项工资-迟早
+        /// </summary>
         public string? SubWages_LateEarly { get; set; }
-        //减项工资-事假
+        /// <summary>
+        /// 减项工资-事假
+        /// </summary>
         public string? SubWages_MtrVct { get; set; }
-        //减项工资-扣款
+        /// <summary>
+        /// 减项工资-扣款
+        /// </summary>
         public string? SubWages_CutPay { get; set; }
-        //实际工资
+        /// <summary>
+        /// 实际工资
+        /// </summary>
         public string? AtlPay { get; set; }
-        //备注
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string? Notes { get; set; }
     }
 }

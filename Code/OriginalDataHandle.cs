@@ -42,7 +42,8 @@ namespace TimeTrack_Pro.Code
                     if (string.IsNullOrEmpty(message) || !message.Contains("登记号"))
                         break;
 
-                    OriginalData data = new OriginalData();
+                    OriginalData data = new OriginalData();                    
+                    
                     message = worksheet.Cells[$"C{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
                         continue;

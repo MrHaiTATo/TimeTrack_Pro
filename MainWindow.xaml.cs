@@ -41,8 +41,9 @@ namespace TimeTrack_Pro
         }
 
         private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
-        {           
-            SheetTemplate.CreateAttendanceStatisticsSheet(center);
+        {
+            SheetTemplate.CreateAttendanceStatisticsSheet(center.GetStatisticsDatas(2024, 8));
+            //SheetTemplate.CreateAttendanceStatisticsSheet(center);
         }
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
