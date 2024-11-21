@@ -6,16 +6,8 @@ using System.Threading.Tasks;
 
 namespace TimeTrack_Pro.Model
 {
-    public class SummaryData : Employee
-    {
-        /// <summary>
-        /// 标准出勤
-        /// </summary>
-        public string? StdAtd { get; set; }
-        /// <summary>
-        /// 实际出勤
-        /// </summary>
-        public string? AtlAtd { get; set; }
+    public class SummaryData : Sum_Stati_transit
+    {       
         /// <summary>
         /// 事假
         /// </summary>
@@ -23,23 +15,7 @@ namespace TimeTrack_Pro.Model
         /// <summary>
         /// 病假
         /// </summary>
-        public string? SkeVct { get; set; }
-        /// <summary>
-        /// 旷工
-        /// </summary>
-        public string? Absentee { get; set; }
-        /// <summary>
-        /// 出差
-        /// </summary>
-        public string? Errand { get; set; }
-        /// <summary>
-        /// 标准工作时间
-        /// </summary>
-        public string? SadWorkTime { get; set; }
-        /// <summary>
-        /// 实际工作时间
-        /// </summary>
-        public string? AtlWorkTime { get; set; }
+        public string? SkeVct { get; set; }       
         /// <summary>
         /// 加项工资-标准
         /// </summary>

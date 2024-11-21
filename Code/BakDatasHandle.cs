@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TimeTrack_Pro.Helper;
 using TimeTrack_Pro.Model;
 
 namespace TimeTrack_Pro.Code
@@ -134,15 +135,16 @@ namespace TimeTrack_Pro.Code
             return attendanceDatas.Where(a => a.ClockTime.Year == selectTime.Year && a.ClockTime.Month == selectTime.Month).ToList();
         }
 
-        public List<StatisticsData> GetStatisticsDatas(int year, int month)
+        public List<Sum_Stati_transit> GetSum_Stati_Transits(int year, int month, int Type)
         {
             DateTime selectTime = new DateTime(year, month, 1);
             List<BakUseData> AvabUseDatas = Employees.Where(u => u.CreatedTime <= selectTime)
                                                      .ToList();
-            List<StatisticsData> statistics = new List<StatisticsData>();               
+            List<Sum_Stati_transit> statistics = new List<Sum_Stati_transit>();               
             foreach (var employee in AvabUseDatas)
             {
-                StatisticsData sheet = new StatisticsData();                
+                StatisticsData sheet = new StatisticsData();  
+                
                 List<AttendanceData> AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime)//获取对应时间的数据
                                                                         .Where(a => a.UserIndex == employee.Index)
                                                                         .Where(a => a.ClockTime >= employee.CreatedTime)
@@ -171,7 +173,158 @@ namespace TimeTrack_Pro.Code
                 //实际出勤
                 sheet.AtlAtd = dData.Count().ToString();
                 //标准
-                sheet.StdAtd = days.ToString();                
+                sheet.StdAtd = days.ToString();
+                sheet.DaysOfWeek = DateTimeHelper.GetDaysByWeek(month);
+                for (int i = 0; i <= days; i++)
+                {                    
+                    //选择当天的打卡数据                             
+                    //清洗数据，如果一个时间段有多次打卡，选择最早的记录
+                    var dayData = AvabDatas.Where(a => a.ClockTime.Day == i + 1)//找到当天的数据记录
+                                            .GroupBy(a => a.ShiftClass)//通过班次分组
+                                            .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())//对每个分组进行时间排列，选择最早的记录
+                                            .OrderBy(a => a.ClockTime)//对已选择的记录再进行时间排列
+                                            .ToList();                                    
+                    if (dayData.Count() == 0)
+                        continue;
+                    week = GetWeek(month, i + 1);
+                    start = TimeSpan.Zero;
+                    end = TimeSpan.Zero;
+                    total = TimeSpan.Zero;
+                    overTime = TimeSpan.Zero;
+                    for (int k = 0; k < 6; k++)
+                    {
+                        var att = dayData.Find(a => a.ShiftClass == (ShiftClass)k);
+                        if (att != null)
+                        {                            
+                            sheet.SignUpDatas[i][k].Text = att.ClockTime.ToString("HH:mm");
+                            //从规定的标准中，选择对应星期的班次
+                            ClassSection s = rule.Classes[week][k / 2];
+                            TimeSpan t;
+                            if (k % 2 == 0)
+                            {
+                                t = s.StartTime + new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
+                                //比较，选择正确的时间段。迟到
+                                if (att.ClockTime.TimeOfDay > t)
+                                {
+                                    sheet.SignUpDatas[i][k].Color = Color.Red;
+                                    start = att.ClockTime.TimeOfDay - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
+                                    lateMin += (int)(att.ClockTime.TimeOfDay - t).TotalMinutes;
+                                    lateNum++;
+                                }
+                                else
+                                {
+                                    start = s.StartTime;
+                                }
+                            }
+                            else
+                            {
+                                t = s.EndTime - new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
+                                //比较，选择正确的时间段。早退
+                                if (att.ClockTime.TimeOfDay < t)
+                                {
+                                    sheet.SignUpDatas[i][k].Color = Color.Red;
+                                    end = att.ClockTime.TimeOfDay + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
+                                    lateMin += (int)(t - att.ClockTime.TimeOfDay).TotalMinutes;
+                                    lateNum++;
+                                }
+                                else
+                                {
+                                    end = s.EndTime;
+                                }
+                                //时间段不全或者后者小于前者，则不计算
+                                if (end != TimeSpan.Zero && start != TimeSpan.Zero && end > start)
+                                {
+                                    if (s.Type == 0)//正常
+                                        total += end - start;
+                                    else if (s.Type == 1)//加班
+                                        overTime += end - start;
+                                }
+                                start = TimeSpan.Zero;
+                                end = TimeSpan.Zero;
+                            }                            
+                        }
+                        else
+                        {
+                            start = TimeSpan.Zero;
+                            end = TimeSpan.Zero;
+                        }
+                    }
+                    if (total != TimeSpan.Zero)
+                    {                        
+                        hour += total.Hours;
+                        min += total.Minutes;                        
+                        sheet.SignUpDatas[i][6].Text =total.ToString().Substring(0, 5);                         
+                    }
+                    if (overTime != TimeSpan.Zero)
+                    {
+                        overH += overTime.Hours;
+                        overM += overTime.Minutes;                        
+                        sheet.SignUpDatas[i][7].Text = total.ToString().Substring(0, 5);                         
+                    }
+                }
+                sheet.AtlWorkTime = string.Format($"{hour + min / 60}:{min % 60}");
+                for (int k = 1; k <= GetDays(month); k++)
+                {
+                    foreach (var s in rule.Classes[GetWeek(month, k)])
+                    {
+                        if (s.Type == 0 && s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
+                        {
+                            var time = s.EndTime - s.StartTime;
+                            stdH += time.Hours;
+                            stdM += time.Minutes;
+                        }
+                    }
+                }
+                sheet.StdWorkTime = string.Format($"{stdH + stdM / 60}:{stdM % 60}");
+                sheet.Wko_Common = string.Format($"{overH + overM / 60}:{overM % 60}");
+                sheet.Wko_Special = "00:00";
+                sheet.LateEarly_Count = lateNum.ToString();
+                sheet.LateEarly_Min = lateMin.ToString();
+                statistics.Add(sheet);
+            }           
+            return statistics.OrderBy(s => s.Id).ToList();
+        }
+
+        public List<StatisticsData> GetStatisticsDatas(int year, int month)
+        {
+            DateTime selectTime = new DateTime(year, month, 1);
+            List<BakUseData> AvabUseDatas = Employees.Where(u => u.CreatedTime <= selectTime)
+                                                     .ToList();
+            List<StatisticsData> statistics = new List<StatisticsData>();               
+            foreach (var employee in AvabUseDatas)
+            {
+                StatisticsData sheet = new StatisticsData();  
+                
+                List<AttendanceData> AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime)//获取对应时间的数据
+                                                                        .Where(a => a.UserIndex == employee.Index)
+                                                                        .Where(a => a.ClockTime >= employee.CreatedTime)
+                                                                        .ToList();
+                if (AvabDatas.Count() == 0)
+                    continue;
+                AttendanceRule rule;
+                int week = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
+                int days = GetDays(month), stdH = 0, stdM = 0;
+                TimeSpan start, end, total, overTime;
+                if (AvabDatas.FirstOrDefault().Class >= 0 && AvabDatas.FirstOrDefault().Class < Rules.RuleList.Count())
+                    rule = Rules.RuleList.Find(r => r.SerialNumber == AvabDatas.FirstOrDefault().Class);
+                else
+                    rule = Rules.DefaultRule;
+                //姓名
+                sheet.Name = employee.Name;
+                //工号
+                sheet.Id = employee.Id;
+                //部门
+                sheet.Department = "";
+                //班次
+                sheet.RuleName = rule.RuleName;
+                //日期
+                sheet.Date = string.Format($"{year}-{month.ToString("00")}");
+                var dData = AvabDatas.GroupBy(a => a.ClockTime.Day);//通过日期进行分组
+                //实际出勤
+                sheet.AtlAtd = dData.Count().ToString();
+                //标准
+                sheet.StdAtd = days.ToString();
+                sheet.DaysOfWeek = DateTimeHelper.GetDaysByWeek(month);
                 for (int i = 0; i <= days; i++)
                 {                    
                     //选择当天的打卡数据                             
@@ -284,8 +437,20 @@ namespace TimeTrack_Pro.Code
 
         public List<SummaryData> GetSummaryDatas(int year, int month)
         {
+            DateTime selectTime = new DateTime(year, month, 1);
+            List<BakUseData> AvabUseDatas = Employees.Where(u => u.CreatedTime <= selectTime)
+                                                     .ToList();
             List<SummaryData> summaries = new List<SummaryData>();
+            foreach (var employee in AvabUseDatas)
+            {
+                SummaryData sheet = new SummaryData();
 
+                List<AttendanceData> AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime)//获取对应时间的数据
+                                                                        .Where(a => a.UserIndex == employee.Index)
+                                                                        .Where(a => a.ClockTime >= employee.CreatedTime)
+                                                                        .ToList();
+
+            }
             return summaries;
         }
 
