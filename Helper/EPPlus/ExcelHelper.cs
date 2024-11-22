@@ -481,32 +481,36 @@ namespace TimeTrack_Pro.Helper.EPPlus
             worksheet.Cells["M3"].Value = "备份";
             SetBorderCellStyle(worksheet.Cells["M4"], ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
             SetBorderColor(worksheet.Cells["M4"], Color.Empty, Color.Green, Color.Green, Color.Green);
-
+            int j = 0;
             for (int i = 0; i < sheetModel.Datas.Count(); i++)
             {
-                seat = $"A{5 + i}:E{5 + i}";
-                SetGeneral1_5(worksheet.Cells[seat], 10);
-                SetBorderCellStyle(worksheet.Cells[seat]);
-                SetBorderColor(worksheet.Cells[seat], Color.Green);
+                for (int k = 0; k < sheetModel.Datas[i].Parts.Count(); k++)
+                {
+                    seat = $"A{5 + j}:E{5 + j}";
+                    SetGeneral1_5(worksheet.Cells[seat], 10);
+                    SetBorderCellStyle(worksheet.Cells[seat]);
+                    SetBorderColor(worksheet.Cells[seat], Color.Green);
 
-                seat = $"F{5 + i}:M{5 + i}";
-                SetGeneral1_4(worksheet.Cells[seat], 10);
-                SetBorderCellStyle(worksheet.Cells[seat]);
-                SetBorderColor(worksheet.Cells[seat], Color.Green);
+                    seat = $"F{5 + j}:M{5 + j}";
+                    SetGeneral1_4(worksheet.Cells[seat], 10);
+                    SetBorderCellStyle(worksheet.Cells[seat]);
+                    SetBorderColor(worksheet.Cells[seat], Color.Green);
 
-                worksheet.Cells[5 + i, 1].Value = sheetModel.Datas[i].Id;
-                worksheet.Cells[5 + i, 2].Value = sheetModel.Datas[i].Name;
-                worksheet.Cells[5 + i, 3].Value = sheetModel.Datas[i].Department;
-                worksheet.Cells[5 + i, 4].Value = sheetModel.Datas[i].RuleName;
-                worksheet.Cells[5 + i, 5].Value = sheetModel.Datas[i].Date;
-                worksheet.Cells[5 + i, 6].Value = sheetModel.Datas[i].ESignUpDatas[0];
-                worksheet.Cells[5 + i, 7].Value = sheetModel.Datas[i].ESignUpDatas[1];
-                worksheet.Cells[5 + i, 8].Value = sheetModel.Datas[i].ESignUpDatas[2];
-                worksheet.Cells[5 + i, 9].Value = sheetModel.Datas[i].ESignUpDatas[3];
-                worksheet.Cells[5 + i, 10].Value = sheetModel.Datas[i].ESignUpDatas[4];
-                worksheet.Cells[5 + i, 11].Value = sheetModel.Datas[i].ESignUpDatas[5];
-                worksheet.Cells[5 + i, 12].Value = sheetModel.Datas[i].LateOrEarly;
-                worksheet.Cells[5 + i, 13].Value = sheetModel.Datas[i].Notes;
+                    worksheet.Cells[5 + j, 1].Value = sheetModel.Datas[i].Id;
+                    worksheet.Cells[5 + j, 2].Value = sheetModel.Datas[i].Name;
+                    worksheet.Cells[5 + j, 3].Value = sheetModel.Datas[i].Department;
+                    worksheet.Cells[5 + j, 4].Value = sheetModel.Datas[i].RuleName;
+                    worksheet.Cells[5 + j, 5].Value = sheetModel.Datas[i].Parts[k].Date;
+                    worksheet.Cells[5 + j, 6].Value = sheetModel.Datas[i].Parts[k].ESignUpDatas[0];
+                    worksheet.Cells[5 + j, 7].Value = sheetModel.Datas[i].Parts[k].ESignUpDatas[1];
+                    worksheet.Cells[5 + j, 8].Value = sheetModel.Datas[i].Parts[k].ESignUpDatas[2];
+                    worksheet.Cells[5 + j, 9].Value = sheetModel.Datas[i].Parts[k].ESignUpDatas[3];
+                    worksheet.Cells[5 + j, 10].Value = sheetModel.Datas[i].Parts[k].ESignUpDatas[4];
+                    worksheet.Cells[5 + j, 11].Value = sheetModel.Datas[i].Parts[k].ESignUpDatas[5];
+                    worksheet.Cells[5 + j, 12].Value = sheetModel.Datas[i].Parts[k].LateOrEarly;
+                    worksheet.Cells[5 + j, 13].Value = sheetModel.Datas[i].Parts[k].Notes;
+                    j++;
+                }               
             }
         }
 

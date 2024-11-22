@@ -159,7 +159,8 @@ namespace TimeTrack_Pro.Code
                     continue;
                 AttendanceRule rule;
                 int week = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
-                int Dlate = 0;
+                int Dlate = 0;               
+                ExceptionPart part = null;
                 TimeSpan start, end, total, overTime;
                 if (AvabDatas.FirstOrDefault().Class >= 0 && AvabDatas.FirstOrDefault().Class < Rules.RuleList.Count())
                     rule = Rules.RuleList.Find(r => r.SerialNumber == AvabDatas.FirstOrDefault().Class);
@@ -209,9 +210,7 @@ namespace TimeTrack_Pro.Code
                         if (att != null)
                         {     
                             if(Type == 0)
-                                ((StatisticsData)sheet).SignUpDatas[i][k].Text = att.ClockTime.ToString("HH:mm");
-                            else if(Type == 2)
-                                ((ExceptionData)sheet).ESignUpDatas[k] = att.ClockTime.ToString("HH:mm");
+                                ((StatisticsData)sheet).SignUpDatas[i][k].Text = att.ClockTime.ToString("HH:mm");                                                           
                             //从规定的标准中，选择对应星期的班次
                             ClassSection s = rule.Classes[week][k / 2];
                             TimeSpan t;                                                          
@@ -220,13 +219,14 @@ namespace TimeTrack_Pro.Code
                                 t = s.StartTime + new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
                                 //比较，选择正确的时间段。迟到
                                 if (att.ClockTime.TimeOfDay > t)
-                                {
+                                {                                   
                                     if (Type == 0)
                                         ((StatisticsData)sheet).SignUpDatas[i][k].Color = Color.Red;
                                     else if (Type == 2)
                                     {
-                                        if()
-                                        ((ExceptionData)sheet).Date = string.Format("{0:00}-{1:00}", month, i + 1);
+                                        if(part == null)
+                                            part = new ExceptionPart();                                        
+                                        part.ESignUpDatas[k] = att.ClockTime.ToString("HH:mm");                                       
                                     }
                                     start = att.ClockTime.TimeOfDay - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
                                     Dlate += (int)(att.ClockTime.TimeOfDay - t).TotalMinutes;
@@ -242,12 +242,14 @@ namespace TimeTrack_Pro.Code
                                 t = s.EndTime - new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
                                 //比较，选择正确的时间段。早退
                                 if (att.ClockTime.TimeOfDay < t)
-                                {
+                                {                                    
                                     if (Type == 0)
                                         ((StatisticsData)sheet).SignUpDatas[i][k].Color = Color.Red;
                                     else if (Type == 2)
                                     {
-                                        ((ExceptionData)sheet).Date = string.Format("{0:00}-{1:00}", month, i + 1);
+                                        if (part == null)
+                                            part = new ExceptionPart();                                                                                    
+                                        part.ESignUpDatas[k] = att.ClockTime.ToString("HH:mm");
                                     }
                                     end = att.ClockTime.TimeOfDay + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
                                     Dlate += (int)(t - att.ClockTime.TimeOfDay).TotalMinutes;
@@ -275,8 +277,13 @@ namespace TimeTrack_Pro.Code
                             end = TimeSpan.Zero;
                         }
                     }
-                    if (Type == 2)
-                        ((ExceptionData)sheet).LateOrEarly = string.Format("{0:00}:{1:00}", Dlate / 60, Dlate % 60);
+                    if (Type == 2 && part != null)
+                    {
+                        part.Date = string.Format("{0:00}-{1:00}", month, i + 1);                       
+                        part.LateOrEarly = string.Format("{0:00}:{1:00}", Dlate / 60, Dlate % 60);                      
+                        ((ExceptionData)sheet).Parts.Add(part);
+                        part = null;
+                    }
                     lateMin += Dlate;
                     if (total != TimeSpan.Zero)
                     {                        
@@ -301,9 +308,8 @@ namespace TimeTrack_Pro.Code
                     ((Sum_Stati_transit)sheet).Wko_Special = string.Format("{0:00}:{1:00}", 0, 0);
                     ((Sum_Stati_transit)sheet).LateEarly_Count = lateNum.ToString();
                     ((Sum_Stati_transit)sheet).LateEarly_Min = lateMin.ToString();
-                }
-                if(Type == 0 || Type == 1)
-                    statistics.Add(sheet);
+                }               
+                statistics.Add(sheet);
             }           
             return statistics.OrderBy(s => s.Id).ToList();
         }

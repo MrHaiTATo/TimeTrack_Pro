@@ -7,27 +7,26 @@ using System.Threading.Tasks;
 namespace TimeTrack_Pro.Model
 {
     public class ExceptionData : Employee
-    {
-        /// <summary>
-        /// 日期
-        /// </summary>
-        public string? Date { get; set; }
-        /// <summary>
-        /// 异常签到数据
-        /// </summary>
-        public string?[] ESignUpDatas { get; set; }       
-        /// <summary>
-        /// 迟到/早退
-        /// </summary>
-        public string? LateOrEarly { get; set; }
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public string? Notes { get; set; }
-       
+    {        
+        public List<ExceptionPart> Parts { get; set; }
+
         public ExceptionData()
         {
-            ESignUpDatas = new string[6];
+            Init();
+        }
+
+        public ExceptionData(Employee employee)
+        {
+            Init();
+            this.Id = employee.Id;
+            this.Name = employee.Name;
+            this.Department = employee.Department;
+            this.RuleName = employee.RuleName;
+        }
+
+        private void Init()
+        {
+            Parts = new List<ExceptionPart>();
         }
     }
 }

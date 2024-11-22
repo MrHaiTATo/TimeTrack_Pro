@@ -43,7 +43,7 @@ namespace TimeTrack_Pro
 
         private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤统计表.xlsx";
+            string fileName = @"D:\编程项目\C#\TestData\sheet\考勤统计表.xlsx";
             ExcelHelper sheet = new ExcelHelper(fileName);
             sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 8));
             sheet.Dispose();
@@ -51,7 +51,7 @@ namespace TimeTrack_Pro
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤异常表.xlsx";
+            string fileName = @"D:\编程项目\C#\TestData\sheet\考勤异常表.xlsx";
             ExcelHelper sheet = new ExcelHelper(fileName);
             sheet.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 8));
             sheet.Dispose();
@@ -59,7 +59,7 @@ namespace TimeTrack_Pro
 
         private void btn_SummarySheet_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤汇总表.xlsx";
+            string fileName = @"D:\编程项目\C#\TestData\sheet\考勤汇总表.xlsx";
             ExcelHelper sheet = new ExcelHelper(fileName);
             sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 8));
             sheet.Dispose();
@@ -77,8 +77,8 @@ namespace TimeTrack_Pro
 
         private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)
         {
-            string attendancePath = @"F:\文档\BakRcdData.TXT";
-            string employeePath = @"F:\文档\BakUseData.TXT";
+            string attendancePath = @"D:\编程项目\C#\TestData\bak\BakRcdData.TXT";
+            string employeePath = @"D:\编程项目\C#\TestData\bak\BakUseData.TXT";
             center = new BakDatasHandle(attendancePath, employeePath);
         }
 
