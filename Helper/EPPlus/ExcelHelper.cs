@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeTrack_Pro.Code;
 using TimeTrack_Pro.Model;
 
 namespace TimeTrack_Pro.Helper.EPPlus
@@ -47,11 +48,11 @@ namespace TimeTrack_Pro.Helper.EPPlus
             }
         }
 
-        public void CreateAtdStatiSheets(List<StatisticsData> statistics)
+        public void CreateAtdStatiSheet(StatisticsSheetModel sheetModel)
         {
             ExcelWorksheet worksheet = null;
             Creat_init();
-            foreach (var data in statistics)
+            foreach (var data in sheetModel.Datas)
             {
                 worksheet = package.Workbook.Worksheets.Add(data.Name + "_" + data.Id);
                 CreateAttendanceStatisticsSheet(worksheet, data);
@@ -59,7 +60,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
             Save();
         }
 
-        public void CreateAttendanceStatisticsSheet(ExcelWorksheet worksheet, StatisticsData statistic)
+        private void CreateAttendanceStatisticsSheet(ExcelWorksheet worksheet, StatisticsData statistic)
         {
             (string, string)[] values;
             for (int i = 1; i < 19; i++)
@@ -300,6 +301,215 @@ namespace TimeTrack_Pro.Helper.EPPlus
             SetBorderColor(worksheet.Cells["A26:R26"], Color.Empty, Color.Blue, Color.Blue, Color.Empty);
         }
 
+        public void CreatAtdSumSheet(SummarySheetModel sheetModel)
+        {
+            ExcelWorksheet worksheet = null;
+            Creat_init();            
+            worksheet = package.Workbook.Worksheets.Add("考勤汇总");
+            CreatAttendanceSummarySheet(worksheet, sheetModel);           
+            Save();
+        }
+
+        private void CreatAttendanceSummarySheet(ExcelWorksheet worksheet, SummarySheetModel sheetModel)
+        {
+            (string, string)[] values;
+            string seat;
+            worksheet.Rows[1].Height = 26.25;
+            worksheet.Rows[2].Height = 18;
+            for (int k = 1; k <= 24; k++)
+            {
+                worksheet.Columns[5 + k].Width = 7;
+            }
+            for (int k = 0; k < 6; k++)
+            {
+                worksheet.Columns[5 + k].Width = 5.5;
+            }
+            worksheet.Columns[15].Width = 5;
+            //第一行
+            SetMergeCellsStyle(worksheet, "A1:X1");
+            SetGeneral1_8(worksheet.Cells["A1:X1"], 18);
+            SetBorderCellStyle(worksheet.Cells["A1:X1"], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
+            SetBorderColor(worksheet.Cells["A1:X1"], Color.Green, Color.Empty, Color.Green, Color.Green);
+            worksheet.Cells["A1:X1"].Style.Font.Bold = true;
+            worksheet.Cells["A1:X1"].Value = "考\x20勤\x20汇\x20总\x20表";
+
+            //第二行
+            SetGeneral1_8(worksheet.Cells["A2:X2"], 10);
+            SetMergeCellsStyle(worksheet, "A2:B2");
+            worksheet.Cells["A2:B2"].Value = "统计日期";
+            SetMergeCellsStyle(worksheet, "D2:G2");
+            worksheet.Cells["D2:G2"].Style.Numberformat.Format = "yyyy-MM";
+            worksheet.Cells["D2:G2"].Value = sheetModel.Date;
+            SetMergeCellsStyle(worksheet, "K2:X2");
+            worksheet.Cells["K2:X2"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            worksheet.Cells["K2:X2"].Style.Border.Right.Color.SetColor(Color.FromArgb(0, 128, 0));
+
+            //第三、四行
+            SetGeneral1_1(worksheet.Cells["A3:X4"], 10);
+            values = new (string, string)[] { ("A3:A4","工号"), ("B3:B4","姓名"), ("C3:C4","部门"), ("D3:D4","班次"), ("I3:I4","旷工(天)"), ("E3:F3","出勤(天)"),
+                                                          ("G3:H3","请假(天)"), ("K3:L3","工作(时分)"), ("M3:N3","加班(时分)"), ("J3:J4","出差(天)"), ("O3:P3","迟到/早退"),
+                                                          ("Q3:S3","加项工资"), ("T3:V3","减项工资"), ("W3:W4","实\x20际\x20工\x20资"), ("X3:X4","备\x20注"), ("E4","标准"), ("F4","实际"),
+                                                          ("G4","事假"), ("H4","病假"), ("K4","标准"), ("L4","实际"), ("M4","正常"), ("N4","特殊"), ("O4","次"), ("P4","分"),
+                                                          ("Q4","标准"), ("R4","加班"), ("S4","津贴"), ("T4","迟早"), ("U4","事假"), ("V4","扣款") };
+            foreach (var (position, content) in values)
+            {
+                SetMergeCellsStyle(worksheet, position);
+                SetBorderCellStyle(worksheet.Cells[position]);
+                SetBorderColor(worksheet.Cells[position], Color.Green);
+                worksheet.Cells[position].Value = content;
+            }
+
+            for (int i = 0; i < sheetModel.Datas.Count(); i++)                                        
+            {
+                seat = $"A{5 + i}:X{5 + i}";
+                SetBorderCellStyle(worksheet.Cells[seat]);
+                SetBorderColor(worksheet.Cells[seat], Color.Green);
+                worksheet.Cells[seat].Style.Numberformat.Format = "@";//将数字作为文本处理
+                if (i % 2 == 0)
+                {
+                    SetGeneral1_8(worksheet.Cells[seat], 10);
+                }
+                else
+                {
+                    seat = $"A{5 + i}:P{5 + i}";
+                    SetGeneral1_1(worksheet.Cells[seat], 10);
+                    seat = $"Q{5 + i}:X{5 + i}";
+                    SetGeneral1_9(worksheet.Cells[seat], 10);
+                }
+                worksheet.Cells[5 + i, 1].Value = sheetModel.Datas[i].Id;
+                worksheet.Cells[5 + i, 2].Value = sheetModel.Datas[i].Name;
+                worksheet.Cells[5 + i, 3].Value = sheetModel.Datas[i].Department;
+                worksheet.Cells[5 + i, 4].Value = sheetModel.Datas[i].RuleName;
+                worksheet.Cells[5 + i, 5].Value = sheetModel.Datas[i].StdAtd;
+                worksheet.Cells[5 + i, 6].Value = sheetModel.Datas[i].AtlAtd;
+                worksheet.Cells[5 + i, 7].Value = sheetModel.Datas[i].MtrVct;
+                worksheet.Cells[5 + i, 8].Value = sheetModel.Datas[i].SkeVct;
+                worksheet.Cells[5 + i, 9].Value = sheetModel.Datas[i].Absentee;
+                worksheet.Cells[5 + i, 10].Value = sheetModel.Datas[i].Errand;
+                worksheet.Cells[5 + i, 11].Value = sheetModel.Datas[i].StdWorkTime;
+                worksheet.Cells[5 + i, 12].Value = sheetModel.Datas[i].AtlWorkTime;
+                worksheet.Cells[5 + i, 13].Value = sheetModel.Datas[i].Wko_Common;
+                worksheet.Cells[5 + i, 14].Value = sheetModel.Datas[i].Wko_Special;
+                worksheet.Cells[5 + i, 15].Value = sheetModel.Datas[i].LateEarly_Count;
+                worksheet.Cells[5 + i, 16].Value = sheetModel.Datas[i].LateEarly_Min;
+                worksheet.Cells[5 + i, 17].Value = sheetModel.Datas[i].AddWages_Std;
+                worksheet.Cells[5 + i, 18].Value = sheetModel.Datas[i].AddWages_WorkOt;
+                worksheet.Cells[5 + i, 19].Value = sheetModel.Datas[i].AddWages_Sbd;
+                worksheet.Cells[5 + i, 20].Value = sheetModel.Datas[i].SubWages_LateEarly;
+                worksheet.Cells[5 + i, 21].Value = sheetModel.Datas[i].SubWages_MtrVct;
+                worksheet.Cells[5 + i, 22].Value = sheetModel.Datas[i].SubWages_CutPay;
+                worksheet.Cells[5 + i, 23].Value = sheetModel.Datas[i].AtlPay;
+                worksheet.Cells[5 + i, 24].Value = sheetModel.Datas[i].Notes;
+            }
+        }
+
+        public void CreatAtdExpSheet(ExceptionSheetModel sheetModel)
+        {
+            ExcelWorksheet worksheet = null;
+            Creat_init();
+            worksheet = package.Workbook.Worksheets.Add("异常考勤");
+            CreatAttendanceExceptionSheet(worksheet, sheetModel);
+            Save();
+        }
+
+        private void CreatAttendanceExceptionSheet(ExcelWorksheet worksheet, ExceptionSheetModel sheetModel)
+        {
+            (string, string)[] values;
+            string seat;
+            worksheet.Columns[13].Width = 30;
+            //第一行
+            SetMergeCellsStyle(worksheet, "A1:M1");
+            SetGeneral1_5(worksheet.Cells["A1:M1"], 18);
+            SetBorderCellStyle(worksheet.Cells["A1:M1"], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
+            SetBorderColor(worksheet.Cells["A1:M1"], Color.Green, Color.Empty, Color.Green, Color.Green);
+            worksheet.Cells["A1:M1"].Style.Font.Bold = true;
+            worksheet.Cells["A1:M1"].Value = "异\x20常\x20考\x20勤\x20统\x20计\x20表";
+
+            //第二行
+            SetGeneral1_5(worksheet.Cells["A2:M2"], 10);
+            SetBorderCellStyle(worksheet.Cells["M2"], ExcelBorderStyle.None, ExcelBorderStyle.None, ExcelBorderStyle.None, ExcelBorderStyle.Thin);
+            SetBorderColor(worksheet.Cells["M2"], Color.Empty, Color.Empty, Color.Empty, Color.Green);
+            SetMergeCellsStyle(worksheet, "A2:B2");
+            SetMergeCellsStyle(worksheet, "C2:D2");
+            worksheet.Cells["A2:B2"].Value = "统计日期：";
+            worksheet.Cells["C2:D2"].Style.Numberformat.Format = "@";
+            worksheet.Cells["C2:D2"].Style.Font.Bold = true;
+            worksheet.Cells["C2:D2"].Value = sheetModel.Date;
+
+            //第三、四行
+            SetGeneral1_6(worksheet.Cells["A3:K4"], 10);
+            SetGeneral1_7(worksheet.Cells["L3:M4"], 10);
+
+            values = new (string, string)[] { ("A3:A4", "工号"), ("B3:B4", "姓名"), ("C3:C4", "部门"), ("D3:D4", "班次"), ("E3:E4", "日期") };
+            foreach (var (position, content) in values)
+            {
+                SetMergeCellsStyle(worksheet, position);
+                SetBorderCellStyle(worksheet.Cells[position], ExcelBorderStyle.Thin);
+                SetBorderColor(worksheet.Cells[position], Color.Green);
+                worksheet.Cells[position].Value = content;
+            }
+
+            for (int k = 0; k < 3; k++)
+            {
+                seat = $"{(char)('F' + k * 2)}3";
+                worksheet.Cells[seat].Value = "班段";
+                SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None);
+                SetBorderColor(worksheet.Cells[seat], Color.Green, Color.Green, Color.Green, Color.Empty);
+
+                seat = $"{(char)('G' + k * 2)}3";
+                worksheet.Cells[seat].Value = k + 1;
+                SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin);
+                SetBorderColor(worksheet.Cells[seat], Color.Green, Color.Green, Color.Empty, Color.Green);
+
+                seat = $"{(char)('F' + k * 2)}4";
+                worksheet.Cells[seat].Value = "上班";
+                SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin);
+                SetBorderColor(worksheet.Cells[seat], Color.Green);
+
+                seat = $"{(char)('G' + k * 2)}4";
+                worksheet.Cells[seat].Value = "下班";
+                SetBorderCellStyle(worksheet.Cells[seat], ExcelBorderStyle.Thin);
+                SetBorderColor(worksheet.Cells[seat], Color.Green);
+            }
+
+            SetMergeCellsStyle(worksheet, "L3:L4");
+            SetBorderCellStyle(worksheet.Cells["L3:L4"]);
+            SetBorderColor(worksheet.Cells["L3:L4"], Color.Green);
+            worksheet.Cells["L3:L4"].Value = "迟到/早退(分)";
+            SetBorderCellStyle(worksheet.Cells["M3"], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
+            SetBorderColor(worksheet.Cells["M3"], Color.Green, Color.Empty, Color.Green, Color.Green);
+            worksheet.Cells["M3"].Value = "备份";
+            SetBorderCellStyle(worksheet.Cells["M4"], ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
+            SetBorderColor(worksheet.Cells["M4"], Color.Empty, Color.Green, Color.Green, Color.Green);
+
+            for (int i = 0; i < sheetModel.Datas.Count(); i++)
+            {
+                seat = $"A{5 + i}:E{5 + i}";
+                SetGeneral1_5(worksheet.Cells[seat], 10);
+                SetBorderCellStyle(worksheet.Cells[seat]);
+                SetBorderColor(worksheet.Cells[seat], Color.Green);
+
+                seat = $"F{5 + i}:M{5 + i}";
+                SetGeneral1_4(worksheet.Cells[seat], 10);
+                SetBorderCellStyle(worksheet.Cells[seat]);
+                SetBorderColor(worksheet.Cells[seat], Color.Green);
+
+                worksheet.Cells[5 + i, 1].Value = sheetModel.Datas[i].Id;
+                worksheet.Cells[5 + i, 2].Value = sheetModel.Datas[i].Name;
+                worksheet.Cells[5 + i, 3].Value = sheetModel.Datas[i].Department;
+                worksheet.Cells[5 + i, 4].Value = sheetModel.Datas[i].RuleName;
+                worksheet.Cells[5 + i, 5].Value = sheetModel.Datas[i].Date;
+                worksheet.Cells[5 + i, 6].Value = sheetModel.Datas[i].ESignUpDatas[0];
+                worksheet.Cells[5 + i, 7].Value = sheetModel.Datas[i].ESignUpDatas[1];
+                worksheet.Cells[5 + i, 8].Value = sheetModel.Datas[i].ESignUpDatas[2];
+                worksheet.Cells[5 + i, 9].Value = sheetModel.Datas[i].ESignUpDatas[3];
+                worksheet.Cells[5 + i, 10].Value = sheetModel.Datas[i].ESignUpDatas[4];
+                worksheet.Cells[5 + i, 11].Value = sheetModel.Datas[i].ESignUpDatas[5];
+                worksheet.Cells[5 + i, 12].Value = sheetModel.Datas[i].LateOrEarly;
+                worksheet.Cells[5 + i, 13].Value = sheetModel.Datas[i].Notes;
+            }
+        }
+
         /// <summary>
         /// 设置单元格的字体、颜色、对齐方式
         /// </summary>
@@ -532,7 +742,12 @@ namespace TimeTrack_Pro.Helper.EPPlus
             {
                 if (disposing)
                 {
-
+                    if(package != null)
+                    {
+                        package.Dispose();
+                        package = null;
+                    }                   
+                    fileName = null;
                 }
             }
         }

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace TimeTrack_Pro.Model
 {
     public class OriginalData : Employee
-    {        
+    {
+        public string Date { get; set; }
         public List<TimeSpan>[]? Datas { get; set; }
     }
 }

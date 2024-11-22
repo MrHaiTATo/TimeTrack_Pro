@@ -13,29 +13,9 @@ namespace TimeTrack_Pro.Model
         /// </summary>
         public string? Date { get; set; }
         /// <summary>
-        /// 班段1-上班
+        /// 异常签到数据
         /// </summary>
-        public string? Class1_0 { get; set; }
-        /// <summary>
-        /// 班段1-下班
-        /// </summary>
-        public string? Class1_1 { get; set; }
-        /// <summary>
-        /// 班段2-上班
-        /// </summary>
-        public string? Class2_0 { get; set; }
-        /// <summary>
-        /// 班段2-下班
-        /// </summary>
-        public string? Class2_1 { get; set; }
-        /// <summary>
-        /// 班段3-上班
-        /// </summary>
-        public string? Class3_0 { get; set; }
-        /// <summary>
-        /// 班段3-下班
-        /// </summary>
-        public string? Class3_1 { get; set; }
+        public string?[] ESignUpDatas { get; set; }       
         /// <summary>
         /// 迟到/早退
         /// </summary>
@@ -45,5 +25,9 @@ namespace TimeTrack_Pro.Model
         /// </summary>
         public string? Notes { get; set; }
        
+        public ExceptionData()
+        {
+            ESignUpDatas = new string[6];
+        }
     }
 }

@@ -130,24 +130,27 @@ namespace TimeTrack_Pro.Code
             }
         }
 
-        public List<AttendanceData> GetEmployeeAndAttendanceDataByDateTime(DateTime selectTime)
+        private List<AttendanceData> GetEmployeeAndAttendanceDataByDateTime(DateTime selectTime)
         {
             return attendanceDatas.Where(a => a.ClockTime.Year == selectTime.Year && a.ClockTime.Month == selectTime.Month).ToList();
         }
 
-        private List<Sum_Stati_transit> GetSum_Stati_Transits(int year, int month, int Type)
+        private List<Employee> GetTypeDatas(int year, int month, int Type)
         {
             DateTime selectTime = new DateTime(year, month, 1);
             List<BakUseData> AvabUseDatas = Employees.Where(u => u.CreatedTime <= selectTime)
                                                      .ToList();
-            List<Sum_Stati_transit> statistics = new List<Sum_Stati_transit>();               
+            List<Employee> statistics = new List<Employee>();
+            int days = DateTimeHelper.GetDays(year, month);
             foreach (var employee in AvabUseDatas)
             {
-                Sum_Stati_transit sheet; 
-                if(Type == 0)
-                    sheet = new StatisticsData();  
-                else
+                Employee sheet;
+                if (Type == 0)
+                    sheet = new StatisticsData();
+                else if (Type == 1)
                     sheet = new SummaryData();
+                else
+                    sheet = new ExceptionData();
                 List<AttendanceData> AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime)//获取对应时间的数据
                                                                         .Where(a => a.UserIndex == employee.Index)
                                                                         .Where(a => a.ClockTime >= employee.CreatedTime)
@@ -156,7 +159,7 @@ namespace TimeTrack_Pro.Code
                     continue;
                 AttendanceRule rule;
                 int week = 0, hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
-                int days = GetDays(month), stdH = 0, stdM = 0;
+                int Dlate = 0;
                 TimeSpan start, end, total, overTime;
                 if (AvabDatas.FirstOrDefault().Class >= 0 && AvabDatas.FirstOrDefault().Class < Rules.RuleList.Count())
                     rule = Rules.RuleList.Find(r => r.SerialNumber == AvabDatas.FirstOrDefault().Class);
@@ -174,12 +177,15 @@ namespace TimeTrack_Pro.Code
                 if(Type == 0)
                     ((StatisticsData)sheet).Date = string.Format($"{year}-{month.ToString("00")}");
                 var dData = AvabDatas.GroupBy(a => a.ClockTime.Day);//通过日期进行分组
-                //实际出勤
-                sheet.AtlAtd = dData.Count().ToString();
-                //标准
-                sheet.StdAtd = days.ToString();
+                if(Type == 0 || Type == 1)
+                {
+                    //实际出勤
+                    ((Sum_Stati_transit)sheet).AtlAtd = dData.Count().ToString();
+                    //标准
+                    ((Sum_Stati_transit)sheet).StdAtd = days.ToString();
+                }               
                 if (Type == 0)
-                    ((StatisticsData)sheet).DaysOfWeek = DateTimeHelper.GetDaysByWeek(month);
+                    ((StatisticsData)sheet).DaysOfWeek = DateTimeHelper.GetDaysByWeek(year, month);
                 for (int i = 0; i <= days; i++)
                 {                    
                     //选择当天的打卡数据                             
@@ -191,11 +197,12 @@ namespace TimeTrack_Pro.Code
                                             .ToList();                                    
                     if (dayData.Count() == 0)
                         continue;
-                    week = GetWeek(month, i + 1);
+                    week = DateTimeHelper.GetWeek(year, month, i + 1);
                     start = TimeSpan.Zero;
                     end = TimeSpan.Zero;
                     total = TimeSpan.Zero;
                     overTime = TimeSpan.Zero;
+                    Dlate = 0;
                     for (int k = 0; k < 6; k++)
                     {
                         var att = dayData.Find(a => a.ShiftClass == (ShiftClass)k);
@@ -203,19 +210,26 @@ namespace TimeTrack_Pro.Code
                         {     
                             if(Type == 0)
                                 ((StatisticsData)sheet).SignUpDatas[i][k].Text = att.ClockTime.ToString("HH:mm");
+                            else if(Type == 2)
+                                ((ExceptionData)sheet).ESignUpDatas[k] = att.ClockTime.ToString("HH:mm");
                             //从规定的标准中，选择对应星期的班次
                             ClassSection s = rule.Classes[week][k / 2];
-                            TimeSpan t;
+                            TimeSpan t;                                                          
                             if (k % 2 == 0)
                             {
                                 t = s.StartTime + new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
                                 //比较，选择正确的时间段。迟到
                                 if (att.ClockTime.TimeOfDay > t)
                                 {
-                                    if(Type == 0)
+                                    if (Type == 0)
                                         ((StatisticsData)sheet).SignUpDatas[i][k].Color = Color.Red;
+                                    else if (Type == 2)
+                                    {
+                                        if()
+                                        ((ExceptionData)sheet).Date = string.Format("{0:00}-{1:00}", month, i + 1);
+                                    }
                                     start = att.ClockTime.TimeOfDay - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
-                                    lateMin += (int)(att.ClockTime.TimeOfDay - t).TotalMinutes;
+                                    Dlate += (int)(att.ClockTime.TimeOfDay - t).TotalMinutes;
                                     lateNum++;
                                 }
                                 else
@@ -229,10 +243,14 @@ namespace TimeTrack_Pro.Code
                                 //比较，选择正确的时间段。早退
                                 if (att.ClockTime.TimeOfDay < t)
                                 {
-                                    if(Type == 0)
+                                    if (Type == 0)
                                         ((StatisticsData)sheet).SignUpDatas[i][k].Color = Color.Red;
+                                    else if (Type == 2)
+                                    {
+                                        ((ExceptionData)sheet).Date = string.Format("{0:00}-{1:00}", month, i + 1);
+                                    }
                                     end = att.ClockTime.TimeOfDay + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
-                                    lateMin += (int)(t - att.ClockTime.TimeOfDay).TotalMinutes;
+                                    Dlate += (int)(t - att.ClockTime.TimeOfDay).TotalMinutes;
                                     lateNum++;
                                 }
                                 else
@@ -257,6 +275,9 @@ namespace TimeTrack_Pro.Code
                             end = TimeSpan.Zero;
                         }
                     }
+                    if (Type == 2)
+                        ((ExceptionData)sheet).LateOrEarly = string.Format("{0:00}:{1:00}", Dlate / 60, Dlate % 60);
+                    lateMin += Dlate;
                     if (total != TimeSpan.Zero)
                     {                        
                         hour += total.Hours;
@@ -272,172 +293,68 @@ namespace TimeTrack_Pro.Code
                             ((StatisticsData)sheet).SignUpDatas[i][7].Text = total.ToString().Substring(0, 5);                         
                     }
                 }
-                sheet.AtlWorkTime = string.Format($"{hour + min / 60}:{min % 60}");
-                for (int k = 1; k <= GetDays(month); k++)
+                if (Type == 0 || Type == 1)
                 {
-                    foreach (var s in rule.Classes[GetWeek(month, k)])
-                    {
-                        if (s.Type == 0 && s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
-                        {
-                            var time = s.EndTime - s.StartTime;
-                            stdH += time.Hours;
-                            stdM += time.Minutes;
-                        }
-                    }
+                    ((Sum_Stati_transit)sheet).AtlWorkTime = string.Format("{0:00}:{1:00}", hour + min / 60, min % 60);
+                    ((Sum_Stati_transit)sheet).StdWorkTime = rule.GetStdTimeStr(year, month);
+                    ((Sum_Stati_transit)sheet).Wko_Common = string.Format("{0:00}:{1:00}", overH + overM / 60, overM % 60);
+                    ((Sum_Stati_transit)sheet).Wko_Special = string.Format("{0:00}:{1:00}", 0, 0);
+                    ((Sum_Stati_transit)sheet).LateEarly_Count = lateNum.ToString();
+                    ((Sum_Stati_transit)sheet).LateEarly_Min = lateMin.ToString();
                 }
-                sheet.StdWorkTime = string.Format($"{stdH + stdM / 60}:{stdM % 60}");
-                sheet.Wko_Common = string.Format($"{overH + overM / 60}:{overM % 60}");
-                sheet.Wko_Special = "00:00";
-                sheet.LateEarly_Count = lateNum.ToString();
-                sheet.LateEarly_Min = lateMin.ToString();
-                statistics.Add(sheet);
+                if(Type == 0 || Type == 1)
+                    statistics.Add(sheet);
             }           
             return statistics.OrderBy(s => s.Id).ToList();
         }
 
-        public List<StatisticsData> GetStatisticsDatas(int year, int month)
+        private List<StatisticsData> GetStatisticsDatas(int year, int month)
         {
-            return GetSum_Stati_Transits(year, month, 0).Select(s => (StatisticsData)s).ToList();
+            return GetTypeDatas(year, month, 0).Select(s => (StatisticsData)s).ToList();
         }
 
-        public List<SummaryData> GetSummaryDatas(int year, int month)
+        public StatisticsSheetModel GetStatisticsSheetModel(int year, int month)
+        {
+            StatisticsSheetModel sheetModel = new StatisticsSheetModel();
+            sheetModel.Datas = GetStatisticsDatas(year, month);
+            return sheetModel;
+        }
+
+        private List<SummaryData> GetSummaryDatas(int year, int month)
         {           
-            return GetSum_Stati_Transits(year, month, 1).Select(s => (SummaryData)s).ToList();
+            return GetTypeDatas(year, month, 1).Select(s => (SummaryData)s).ToList();
         }
 
-        public SummarySheetModel GetSummarySheetModels(int year, int month)
+        public SummarySheetModel GetSummarySheetModel(int year, int month)
         {
             SummarySheetModel summarySheetModel = new SummarySheetModel();
             summarySheetModel.Date = string.Format($"{year}-{month.ToString("00")}");
-            summarySheetModel.Datas = GetSum_Stati_Transits(year, month, 1).Select(s => (SummaryData)s).ToList();
+            summarySheetModel.Datas = GetTypeDatas(year, month, 1).Select(s => (SummaryData)s).ToList();
             return summarySheetModel;
         }
 
-        public List<ExceptionData> GetExceptionDatas(int year, int month)
+        private List<ExceptionData> GetExceptionDatas(int year, int month)
         {
-            List<ExceptionData> exceptions = new List<ExceptionData>();
-
-            return exceptions;
+            return GetTypeDatas(year, month, 2).Select(s => (ExceptionData)s).ToList();
         }
 
-        public List<OriginalData> GetOriginalDatas(int year, int month)
+        public ExceptionSheetModel GetExceptionSheetModel(int year, int month)
+        {
+            ExceptionSheetModel sheetModel = new ExceptionSheetModel();
+            sheetModel.Date = string.Format($"{year}-{month.ToString("00")}");
+            sheetModel.Datas = GetExceptionDatas(year, month);
+            return sheetModel;
+        }
+
+        private List<OriginalData> GetOriginalDatas(int year, int month)
         {
             List<OriginalData> originals = new List<OriginalData>();
 
             return originals;
         }
 
-        /// <summary>
-        /// 获取当前月的天数
-        /// </summary>
-        /// <returns></returns>
-        private int GetDays()
-        {
-            // 获取当前月份第一天
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            // 获取下个月的第一天
-            DateTime firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
-            // 获取本月最后一天
-            DateTime lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
-            // 获取本月的天数
-            int daysInMonth = lastDayOfMonth.Day;
-            return daysInMonth;
-        }
 
-        /// <summary>
-        /// 获取今年某月的天数
-        /// </summary>
-        /// <returns></returns>
-        private int GetDays(int month)
-        {
-            month = ((month > 12) || (month < 1)) ? 1 : month;
-            // 获取当前月份第一天
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, month, 1);
-            // 获取下个月的第一天
-            DateTime firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
-            // 获取本月最后一天
-            DateTime lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
-            // 获取本月的天数
-            int daysInMonth = lastDayOfMonth.Day;
-            return daysInMonth;
-        }
 
-        /// <summary>
-        /// 获取当月某天的星期
-        /// </summary>
-        /// <param name="day"></param>
-        /// <returns></returns>
-        public int GetWeek(int day)
-        {
-            day = (day < 0 || day > 31) ? 1 : day;
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, day);
-            return (int)firstDayOfMonth.DayOfWeek;
-        }
-
-        /// <summary>
-        ///  获取某月某天的星期
-        /// </summary>
-        /// <param name="month"></param>
-        /// <param name="day"></param>
-        /// <returns></returns>
-        public int GetWeek(int month, int day)
-        {
-            month = (month < 0 || month > 12) ? DateTime.Today.Month : month;
-            day = (day < 0 || day > 31) ? 1 : day;
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, month, day);
-            return (int)firstDayOfMonth.DayOfWeek;
-        }
-
-        /// <summary>
-        /// 获取当月天数并按星期进行排列的集合
-        /// </summary>
-        /// <returns></returns>
-        private string[] GetDaysByWeek()
-        {
-            // 获取当前月份第一天
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            // 获取这一天时星期几
-            DayOfWeek dayOfWeek = firstDayOfMonth.DayOfWeek;
-            // 获取下个月的第一天
-            DateTime firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
-            // 获取本月最后一天
-            DateTime lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
-            // 获取本月的天数
-            int daysInMonth = lastDayOfMonth.Day;
-            string[] days = new string[daysInMonth];
-            string[] weeks = { "日", "一", "二", "三", "四", "五", "六" };
-            for (int i = 0; i < daysInMonth; i++)
-            {
-                days[i] = string.Format("{0:00}", i + 1) + " " + weeks[((int)dayOfWeek + i) % 7];
-            }
-            return days;
-        }
-
-        /// <summary>
-        /// 获取某月天数并按星期进行排列的集合
-        /// </summary>
-        /// <param name="month"></param>
-        /// <returns></returns>
-        private string[] GetDaysByWeek(int month)
-        {
-            month = (month > 12 || month < 1) ? DateTime.Today.Month : month;
-            // 获取当前月份第一天
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, month, 1);
-            // 获取这一天时星期几
-            DayOfWeek dayOfWeek = firstDayOfMonth.DayOfWeek;
-            // 获取下个月的第一天
-            DateTime firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
-            // 获取本月最后一天
-            DateTime lastDayOfMonth = firstDayOfNextMonth.AddDays(-1);
-            // 获取本月的天数
-            int daysInMonth = lastDayOfMonth.Day;
-            string[] days = new string[daysInMonth];
-            string[] weeks = { "日", "一", "二", "三", "四", "五", "六" };
-            for (int i = 0; i < daysInMonth; i++)
-            {
-                days[i] = string.Format("{0:00}", i + 1) + " " + weeks[((int)dayOfWeek + i) % 7];
-            }
-            return days;
-        }
+        
     }
 }

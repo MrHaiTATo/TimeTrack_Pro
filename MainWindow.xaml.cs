@@ -44,20 +44,25 @@ namespace TimeTrack_Pro
         private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤统计表.xlsx";
-            ExcelHelper Sheet = new ExcelHelper(fileName);
-            Sheet.CreateAtdStatiSheets(center.GetStatisticsDatas(2024, 8));
-            //SheetTemplate.CreateAttendanceStatisticsSheet(center.GetStatisticsDatas(2024, 8));
-            //SheetTemplate.CreateAttendanceStatisticsSheet(center);
+            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 8));
+            sheet.Dispose();
         }
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
-            //SheetTemplate.CreatAttendanceExceptionSheet(center);
+            string fileName = @"F:\文档\考勤异常表.xlsx";
+            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 8));
+            sheet.Dispose();
         }
 
         private void btn_SummarySheet_Click(object sender, RoutedEventArgs e)
         {
-            //SheetTemplate.CreatAttendanceSummarySheet(center);
+            string fileName = @"F:\文档\考勤汇总表.xlsx";
+            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 8));
+            sheet.Dispose();
         }
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
