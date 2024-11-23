@@ -41,13 +41,23 @@ namespace TimeTrack_Pro
             EppDemo.demo1();
         }
 
-        private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
+        private async void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤统计表.xlsx";
             ExcelHelper sheet = new ExcelHelper(fileName);
-            sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 8));
+            double Msec = 0;
+            System.Timers.Timer timer = new System.Timers.Timer(10); // 创建一个每秒触发一次的定时器
+            timer.Elapsed += (s, e) => Msec += 10;// 注册事件处理方法                             
+            timer.AutoReset = true; // 默认为 true，表示一次性触发后自动重置，继续计时
+            timer.Enabled = true; // 启动定时器
+            Task task = sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 8));            
+            await task;
+            timer.Enabled = false;
+            timer.Dispose();
             sheet.Dispose();
+            MessageBox.Show(this,string.Format("用时：{0:0.000} 秒",Msec / 1000));
         }
+
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
@@ -102,6 +112,12 @@ namespace TimeTrack_Pro
         private void CopyCommand(object sender, ExecutedRoutedEventArgs e)
         {            
                    
+        }
+
+        private void btn_Npio_Click(object sender, RoutedEventArgs e)
+        {
+            NpioDemo npioDemo = new NpioDemo();
+            npioDemo.GenerateExcelWithComplexStyles();
         }
     }
 }

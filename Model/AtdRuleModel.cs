@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TimeTrack_Pro.Model
 {
-    public class OriginalData : Employee
-    {       
-        public List<TimeSpan>[]? Datas { get; set; }
+    public class AtdRuleModel
+    {
+        public List<AttendanceRule> Datas { get; set; }
     }
 }

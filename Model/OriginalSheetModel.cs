@@ -11,7 +11,7 @@ namespace TimeTrack_Pro.Model
         /// <summary>
         /// 日期
         /// </summary>
-        public string? Date { get; set; }
-        public List<OriginalData> Datas { get; set; }
+        public DateTime Date { get; set; }       
+        public List<OriginalData>? Datas { get; set; }
     }
 }

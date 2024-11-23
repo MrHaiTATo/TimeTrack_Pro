@@ -171,7 +171,7 @@ namespace TimeTrack_Pro.Code
                 //工号
                 sheet.Id = employee.Id;
                 //部门
-                sheet.Department = "";
+                sheet.Department = "公司";
                 //班次
                 sheet.RuleName = rule.RuleName;
                 //日期
@@ -359,8 +359,13 @@ namespace TimeTrack_Pro.Code
             return originals;
         }
 
+        public OriginalSheetModel GetOriginalSheetModel(int year, int month)
+        {
+            OriginalSheetModel sheetModel = new OriginalSheetModel();
+            sheetModel.Date = new DateTime(year, month, DateTimeHelper.GetDays(month));
+            sheetModel.Datas = GetOriginalDatas(year, month);
+            return sheetModel;
+        }
 
-
-        
     }
 }

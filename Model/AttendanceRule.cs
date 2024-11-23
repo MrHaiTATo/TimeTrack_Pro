@@ -89,5 +89,19 @@ namespace TimeTrack_Pro.Model
 			return string.Format("{0:00}:{1:00}", stdH + stdM / 60, stdM % 60);
         }
 
+		public AttendanceRule Copy()
+		{
+			AttendanceRule rule = new AttendanceRule()
+			{
+				RuleName = this.RuleName,
+				Inter_dayTime = this.Inter_dayTime,
+				SerialNumber = this.SerialNumber,
+				AlarmsTimes = this.AlarmsTimes,
+				AttendanceWay = this.AttendanceWay,
+				StatsUnit = this.StatsUnit,
+                StatsWay = this.StatsWay,
+            };			
+			return rule;
+		}
     }
 }
