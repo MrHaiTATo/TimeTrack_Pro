@@ -48,5 +48,14 @@ namespace TimeTrack_Pro.Model
         /// 备注
         /// </summary>
         public string? Notes { get; set; }
+
+        public SummaryData() { }
+        public SummaryData(Employee employee) 
+        {
+            this.Id = employee.Id;
+            this.Name = employee.Name;
+            this.Department = employee.Department;
+            this.RuleName = employee.RuleName;
+        }
     }
 }

@@ -18,7 +18,9 @@ namespace TimeTrack_Pro.Model
         /// <summary>
         /// 班次（考勤规则名）
         /// </summary>
-        public string? RuleName { get; set; }                
+        public string? RuleName { get; set; }
+
+        public Employee() { }        
     }
 
 }

@@ -99,8 +99,26 @@ namespace TimeTrack_Pro.Model
 				AlarmsTimes = this.AlarmsTimes,
 				AttendanceWay = this.AttendanceWay,
 				StatsUnit = this.StatsUnit,
-                StatsWay = this.StatsWay,
-            };			
+				StatsWay = this.StatsWay,
+				ShiftMode = this.ShiftMode,
+				AllowLate = this.AllowLate,
+				AllowEarly = this.AllowEarly,
+				Classes = new ClassSection[7][]
+			};
+			if (Classes != null)
+			{
+				for (int i = 0; i < 7; i++)
+				{
+					rule.Classes[i] = new ClassSection[3];
+					for (int j = 0; j < 3; j++)
+					{
+						rule.Classes[i][j] = new ClassSection();
+						rule.Classes[i][j].Name = Classes[i][j].Name;
+                        rule.Classes[i][j].StartTime = Classes[i][j].StartTime;
+                        rule.Classes[i][j].EndTime = Classes[i][j].EndTime;
+                    }
+				}
+			}
 			return rule;
 		}
     }

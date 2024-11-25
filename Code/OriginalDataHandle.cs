@@ -7,13 +7,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TimeTrack_Pro.Model;
+using TimeTrack_Pro.Helper;
 
 namespace TimeTrack_Pro.Code
 {
     public class OriginalDataHandle
     {
-        private List<OriginalData>? originalDatas;
-        public List<OriginalData>? OriginalDatas { get { return originalDatas; } }
+        private OriginalSheetModel originalDatas;
+        public OriginalSheetModel OriginalDatas { get { return originalDatas; } }
         
         public OriginalDataHandle(string path)
         {
@@ -32,36 +33,30 @@ namespace TimeTrack_Pro.Code
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                 string? message;
-                originalDatas = new List<OriginalData>();
+                originalDatas = new OriginalSheetModel();
+                originalDatas.Datas = new List<OriginalData>();
                 for (int i = 0; ; i++)
-                {
-                    object ob = worksheet.Cells[$"A{2 + i * 4}"].Value;
-                    if (ob == null) break;
-
-                    message = worksheet.Cells[$"A{2 + i * 4}"].Value.ToString();
-                    if (string.IsNullOrEmpty(message) || !message.Contains("登记号"))
-                        break;
-
+                {                    
                     OriginalData data = new OriginalData();                    
                     
                     message = worksheet.Cells[$"C{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
-                        continue;
+                        break;
 
                     data.Id = Convert.ToInt32(message);
                     message = worksheet.Cells[$"G{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
-                        continue;
+                        break;
 
                     data.Name = message;
                     message = worksheet.Cells[$"L{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
-                        continue;
+                        break;
 
                     data.Department = message;
                     message = worksheet.Cells[$"Q{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
-                        continue;
+                        break;
 
                     data.RuleName = message;
                     data.Datas = new List<TimeSpan>[31];
@@ -81,14 +76,46 @@ namespace TimeTrack_Pro.Code
                             data.Datas[j].Add(TimeSpan.Parse(time));
                         }
                     }
-                    originalDatas.Add(data);
+                    originalDatas.Datas.Add(data);
                 }
             }
         }
 
-        public void FilterByRule(AttendanceRule rule)
+        public List<Employee> GetTypeDatas(int year, int month, int Type)
         {
-            
+            List<Employee> employees = new List<Employee>();
+            Employee one = null;
+            AttendanceRule rule = null;
+            foreach (var org in OriginalDatas.Datas)
+            {
+                if (Rules.RuleList.Count() > 0 && (Rules.RuleList.Find(r => r.RuleName == org.RuleName) != null))
+                {
+                    rule = Rules.RuleList.Find(r => r.RuleName == org.RuleName);
+                }
+                else
+                    rule = Rules.DefaultRule;
+                if (Type == 0)
+                    one = new StatisticsData(org);
+                else if (Type == 1)
+                    one = new SummaryData(org);
+                else 
+                    one = new ExceptionData(org);
+                for (int d = 0; d < org.Datas.Count(); d++)
+                {
+                    int week = DateTimeHelper.GetWeek(year, month, d + 1);
+                    ClassSection section;
+                    TimeSpan time1_s, time1_e, time2_s, time2_e, time3_s, time3_e;
+                    foreach (var t in org.Datas[d])
+                    {
+                        if (t <= (rule.Classes[week][0].StartTime + new TimeSpan(0,rule.StatsUnit + rule.AllowLate,0)))
+                        {
+
+                        }
+                    }
+                }           
+                employees.Add(one);
+            }
+            return employees;
         }
         
     }

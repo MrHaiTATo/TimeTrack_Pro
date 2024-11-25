@@ -573,7 +573,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
                 //第二行
                 values = new (string, string)[] { ($"A{2 + i * 4}:B{2 + i * 4}","登记号："), ($"E{2 + i * 4}:F{2 + i * 4}", "姓名："),
                                                   ($"J{2 + i * 4}:K{2 + i * 4}","部门："), ($"O{2 + i * 4}:P{2 + i * 4}","班次："),
-                                                  ($"T{2 + i * 4}:A{(char)('A' + days - 25)}{2 + i * 4}","注：浅青色区域为数据区") };
+                                                  ($"T{2 + i * 4}:A{(char)('A' + days - 27)}{2 + i * 4}","注：浅青色区域为数据区") };
                 foreach (var (position, content) in values)
                 {
                     SetMergeCellsStyle(worksheet, position);
@@ -616,12 +616,21 @@ namespace TimeTrack_Pro.Helper.EPPlus
             }
         }
 
-        public void CreatAttendanceSchedulingSheet()
+        public void CreatAtdSchedulingSheet(AtdRuleModel atdRule)
         {
-
+            int i = 0;
+            ExcelWorksheet worksheet = null;
+            Creat_init();
+            worksheet = package.Workbook.Worksheets.Add("排班表");
+            foreach (var rule in atdRule.Datas)
+            {
+                CreatAttendanceSchedulingSheet(worksheet, rule, 0, 1 + i * 15);
+                i++;
+            }
+            Save();
         }
 
-        public void CreatAttendanceSchedulingSheet(ExcelWorksheet worksheet, int x, int y)
+        private void CreatAttendanceSchedulingSheet(ExcelWorksheet worksheet, AttendanceRule rule, int x, int y)
         {
             x = x < 0 ? 0 : x;
             y = y < 0 ? 0 : y;
@@ -696,11 +705,17 @@ namespace TimeTrack_Pro.Helper.EPPlus
 
             values = new (string, string)[] { 
                          /*第一行*/
-                        ($"{(char)('B' + x)}{1 + y}",""), ($"{(char)('D' + x)}{1 + y}:{(char)('G' + x)}{1 + y}",""), ($"{(char)('I' + x)}{1 + y}:{(char)('J' + x)}{1 + y}",""),
+                        ($"{(char)('B' + x)}{1 + y}",rule.SerialNumber.ToString()), 
+                        ($"{(char)('D' + x)}{1 + y}:{(char)('G' + x)}{1 + y}",rule.RuleName), 
+                        ($"{(char)('I' + x)}{1 + y}:{(char)('J' + x)}{1 + y}", string.Format("{0:00}:{1:00}",rule.Inter_dayTime.Hours,rule.Inter_dayTime.Minutes)),
                          /*第四行*/
-                        ($"{(char)('A' + x)}{4 + y}",""), ($"{(char)('B' + x)}{4 + y}:{(char)('C' + x)}{4 + y}",""), ($"{(char)('D' + x)}{4 + y}",""),
-                        ($"{(char)('E' + x)}{4 + y}:{(char)('F' + x)}{4 + y}",""), ($"{(char)('G' + x)}{4 + y}:{(char)('H' + x)}{4 + y}",""),
-                        ($"{(char)('I' + x)}{4 + y}",""), ($"{(char)('J' + x)}{4 + y}","")
+                        ($"{(char)('A' + x)}{4 + y}",rule.AlarmsTimes.ToString()), 
+                        ($"{(char)('B' + x)}{4 + y}:{(char)('C' + x)}{4 + y}",rule.AttendanceWay.ToString()), 
+                        ($"{(char)('D' + x)}{4 + y}", rule.StatsUnit.ToString()),
+                        ($"{(char)('E' + x)}{4 + y}:{(char)('F' + x)}{4 + y}",rule.StatsWay.ToString()), 
+                        ($"{(char)('G' + x)}{4 + y}:{(char)('H' + x)}{4 + y}",rule.ShiftMode.ToString()),
+                        ($"{(char)('I' + x)}{4 + y}",rule.AllowLate.ToString()), 
+                        ($"{(char)('J' + x)}{4 + y}",rule.AllowEarly.ToString())
                     };
             foreach (var (position, content) in values)
             {
@@ -715,11 +730,17 @@ namespace TimeTrack_Pro.Helper.EPPlus
             {
                 values = new (string, string)[] {
                              /*班段1*/
-                            ($"{(char)('B' + x)}{8 + y + i}",""), ($"{(char)('C' + x)}{8 + y + i}",""), ($"{(char)('D' + x)}{8 + y + i}",""),
+                            ($"{(char)('B' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][0].StartTime.Hours, rule.Classes[i][0].StartTime.Minutes)), 
+                            ($"{(char)('C' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][0].EndTime.Hours, rule.Classes[i][0].EndTime.Minutes)), 
+                            ($"{(char)('D' + x)}{8 + y + i}",rule.Classes[i][0].Type.ToString()),
                              /*班段2*/
-                            ($"{(char)('E' + x)}{8 + y + i}",""), ($"{(char)('F' + x)}{8 + y + i}",""), ($"{(char)('G' + x)}{8 + y + i}",""),
+                            ($"{(char)('E' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][1].StartTime.Hours, rule.Classes[i][1].StartTime.Minutes)), 
+                            ($"{(char)('F' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][1].EndTime.Hours, rule.Classes[i][1].EndTime.Minutes)),  
+                            ($"{(char)('G' + x)}{8 + y + i}",rule.Classes[i][1].Type.ToString()),
                              /*班段3*/
-                            ($"{(char)('H' + x)}{8 + y + i}",""), ($"{(char)('I' + x)}{8 + y + i}",""), ($"{(char)('J' + x)}{8 + y + i}","")
+                            ($"{(char)('H' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][2].StartTime.Hours, rule.Classes[i][2].StartTime.Minutes)), 
+                            ($"{(char)('I' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][2].EndTime.Hours, rule.Classes[i][2].EndTime.Minutes)),  
+                            ($"{(char)('J' + x)}{8 + y + i}",rule.Classes[i][2].Type.ToString()),
                         };
                 foreach (var (position, content) in values)
                 {

@@ -149,8 +149,10 @@ namespace TimeTrack_Pro.Code
                     sheet = new StatisticsData();
                 else if (Type == 1)
                     sheet = new SummaryData();
-                else
+                else if (Type == 2)
                     sheet = new ExceptionData();
+                else
+                    sheet = new OriginalData();
                 List<AttendanceData> AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime)//获取对应时间的数据
                                                                         .Where(a => a.UserIndex == employee.Index)
                                                                         .Where(a => a.ClockTime >= employee.CreatedTime)
@@ -174,12 +176,21 @@ namespace TimeTrack_Pro.Code
                 sheet.Department = "公司";
                 //班次
                 sheet.RuleName = rule.RuleName;
-                //日期
-                if(Type == 0)
-                    ((StatisticsData)sheet).Date = string.Format($"{year}-{month.ToString("00")}");
-                var dData = AvabDatas.GroupBy(a => a.ClockTime.Day);//通过日期进行分组
-                if(Type == 0 || Type == 1)
+                if (Type == 3)
                 {
+                    ((OriginalData)sheet).Datas = new List<TimeSpan>[days];
+                    for (int i = 0; i < days; i++)
+                    {
+                        ((OriginalData)sheet).Datas[i] = new List<TimeSpan>();
+                        foreach (var item in AvabDatas.Where(a => a.ClockTime.Day == i + 1))
+                            ((OriginalData)sheet).Datas[i].Add(new TimeSpan(item.ClockTime.Hour, item.ClockTime.Minute, item.ClockTime.Second));
+                    }
+                    statistics.Add(sheet);
+                    continue;
+                }
+                if (Type == 0 || Type == 1)
+                {
+                    var dData = AvabDatas.GroupBy(a => a.ClockTime.Day);//通过日期进行分组
                     //实际出勤
                     ((Sum_Stati_transit)sheet).AtlAtd = dData.Count().ToString();
                     //标准
@@ -187,7 +198,7 @@ namespace TimeTrack_Pro.Code
                 }               
                 if (Type == 0)
                     ((StatisticsData)sheet).DaysOfWeek = DateTimeHelper.GetDaysByWeek(year, month);
-                for (int i = 0; i <= days; i++)
+                for (int i = 0; i < days; i++)
                 {                    
                     //选择当天的打卡数据                             
                     //清洗数据，如果一个时间段有多次打卡，选择最早的记录
@@ -300,6 +311,9 @@ namespace TimeTrack_Pro.Code
                             ((StatisticsData)sheet).SignUpDatas[i][7].Text = total.ToString().Substring(0, 5);                         
                     }
                 }
+                //日期
+                if (Type == 0)
+                    ((StatisticsData)sheet).Date = string.Format($"{year}-{month.ToString("00")}");
                 if (Type == 0 || Type == 1)
                 {
                     ((Sum_Stati_transit)sheet).AtlWorkTime = string.Format("{0:00}:{1:00}", hour + min / 60, min % 60);
@@ -354,9 +368,7 @@ namespace TimeTrack_Pro.Code
 
         private List<OriginalData> GetOriginalDatas(int year, int month)
         {
-            List<OriginalData> originals = new List<OriginalData>();
-
-            return originals;
+            return GetTypeDatas(year, month, 3).Select(s => (OriginalData)s).ToList();
         }
 
         public OriginalSheetModel GetOriginalSheetModel(int year, int month)

@@ -30,5 +30,12 @@ namespace TimeTrack_Pro.Model
                 SignUpDatas.Add(new SheetCell[8]);
             }
         }
+        public StatisticsData(Employee employee)
+        {
+            this.Id = employee.Id;
+            this.Name = employee.Name;
+            this.Department = employee.Department;
+            this.RuleName = employee.RuleName;
+        }
     }
 }

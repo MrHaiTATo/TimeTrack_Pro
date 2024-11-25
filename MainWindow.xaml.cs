@@ -77,12 +77,18 @@ namespace TimeTrack_Pro
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
         {
-            //SheetTemplate.CreatOriginalAttendanceSheet(center);
+            string fileName = @"F:\文档\考勤原始表.xlsx";
+            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 8));
+            sheet.Dispose();
         }
 
         private void btn_AttendanceSheetBeta_Click_1(object sender, RoutedEventArgs e)
         {
-            //SheetTemplate.CreatAttendanceSheet();
+            string fileName = @"E:\mahaitao\GitHub\TestData\考勤排班表.xlsx";
+            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.CreatAtdSchedulingSheet(Rules.GetRuleModel());
+            sheet.Dispose();
         }
 
         private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)
