@@ -109,7 +109,7 @@ namespace TimeTrack_Pro.Code
                     {
                         if (t.TimeOfDay <= (rule.Classes[week][0].StartTime + new TimeSpan(0,rule.StatsUnit + rule.AllowLate,0)))
                         {
-
+                            
                         }
                     }
                 }           
