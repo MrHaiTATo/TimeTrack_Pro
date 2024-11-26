@@ -59,10 +59,10 @@ namespace TimeTrack_Pro.Code
                         break;
 
                     data.RuleName = message;
-                    data.Datas = new List<TimeSpan>[31];
+                    data.Datas = new List<DateTime>[31];
                     for (int j = 0; j < 31; j++)
                     {
-                        data.Datas[j] = new List<TimeSpan>();
+                        data.Datas[j] = new List<DateTime>();
                         message = worksheet.Cells[(i + 1)*4,j + 1].Value.ToString();
                         if (string.IsNullOrEmpty(message))
                             continue;
@@ -73,7 +73,7 @@ namespace TimeTrack_Pro.Code
                             if (!Regex.IsMatch(time, @"^[0-9]{2}:[0-9]{2}$"))
                                 continue;
 
-                            data.Datas[j].Add(TimeSpan.Parse(time));
+                            data.Datas[j].Add(DateTime.Parse(time));
                         }
                     }
                     originalDatas.Datas.Add(data);
@@ -107,7 +107,7 @@ namespace TimeTrack_Pro.Code
                     TimeSpan time1_s, time1_e, time2_s, time2_e, time3_s, time3_e;
                     foreach (var t in org.Datas[d])
                     {
-                        if (t <= (rule.Classes[week][0].StartTime + new TimeSpan(0,rule.StatsUnit + rule.AllowLate,0)))
+                        if (t.TimeOfDay <= (rule.Classes[week][0].StartTime + new TimeSpan(0,rule.StatsUnit + rule.AllowLate,0)))
                         {
 
                         }

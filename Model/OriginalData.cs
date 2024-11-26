@@ -8,6 +8,6 @@ namespace TimeTrack_Pro.Model
 {
     public class OriginalData : Employee
     {       
-        public List<TimeSpan>[]? Datas { get; set; }
+        public List<DateTime>[]? Datas { get; set; }
     }
 }

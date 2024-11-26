@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Asn1.Pkcs;
+﻿using NPOI.Util;
+using Org.BouncyCastle.Asn1.Pkcs;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -130,9 +131,16 @@ namespace TimeTrack_Pro.Code
             }
         }
 
-        private List<AttendanceData> GetEmployeeAndAttendanceDataByDateTime(DateTime selectTime)
+        private List<AttendanceData> GetEmployeeAndAttendanceDataByDateTime(DateTime select)
         {
-            return attendanceDatas.Where(a => a.ClockTime.Year == selectTime.Year && a.ClockTime.Month == selectTime.Month).ToList();
+            return attendanceDatas.Where(a => a.ClockTime.Year == select.Year &&
+                                              a.ClockTime.Month == select.Month).ToList();
+        }
+
+        private List<AttendanceData> GetEmployeeAndAttendanceDataByDateTime(DateTime start, DateTime end)
+        {
+            return attendanceDatas.Where(a => (DateTime.Compare(a.ClockTime, start) >= 0) && 
+                                              (DateTime.Compare(a.ClockTime, end) <= 0)).ToList();
         }
 
         private List<Employee> GetTypeDatas(int year, int month, int Type)
@@ -168,6 +176,18 @@ namespace TimeTrack_Pro.Code
                     rule = Rules.RuleList.Find(r => r.SerialNumber == AvabDatas.FirstOrDefault().Class);
                 else
                     rule = Rules.DefaultRule;
+                //是否跨天
+                if(rule.Inter_dayTime != TimeSpan.Zero)
+                {
+                    DateTime et = selectTime.AddMonths(1)
+                                            .AddHours(rule.Inter_dayTime.Hours)
+                                            .AddMinutes(rule.Inter_dayTime.Minutes);
+                    //更新数据
+                    AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime, et)//获取对应时间的数据
+                                                                        .Where(a => a.UserIndex == employee.Index)
+                                                                        .Where(a => a.ClockTime >= employee.CreatedTime)
+                                                                        .ToList();
+                }
                 //姓名
                 sheet.Name = employee.Name;
                 //工号
@@ -178,12 +198,12 @@ namespace TimeTrack_Pro.Code
                 sheet.RuleName = rule.RuleName;
                 if (Type == 3)
                 {
-                    ((OriginalData)sheet).Datas = new List<TimeSpan>[days];
+                    ((OriginalData)sheet).Datas = new List<DateTime>[days];
                     for (int i = 0; i < days; i++)
                     {
-                        ((OriginalData)sheet).Datas[i] = new List<TimeSpan>();
+                        ((OriginalData)sheet).Datas[i] = new List<DateTime>();
                         foreach (var item in AvabDatas.Where(a => a.ClockTime.Day == i + 1))
-                            ((OriginalData)sheet).Datas[i].Add(new TimeSpan(item.ClockTime.Hour, item.ClockTime.Minute, item.ClockTime.Second));
+                            ((OriginalData)sheet).Datas[i].Add(item.ClockTime);
                     }
                     statistics.Add(sheet);
                     continue;
@@ -199,14 +219,30 @@ namespace TimeTrack_Pro.Code
                 if (Type == 0)
                     ((StatisticsData)sheet).DaysOfWeek = DateTimeHelper.GetDaysByWeek(year, month);
                 for (int i = 0; i < days; i++)
-                {                    
+                {
                     //选择当天的打卡数据                             
                     //清洗数据，如果一个时间段有多次打卡，选择最早的记录
-                    var dayData = AvabDatas.Where(a => a.ClockTime.Day == i + 1)//找到当天的数据记录
-                                            .GroupBy(a => a.ShiftClass)//通过班次分组
-                                            .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())//对每个分组进行时间排列，选择最早的记录
-                                            .OrderBy(a => a.ClockTime)//对已选择的记录再进行时间排列
-                                            .ToList();                                    
+                    List<AttendanceData?>? dayData = null;
+                    if (rule.Inter_dayTime == TimeSpan.Zero)//是否跨天
+                    {
+                        dayData = AvabDatas.Where(a => a.ClockTime.Day == i + 1)//找到当天的数据记录
+                                           .GroupBy(a => a.ShiftClass)//通过班次分组
+                                           .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())//对每个分组进行时间排列，选择最早的记录
+                                           .OrderBy(a => a.ClockTime)//对已选择的记录再进行时间排列
+                                           .ToList();
+                    }
+                    else
+                    {
+                        DateTime s = new DateTime(year, month, i + 1).AddHours(rule.Inter_dayTime.Hours)
+                                                                     .AddMinutes(rule.Inter_dayTime.Minutes);
+                        DateTime e = s.AddDays(1);
+                        dayData = AvabDatas.Where(a => (DateTime.Compare(a.ClockTime, s) >= 0) && (DateTime.Compare(a.ClockTime, e) <= 0))//找到当天的数据记录
+                                           .GroupBy(a => a.ShiftClass)//通过班次分组
+                                           .Select(g => g.OrderBy(a => a.ClockTime).FirstOrDefault())//对每个分组进行时间排列，选择最早的记录
+                                           .OrderBy(a => a.ClockTime)//对已选择的记录再进行时间排列
+                                           .ToList();
+                    }
+
                     if (dayData.Count() == 0)
                         continue;
                     week = DateTimeHelper.GetWeek(year, month, i + 1);

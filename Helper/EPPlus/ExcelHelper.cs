@@ -56,8 +56,8 @@ namespace TimeTrack_Pro.Helper.EPPlus
             Creat_init();            
             foreach (var data in sheetModel.Datas)
             {
-                worksheet = package.Workbook.Worksheets.Add(data.Name + "_" + data.Id);                                               
-                CreateAttendanceStatisticsSheet(worksheet, data);                   
+                worksheet = package.Workbook.Worksheets.Add(data.Name + "_" + data.Id);
+                CreateAttendanceStatisticsSheet(worksheet, data);            
             }            
             Save();            
         }
@@ -608,7 +608,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
                     string val = "";
                     foreach (var item in employee.Datas[j])
                     {
-                        val += string.Format("{0:00}:{1:00}", item.Hours, item.Minutes) + "\x20";
+                        val += item.ToString("HH:mm") + "\x20";
                     }
                     worksheet.Cells[4 + i * 4, j + 1].Value = val;
                 }
