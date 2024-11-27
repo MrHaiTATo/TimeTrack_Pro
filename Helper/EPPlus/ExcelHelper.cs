@@ -23,7 +23,11 @@ namespace TimeTrack_Pro.Helper.EPPlus
         public ExcelHelper(string fileName)
         {
             this.fileName = fileName;
-            disposed = false;
+            disposed = false;           
+        }
+
+        public static void EPPlus_Init()
+        {
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
             // 必须设置，否则会报错

@@ -27,8 +27,17 @@ namespace TimeTrack_Pro
         public MainWindow()
         {
             InitializeComponent();
+            One_Load();
             this.DataContext = this;
             web.Navigate(new Uri("http://192.168.1.3"));
+        }
+
+        /// <summary>
+        /// 只需要在程序中设置一次的参数或运行一次的函数
+        /// </summary>
+        private void One_Load()
+        {
+            ExcelHelper.EPPlus_Init();
         }
 
         private async void btn_demo_Click(object sender, RoutedEventArgs e)
@@ -93,6 +102,9 @@ namespace TimeTrack_Pro
 
         private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)
         {
+            DateTime date1 = new DateTime(2024,8,1,2,0,0);
+            DateTime date2 = new DateTime(2024, 8, 2, 2, 0, 0);
+            TimeSpan span = date2 - date1;
             string attendancePath = @"F:\文档\BakRcdData.TXT";
             string employeePath = @"F:\文档\BakUseData.TXT";
             center = new BakDatasHandle(attendancePath, employeePath);

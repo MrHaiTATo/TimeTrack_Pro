@@ -20,7 +20,7 @@ namespace TimeTrack_Pro.Model
         /// </summary>
         public string? RuleName { get; set; }
 
-        public Employee() { }        
+        public Employee() {  }        
     }
 
 }

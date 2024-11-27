@@ -22,12 +22,7 @@ namespace TimeTrack_Pro.Code
         }
 
         public void init(string path)
-        {
-            // 在 Excel 包类上使用许可证上下文属性
-            // 删除许可证异常
-            // 必须设置，否则会报错
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;//非商业
-
+        {          
             //创建一个新的Excel包
             using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
             {
@@ -72,8 +67,8 @@ namespace TimeTrack_Pro.Code
                         {
                             if (!Regex.IsMatch(time, @"^[0-9]{2}:[0-9]{2}$"))
                                 continue;
-
-                            data.Datas[j].Add(DateTime.Parse(time));
+                            DateTime date = DateTime.Parse(time);
+                            data.Datas[j].Add(date);
                         }
                     }
                     originalDatas.Datas.Add(data);

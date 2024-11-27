@@ -220,6 +220,7 @@ namespace TimeTrack_Pro.Code
                     ((StatisticsData)sheet).DaysOfWeek = DateTimeHelper.GetDaysByWeek(year, month);
                 for (int i = 0; i < days; i++)
                 {
+                    DateTime today = new DateTime(year, month,  i + 1);
                     //选择当天的打卡数据                             
                     //清洗数据，如果一个时间段有多次打卡，选择最早的记录
                     List<AttendanceData?>? dayData = null;
@@ -233,8 +234,7 @@ namespace TimeTrack_Pro.Code
                     }
                     else
                     {
-                        DateTime s = new DateTime(year, month, i + 1).AddHours(rule.Inter_dayTime.Hours)
-                                                                     .AddMinutes(rule.Inter_dayTime.Minutes);
+                        DateTime s = new DateTime(year, month, i + 1, rule.Inter_dayTime.Hours, rule.Inter_dayTime.Minutes, 0);                                          
                         DateTime e = s.AddDays(1);
                         dayData = AvabDatas.Where(a => (DateTime.Compare(a.ClockTime, s) >= 0) && (DateTime.Compare(a.ClockTime, e) <= 0))//找到当天的数据记录
                                            .GroupBy(a => a.ShiftClass)//通过班次分组
@@ -255,17 +255,18 @@ namespace TimeTrack_Pro.Code
                     {
                         var att = dayData.Find(a => a.ShiftClass == (ShiftClass)k);
                         if (att != null)
-                        {     
-                            if(Type == 0)
+                        {
+                            if (Type == 0)
                                 ((StatisticsData)sheet).SignUpDatas[i][k].Text = att.ClockTime.ToString("HH:mm");                                                           
                             //从规定的标准中，选择对应星期的班次
                             ClassSection s = rule.Classes[week][k / 2];
-                            TimeSpan t;                                                          
+                            TimeSpan t, span;
+                            span = att.ClockTime - today;//获取当天从零点的时间差值
                             if (k % 2 == 0)
                             {
-                                t = s.StartTime + new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
+                                t = s.StartTime + new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);                                
                                 //比较，选择正确的时间段。迟到
-                                if (att.ClockTime.TimeOfDay > t)
+                                if (span > t)
                                 {                                   
                                     if (Type == 0)
                                         ((StatisticsData)sheet).SignUpDatas[i][k].Color = Color.Red;
@@ -275,8 +276,8 @@ namespace TimeTrack_Pro.Code
                                             part = new ExceptionPart();                                        
                                         part.ESignUpDatas[k] = att.ClockTime.ToString("HH:mm");                                       
                                     }
-                                    start = att.ClockTime.TimeOfDay - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
-                                    Dlate += (int)(att.ClockTime.TimeOfDay - t).TotalMinutes;
+                                    start = span - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
+                                    Dlate += (int)(span - t).TotalMinutes;
                                     lateNum++;
                                 }
                                 else
@@ -288,7 +289,7 @@ namespace TimeTrack_Pro.Code
                             {
                                 t = s.EndTime - new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
                                 //比较，选择正确的时间段。早退
-                                if (att.ClockTime.TimeOfDay < t)
+                                if (span < t)
                                 {                                    
                                     if (Type == 0)
                                         ((StatisticsData)sheet).SignUpDatas[i][k].Color = Color.Red;
@@ -298,8 +299,8 @@ namespace TimeTrack_Pro.Code
                                             part = new ExceptionPart();                                                                                    
                                         part.ESignUpDatas[k] = att.ClockTime.ToString("HH:mm");
                                     }
-                                    end = att.ClockTime.TimeOfDay + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
-                                    Dlate += (int)(t - att.ClockTime.TimeOfDay).TotalMinutes;
+                                    end = span + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
+                                    Dlate += (int)(t - span).TotalMinutes;
                                     lateNum++;
                                 }
                                 else
