@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TimeTrack_Pro.Model;
 using TimeTrack_Pro.Helper;
+using System.Drawing;
 
 namespace TimeTrack_Pro.Code
 {
@@ -76,11 +77,18 @@ namespace TimeTrack_Pro.Code
             }
         }
 
-        public List<Employee> GetTypeDatas(int year, int month, int Type)
+        public List<Employee> GetTypeDatas(int Type)
         {
             List<Employee> employees = new List<Employee>();
             Employee one = null;
             AttendanceRule rule = null;
+            TimeSpan span = new TimeSpan(1, 0, 0);
+            TimeSpan dayMin, dayMax;
+            bool overDay = false;
+            int hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
+            int Dlate = 0;            
+            TimeSpan start, end, total, overTime;
+            int days = DateTimeHelper.GetDays(originalDatas.Date.Year, originalDatas.Date.Month);
             foreach (var org in OriginalDatas.Datas)
             {
                 if (Rules.RuleList.Count() > 0 && (Rules.RuleList.Find(r => r.RuleName == org.RuleName) != null))
@@ -88,25 +96,148 @@ namespace TimeTrack_Pro.Code
                     rule = Rules.RuleList.Find(r => r.RuleName == org.RuleName);
                 }
                 else
+                {
                     rule = Rules.DefaultRule;
+                }
+                if(rule.Inter_dayTime != TimeSpan.Zero)
+                {
+                    overDay = true;
+                    dayMin = rule.Inter_dayTime;
+                    dayMax = rule.Inter_dayTime.Add(new TimeSpan(1,0,0,0));
+                }
+                else
+                {
+                    dayMin = new TimeSpan(0, 0, 0);
+                    dayMax = new TimeSpan(23, 59, 59);
+                }
                 if (Type == 0)
                     one = new StatisticsData(org);
                 else if (Type == 1)
                     one = new SummaryData(org);
                 else 
                     one = new ExceptionData(org);
-                for (int d = 0; d < org.Datas.Count(); d++)
+                for (int d = 0; d < days; d++)
                 {
-                    int week = DateTimeHelper.GetWeek(year, month, d + 1);
-                    ClassSection section;
-                    TimeSpan time1_s, time1_e, time2_s, time2_e, time3_s, time3_e;
-                    foreach (var t in org.Datas[d])
+                    DateTime todayTime = new DateTime(originalDatas.Date.Year, originalDatas.Date.Month, d + 1);
+                    int week = DateTimeHelper.GetWeek(originalDatas.Date.Year, originalDatas.Date.Month, d + 1);
+                    ClassSection[] sections = rule.Classes[week];
+                    TimeSpan[] times = new TimeSpan[6];                    
+                    List<DateTime> relDatas = new List<DateTime>();
+                    relDatas.AddRange(org.Datas[d].ToArray());
+                    if (overDay)
                     {
-                        if (t.TimeOfDay <= (rule.Classes[week][0].StartTime + new TimeSpan(0,rule.StatsUnit + rule.AllowLate,0)))
+                        var dd = org.Datas[d + 1].Where(a => a.TimeOfDay >= TimeSpan.Zero && a.TimeOfDay <= rule.Inter_dayTime);
+                        relDatas.AddRange(dd.ToArray());
+                    }
+                    foreach (var t in relDatas)
+                    {
+                        TimeSpan daySpan = t - todayTime;
+                        if (daySpan >= dayMin && daySpan <= sections[0].StartTime)                           
                         {
-                            
+                            if (times[0] == TimeSpan.Zero)
+                            {
+                                times[0] = daySpan;                               
+                            }                            
+                        }
+                        else if(daySpan > sections[0].StartTime && daySpan <= sections[0].EndTime)                                
+                        {
+                            if(times[0] == TimeSpan.Zero)
+                            {
+                                times[0] = daySpan;
+                                lateNum++;                                
+                            }
+                            else
+                            {                                
+                                if (times[1] == TimeSpan.Zero)
+                                {
+                                    times[1] = daySpan;
+                                    lateNum++;                                    
+                                }
+                            }                            
+                        }
+                        else if(daySpan > sections[0].EndTime && daySpan <= sections[1].StartTime)                              
+                        {
+                            if (times[1] == TimeSpan.Zero)
+                            {
+                                if(times[0] == TimeSpan.Zero)
+                                {
+                                    times[2] = daySpan;                                    
+                                }
+                                else
+                                {
+                                    times[1] = daySpan;                                    
+                                }                                
+                            }
+                            else
+                            {
+                                if(times[2] == TimeSpan.Zero)
+                                {
+                                    times[2] = daySpan;                                    
+                                }                                
+                            }
+                        }
+                        else if(daySpan > sections[1].StartTime && daySpan <= sections[1].EndTime)
+                        {
+                            if (times[2] == TimeSpan.Zero)
+                            {
+                                times[2] = daySpan;
+                                lateNum++;                                
+                            }
+                            else
+                            {
+                                if (times[3] == TimeSpan.Zero)
+                                {
+                                    times[3] = daySpan;
+                                    lateNum++;                                    
+                                }
+                            }
+                        }
+                        else if(daySpan > sections[1].EndTime && daySpan <= sections[2].StartTime)
+                        {
+                            if (times[3] == TimeSpan.Zero)
+                            {
+                                if (times[2] == TimeSpan.Zero)
+                                {
+                                    times[4] = daySpan;                                    
+                                }
+                                else
+                                {
+                                    times[3] = daySpan;                             
+                                }
+                            }
+                            else
+                            {
+                                if (times[4] == TimeSpan.Zero)
+                                {
+                                    times[4] = daySpan;                                    
+                                }
+                            }
+                        }
+                        else if(daySpan > sections[2].StartTime && daySpan <= sections[2].EndTime)
+                        {
+                            if (times[4] == TimeSpan.Zero)
+                            {
+                                times[4] = daySpan;
+                                lateNum++;                                                                   
+                            }
+                            else
+                            {
+                                if (times[5] == TimeSpan.Zero)
+                                {
+                                    times[5] = daySpan;
+                                    lateNum++;                                    
+                                }
+                            }
+                        }
+                        else if(daySpan > sections[2].EndTime && daySpan <= dayMax)
+                        {
+                            if (times[5] == TimeSpan.Zero)
+                            {
+                                times[5] = daySpan;                                
+                            }
                         }
                     }
+
                 }           
                 employees.Add(one);
             }

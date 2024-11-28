@@ -26,7 +26,6 @@ namespace TimeTrack_Pro.Model
             SignUpDatas = new List<SheetCell[]>(32);
             for (int i = 0; i < SignUpDatas.Capacity; i++)
             {
-
                 SignUpDatas.Add(new SheetCell[8]);
             }
         }
@@ -36,6 +35,11 @@ namespace TimeTrack_Pro.Model
             this.Name = employee.Name;
             this.Department = employee.Department;
             this.RuleName = employee.RuleName;
+            SignUpDatas = new List<SheetCell[]>(32);
+            for (int i = 0; i < SignUpDatas.Capacity; i++)
+            {
+                SignUpDatas.Add(new SheetCell[8]);
+            }
         }
     }
 }

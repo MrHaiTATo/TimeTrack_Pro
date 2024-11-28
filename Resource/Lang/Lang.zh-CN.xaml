@@ -18,5 +18,8 @@
     
     <system:String x:Key="Button">按钮</system:String>
     <system:String x:Key="Brush">画刷</system:String>
+    
+    <!--错误-->
+    <system:String x:Key="error_getTime">获取时间失败</system:String>
 
 </ResourceDictionary>

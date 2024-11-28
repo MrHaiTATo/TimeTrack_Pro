@@ -70,5 +70,10 @@ namespace TimeTrack_Pro
             // 终止事件传播,防止应用程序崩溃
             e.Handled = true;
         }     
+
+        public static string GetResourcesStr(string key)
+        {
+            return Current.Resources[key].ToString();
+        }
     }
 }
