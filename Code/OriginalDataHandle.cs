@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TimeTrack_Pro.Model;
 using TimeTrack_Pro.Helper;
 using System.Drawing;
+using NPOI.SS.Formula.Functions;
 
 namespace TimeTrack_Pro.Code
 {
@@ -29,68 +30,88 @@ namespace TimeTrack_Pro.Code
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                 string? message;
+                int year = 0, month = 0;
+                year = 2024;
+                month = 8;
                 originalDatas = new OriginalSheetModel();
+                
                 originalDatas.Datas = new List<OriginalData>();
+                originalDatas.Date = new DateTime(year, month, 31);
                 for (int i = 0; ; i++)
                 {                    
-                    OriginalData data = new OriginalData();                    
-                    
+                    OriginalData data = new OriginalData();
+                    if (worksheet.Cells[$"C{2 + i * 4}"].Value == null)
+                        break;
                     message = worksheet.Cells[$"C{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
                         break;
-
                     data.Id = Convert.ToInt32(message);
+
+                    if (worksheet.Cells[$"G{2 + i * 4}"].Value == null)
+                        break;
                     message = worksheet.Cells[$"G{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         break;
-
                     data.Name = message;
+
+                    if (worksheet.Cells[$"L{2 + i * 4}"].Value == null)
+                        break;
                     message = worksheet.Cells[$"L{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         break;
-
                     data.Department = message;
+
+                    if (worksheet.Cells[$"Q{2 + i * 4}"].Value == null)
+                        break;
                     message = worksheet.Cells[$"Q{2 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         break;
-
                     data.RuleName = message;
-                    data.Datas = new List<DateTime>[31];
-                    for (int j = 0; j < 31; j++)
+
+                    data.Datas = new List<DateTime>[32];
+                    DateTime date = new DateTime(year, month, 1);
+                    for (int j = 0; j < data.Datas.Count(); j++)
                     {
                         data.Datas[j] = new List<DateTime>();
-                        message = worksheet.Cells[(i + 1)*4,j + 1].Value.ToString();
-                        if (string.IsNullOrEmpty(message))
+                        if (worksheet.Cells[(i + 1) * 4, j + 1].Value == null)
+                        {
+                            date = date.AddDays(1);
                             continue;
-
+                        }
+                        message = worksheet.Cells[(i + 1) * 4, j + 1].Value.ToString();
+                        if (string.IsNullOrEmpty(message))
+                        {
+                            date = date.AddDays(1);
+                            continue;
+                        }
                         string[] times = message.Split(' ');
                         foreach (string time in times)
                         {
                             if (!Regex.IsMatch(time, @"^[0-9]{2}:[0-9]{2}$"))
                                 continue;
-                            DateTime date = DateTime.Parse(time);
-                            data.Datas[j].Add(date);
+                            DateTime dtime = DateTime.Parse(time);
+                            
+                            data.Datas[j].Add(new DateTime(date.Year,date.Month,date.Day,dtime.Hour,dtime.Minute,dtime.Second));
                         }
+                        date = date.AddDays(1);
                     }
                     originalDatas.Datas.Add(data);
                 }
             }
         }
 
-        public List<Employee> GetTypeDatas(int Type)
+        private List<Employee> GetTypeDatas(int Type)
         {
             List<Employee> employees = new List<Employee>();
             Employee one = null;
-            AttendanceRule rule = null;
+            
             TimeSpan span = new TimeSpan(1, 0, 0);
             TimeSpan dayMin, dayMax;
-            bool overDay = false;
-            int hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
-            int Dlate = 0;            
-            TimeSpan start, end, total, overTime;
+            bool overDay = false;           
             int days = DateTimeHelper.GetDays(originalDatas.Date.Year, originalDatas.Date.Month);
             foreach (var org in OriginalDatas.Datas)
             {
+                AttendanceRule rule = null;
                 if (Rules.RuleList.Count() > 0 && (Rules.RuleList.Find(r => r.RuleName == org.RuleName) != null))
                 {
                     rule = Rules.RuleList.Find(r => r.RuleName == org.RuleName);
@@ -116,12 +137,29 @@ namespace TimeTrack_Pro.Code
                     one = new SummaryData(org);
                 else 
                     one = new ExceptionData(org);
+                if (Type == 0 || Type == 1)
+                {
+
+                    //实际出勤
+                    ((Sum_Stati_transit)one).AtlAtd = org.Datas.Where(a => a.Count() > 0).Count().ToString();
+                    //标准
+                    ((Sum_Stati_transit)one).StdAtd = days.ToString();
+                }
+                if (Type == 0)
+                    ((StatisticsData)one).DaysOfWeek = DateTimeHelper.GetDaysByWeek(originalDatas.Date.Year, originalDatas.Date.Month);
+                int hour = 0, min = 0, lateMin = 0, lateNum = 0, overH = 0, overM = 0;
+                int Dlate = 0;
+                ExceptionPart part = null;
+                TimeSpan start, end, total, overTime;
                 for (int d = 0; d < days; d++)
                 {
                     DateTime todayTime = new DateTime(originalDatas.Date.Year, originalDatas.Date.Month, d + 1);
                     int week = DateTimeHelper.GetWeek(originalDatas.Date.Year, originalDatas.Date.Month, d + 1);
                     ClassSection[] sections = rule.Classes[week];
-                    TimeSpan[] times = new TimeSpan[6];                    
+                    TimeSpan[] times = new TimeSpan[6] { TimeSpan.Zero, TimeSpan.Zero,
+                                                         TimeSpan.Zero, TimeSpan.Zero,
+                                                         TimeSpan.Zero, TimeSpan.Zero,};   
+                    
                     List<DateTime> relDatas = new List<DateTime>();
                     relDatas.AddRange(org.Datas[d].ToArray());
                     if (overDay)
@@ -129,70 +167,74 @@ namespace TimeTrack_Pro.Code
                         var dd = org.Datas[d + 1].Where(a => a.TimeOfDay >= TimeSpan.Zero && a.TimeOfDay <= rule.Inter_dayTime);
                         relDatas.AddRange(dd.ToArray());
                     }
+                    var ts = relDatas.Select(t => t - todayTime).ToList();
                     foreach (var t in relDatas)
                     {
                         TimeSpan daySpan = t - todayTime;
-                        if (daySpan >= dayMin && daySpan <= sections[0].StartTime)                           
+                        if (daySpan >= dayMin && sections[0].StartTime > dayMin && daySpan <= sections[0].StartTime)                           
                         {
                             if (times[0] == TimeSpan.Zero)
                             {
-                                times[0] = daySpan;                               
+                                times[0] = daySpan;
+                                continue;
                             }                            
                         }
-                        else if(daySpan > sections[0].StartTime && daySpan <= sections[0].EndTime)                                
+                        else if(sections[0].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].StartTime && daySpan <= sections[0].EndTime)                                
                         {
                             if(times[0] == TimeSpan.Zero)
                             {
                                 times[0] = daySpan;
-                                lateNum++;                                
+                                continue;
                             }
                             else
                             {                                
                                 if (times[1] == TimeSpan.Zero)
                                 {
                                     times[1] = daySpan;
-                                    lateNum++;                                    
+                                    continue;
                                 }
                             }                            
                         }
-                        else if(daySpan > sections[0].EndTime && daySpan <= sections[1].StartTime)                              
+                        else if(sections[1].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].EndTime && daySpan <= sections[1].StartTime)                              
                         {
                             if (times[1] == TimeSpan.Zero)
                             {
                                 if(times[0] == TimeSpan.Zero)
                                 {
-                                    times[2] = daySpan;                                    
+                                    times[2] = daySpan;
+                                    continue;
                                 }
                                 else
                                 {
-                                    times[1] = daySpan;                                    
+                                    times[1] = daySpan;
+                                    continue;
                                 }                                
                             }
                             else
                             {
                                 if(times[2] == TimeSpan.Zero)
                                 {
-                                    times[2] = daySpan;                                    
+                                    times[2] = daySpan;
+                                    continue;
                                 }                                
                             }
                         }
-                        else if(daySpan > sections[1].StartTime && daySpan <= sections[1].EndTime)
+                        else if(sections[1].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].StartTime && daySpan <= sections[1].EndTime)
                         {
                             if (times[2] == TimeSpan.Zero)
                             {
                                 times[2] = daySpan;
-                                lateNum++;                                
+                                continue;
                             }
                             else
                             {
                                 if (times[3] == TimeSpan.Zero)
                                 {
-                                    times[3] = daySpan;
-                                    lateNum++;                                    
+                                    times[3] = daySpan;                                                                 
                                 }
                             }
                         }
-                        else if(daySpan > sections[1].EndTime && daySpan <= sections[2].StartTime)
+                        else if(sections[2].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].EndTime && daySpan <= sections[2].StartTime)
                         {
                             if (times[3] == TimeSpan.Zero)
                             {
@@ -213,23 +255,21 @@ namespace TimeTrack_Pro.Code
                                 }
                             }
                         }
-                        else if(daySpan > sections[2].StartTime && daySpan <= sections[2].EndTime)
+                        else if(sections[2].StartTime != TimeSpan.Zero && sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].StartTime && daySpan <= sections[2].EndTime)
                         {
                             if (times[4] == TimeSpan.Zero)
                             {
-                                times[4] = daySpan;
-                                lateNum++;                                                                   
+                                times[4] = daySpan;                                                                                              
                             }
                             else
                             {
                                 if (times[5] == TimeSpan.Zero)
                                 {
-                                    times[5] = daySpan;
-                                    lateNum++;                                    
+                                    times[5] = daySpan;                                                                  
                                 }
                             }
                         }
-                        else if(daySpan > sections[2].EndTime && daySpan <= dayMax)
+                        else if(sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].EndTime && daySpan <= dayMax)
                         {
                             if (times[5] == TimeSpan.Zero)
                             {
@@ -237,12 +277,267 @@ namespace TimeTrack_Pro.Code
                             }
                         }
                     }
-
-                }           
+                    start = TimeSpan.Zero;
+                    end = TimeSpan.Zero;
+                    total = TimeSpan.Zero;
+                    overTime = TimeSpan.Zero;
+                    Dlate = 0;
+                    for (int i = 0; i < times.Length; i++)
+                    {
+                        if (times[i] != TimeSpan.Zero)
+                        {
+                            ClassSection seon = sections[i / 2];
+                            if (Type == 0)
+                                ((StatisticsData)one).SignUpDatas[d][i].Text = string.Format("{0:00}:{1:00}", times[i].Hours, times[i].Minutes);
+                            TimeSpan t;
+                            if (i % 2 == 0)
+                            {                               
+                                t = seon.StartTime + new TimeSpan(0, rule.AllowLate + rule.StatsUnit, 0);
+                                //比较，选择正确的时间段。迟到
+                                if (times[i] > t)
+                                {
+                                    if (Type == 0)
+                                        ((StatisticsData)one).SignUpDatas[d][i].Color = Color.Red;
+                                    else if (Type == 2)
+                                    {
+                                        if (part == null)
+                                            part = new ExceptionPart();
+                                        part.ESignUpDatas[i] = string.Format("{0:00}:{1:00}", times[i].Hours, times[i].Minutes);
+                                    }
+                                    start = times[i] - new TimeSpan(0, rule.StatsUnit + rule.AllowLate, 0);
+                                    Dlate += (int)(times[i] - t).TotalMinutes;
+                                    lateNum++;
+                                }
+                                else
+                                {
+                                    start = seon.StartTime;
+                                }
+                            }
+                            else
+                            {
+                                t = seon.EndTime - new TimeSpan(0, rule.AllowLate + rule.StatsUnit, 0);
+                                if (times[i] < t)
+                                {
+                                    if (Type == 0)
+                                        ((StatisticsData)one).SignUpDatas[d][i].Color = Color.Red;
+                                    else if (Type == 2)
+                                    {
+                                        if (part == null)
+                                            part = new ExceptionPart();
+                                        part.ESignUpDatas[i] = string.Format("{0:00}:{1:00}", times[i].Hours, times[i].Minutes);
+                                    }
+                                    end = times[i] + new TimeSpan(0, rule.StatsUnit + rule.AllowEarly, 0);
+                                    Dlate += (int)(t - times[i]).TotalMinutes;
+                                    lateNum++;
+                                }
+                                else
+                                {
+                                    end = seon.EndTime;
+                                }
+                                //时间段不全或者后者小于前者，则不计算
+                                if (end != TimeSpan.Zero && start != TimeSpan.Zero && end > start)
+                                {
+                                    if (seon.Type == 0)//正常
+                                        total += end - start;
+                                    else if (seon.Type == 1)//加班
+                                        overTime += end - start;
+                                }
+                                start = TimeSpan.Zero;
+                                end = TimeSpan.Zero;
+                            }
+                        }
+                        else
+                        {
+                            start = TimeSpan.Zero;
+                            end = TimeSpan.Zero;
+                        }
+                    }
+                    if (Type == 2 && part != null)
+                    {
+                        part.Date = string.Format("{0:00}-{1:00}", originalDatas.Date.Month, d + 1);
+                        part.LateOrEarly = string.Format("{0:00}:{1:00}", Dlate / 60, Dlate % 60);
+                        ((ExceptionData)one).Parts.Add(part);
+                        part = null;
+                    }
+                    lateMin += Dlate;
+                    if (total != TimeSpan.Zero)
+                    {
+                        hour += total.Hours;
+                        min += total.Minutes;
+                        if (Type == 0)
+                            ((StatisticsData)one).SignUpDatas[d][6].Text = total.ToString().Substring(0, 5);
+                    }
+                    if (overTime != TimeSpan.Zero)
+                    {
+                        overH += overTime.Hours;
+                        overM += overTime.Minutes;
+                        if (Type == 0)
+                            ((StatisticsData)one).SignUpDatas[d][7].Text = total.ToString().Substring(0, 5);
+                    }
+                }
+                //日期
+                if (Type == 0)
+                    ((StatisticsData)one).Date = string.Format($"{originalDatas.Date.Year}-{originalDatas.Date.Month.ToString("00")}");
+                if (Type == 0 || Type == 1)
+                {
+                    ((Sum_Stati_transit)one).AtlWorkTime = string.Format("{0:00}:{1:00}", hour + min / 60, min % 60);
+                    ((Sum_Stati_transit)one).StdWorkTime = rule.GetStdTimeStr(originalDatas.Date.Year, originalDatas.Date.Month);
+                    ((Sum_Stati_transit)one).Wko_Common = string.Format("{0:00}:{1:00}", overH + overM / 60, overM % 60);
+                    ((Sum_Stati_transit)one).Wko_Special = string.Format("{0:00}:{1:00}", 0, 0);
+                    ((Sum_Stati_transit)one).LateEarly_Count = lateNum.ToString();
+                    ((Sum_Stati_transit)one).LateEarly_Min = lateMin.ToString();
+                }
                 employees.Add(one);
             }
-            return employees;
+            return employees.OrderBy(s => s.Id).ToList();
         }
-        
+
+        private void selectTimeSpane(ref TimeSpan[] times, ClassSection[] sections, TimeSpan daySpan, TimeSpan dayMin, TimeSpan dayMax)
+        {
+            if(sections[0].StartTime != TimeSpan.Zero && )
+            if (daySpan >= dayMin && sections[0].StartTime > dayMin && daySpan <= sections[0].StartTime)
+            {
+                if (times[0] == TimeSpan.Zero)
+                {
+                    times[0] = daySpan;                   
+                }
+                return;
+            }
+            else if (sections[0].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].StartTime && daySpan <= sections[0].EndTime)
+            {
+                if (times[0] == TimeSpan.Zero)
+                {
+                    times[0] = daySpan;
+                    return;
+                }
+                else
+                {
+                    if (times[1] == TimeSpan.Zero)
+                    {
+                        times[1] = daySpan;                        
+                    }
+                    return;
+                }
+            }
+            else if (sections[1].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].EndTime && daySpan <= sections[1].StartTime)
+            {
+                if (times[1] == TimeSpan.Zero)
+                {
+                    if (times[0] == TimeSpan.Zero)
+                    {
+                        times[2] = daySpan;
+                        return;
+                    }
+                    else
+                    {
+                        times[1] = daySpan;
+                        return;
+                    }
+                }
+                else
+                {
+                    if (times[2] == TimeSpan.Zero)
+                    {
+                        times[2] = daySpan;
+                        
+                    }
+                }
+            }
+            else if (sections[1].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].StartTime && daySpan <= sections[1].EndTime)
+            {
+                if (times[2] == TimeSpan.Zero)
+                {
+                    times[2] = daySpan;
+                    
+                }
+                else
+                {
+                    if (times[3] == TimeSpan.Zero)
+                    {
+                        times[3] = daySpan;
+                    }
+                }
+            }
+            else if (sections[2].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].EndTime && daySpan <= sections[2].StartTime)
+            {
+                if (times[3] == TimeSpan.Zero)
+                {
+                    if (times[2] == TimeSpan.Zero)
+                    {
+                        times[4] = daySpan;
+                    }
+                    else
+                    {
+                        times[3] = daySpan;
+                    }
+                }
+                else
+                {
+                    if (times[4] == TimeSpan.Zero)
+                    {
+                        times[4] = daySpan;
+                    }
+                }
+            }
+            else if (sections[2].StartTime != TimeSpan.Zero && sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].StartTime && daySpan <= sections[2].EndTime)
+            {
+                if (times[4] == TimeSpan.Zero)
+                {
+                    times[4] = daySpan;
+                }
+                else
+                {
+                    if (times[5] == TimeSpan.Zero)
+                    {
+                        times[5] = daySpan;
+                    }
+                }
+            }
+            else if (sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].EndTime && daySpan <= dayMax)
+            {
+                if (times[5] == TimeSpan.Zero)
+                {
+                    times[5] = daySpan;
+                }
+            }
+        }
+
+        private List<StatisticsData> GetStatisticsDatas()
+        {
+            return GetTypeDatas(0).Select(s => (StatisticsData)s).ToList();
+        }
+
+        public StatisticsSheetModel GetStatisticsSheetModel()
+        {
+            StatisticsSheetModel sheetModel = new StatisticsSheetModel();
+            sheetModel.Datas = GetStatisticsDatas();
+            return sheetModel;
+        }
+
+        private List<SummaryData> GetSummaryDatas()
+        {
+            return GetTypeDatas(1).Select(s => (SummaryData)s).ToList();
+        }
+
+        public SummarySheetModel GetSummarySheetModel()
+        {
+            SummarySheetModel summarySheetModel = new SummarySheetModel();
+            summarySheetModel.Date = string.Format($"{originalDatas.Date.Year}-{originalDatas.Date.Month.ToString("00")}");
+            summarySheetModel.Datas = GetTypeDatas(1).Select(s => (SummaryData)s).ToList();
+            return summarySheetModel;
+        }
+
+        private List<ExceptionData> GetExceptionDatas()
+        {
+            return GetTypeDatas(2).Select(s => (ExceptionData)s).ToList();
+        }
+
+        public ExceptionSheetModel GetExceptionSheetModel()
+        {
+            ExceptionSheetModel sheetModel = new ExceptionSheetModel();
+            sheetModel.Date = string.Format($"{originalDatas.Date.Year}-{originalDatas.Date.Month.ToString("00")}");
+            sheetModel.Datas = GetExceptionDatas();
+            return sheetModel;
+        }
     }
 }

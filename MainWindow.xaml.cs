@@ -119,7 +119,10 @@ namespace TimeTrack_Pro
 
         private void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
         {
-            originalDataHandle = new OriginalDataHandle(@"F:\文档\考勤原始表.xlsx");                        
+            originalDataHandle = new OriginalDataHandle(@"F:\文档\考勤原始表.xlsx");
+            var statistics = originalDataHandle.GetStatisticsSheetModel();
+            var summarys = originalDataHandle.GetSummarySheetModel();
+            var exceptions = originalDataHandle.GetExceptionSheetModel();
         }
 
         private void WindowMaximizeCommand(object sender, ExecutedRoutedEventArgs e)

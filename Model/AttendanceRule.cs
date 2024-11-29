@@ -79,7 +79,7 @@ namespace TimeTrack_Pro.Model
 					{
 						if (s.Type == 0 && s.StartTime != TimeSpan.Zero && s.EndTime != TimeSpan.Zero && s.StartTime < s.EndTime)
 						{
-							var time = s.EndTime - s.StartTime;
+							var time = s.TimeDiffer;
 							stdH += time.Hours;
 							stdM += time.Minutes;
 						}
