@@ -117,12 +117,17 @@ namespace TimeTrack_Pro
             var rules = Rules.RuleList;
         }
 
-        private void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
+        private async void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
         {
-            originalDataHandle = new OriginalDataHandle(@"F:\文档\考勤原始表.xlsx");
+            string resourceFile = @"F:\文档\考勤原始表.xlsx";
+            string savePath = @"F:\文档\原始表\考勤统计表.xlsx";
+            originalDataHandle = new OriginalDataHandle(resourceFile);
             var statistics = originalDataHandle.GetStatisticsSheetModel();
-            var summarys = originalDataHandle.GetSummarySheetModel();
-            var exceptions = originalDataHandle.GetExceptionSheetModel();
+            ExcelHelper sheet = new ExcelHelper(savePath);
+            await sheet.CreateAtdStatiSheet(statistics);
+            sheet.Dispose();
+            //var summarys = originalDataHandle.GetSummarySheetModel();
+            //var exceptions = originalDataHandle.GetExceptionSheetModel();
         }
 
         private void WindowMaximizeCommand(object sender, ExecutedRoutedEventArgs e)

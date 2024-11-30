@@ -15,6 +15,14 @@ namespace TimeTrack_Pro.Code
 {
     public class OriginalDataHandle
     {
+        private bool isshiftMode = true;
+
+        public bool IsShiftMode
+        {
+            get { return isshiftMode; }
+            set { isshiftMode = value; }
+        }
+
         private OriginalSheetModel originalDatas;
         public OriginalSheetModel OriginalDatas { get { return originalDatas; } }
         
@@ -167,116 +175,11 @@ namespace TimeTrack_Pro.Code
                         var dd = org.Datas[d + 1].Where(a => a.TimeOfDay >= TimeSpan.Zero && a.TimeOfDay <= rule.Inter_dayTime);
                         relDatas.AddRange(dd.ToArray());
                     }
-                    var ts = relDatas.Select(t => t - todayTime).ToList();
-                    foreach (var t in relDatas)
+                    var ts = relDatas.Select(t => t - todayTime).Order().ToList();
+                    foreach (var t in ts)
                     {
-                        TimeSpan daySpan = t - todayTime;
-                        if (daySpan >= dayMin && sections[0].StartTime > dayMin && daySpan <= sections[0].StartTime)                           
-                        {
-                            if (times[0] == TimeSpan.Zero)
-                            {
-                                times[0] = daySpan;
-                                continue;
-                            }                            
-                        }
-                        else if(sections[0].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].StartTime && daySpan <= sections[0].EndTime)                                
-                        {
-                            if(times[0] == TimeSpan.Zero)
-                            {
-                                times[0] = daySpan;
-                                continue;
-                            }
-                            else
-                            {                                
-                                if (times[1] == TimeSpan.Zero)
-                                {
-                                    times[1] = daySpan;
-                                    continue;
-                                }
-                            }                            
-                        }
-                        else if(sections[1].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].EndTime && daySpan <= sections[1].StartTime)                              
-                        {
-                            if (times[1] == TimeSpan.Zero)
-                            {
-                                if(times[0] == TimeSpan.Zero)
-                                {
-                                    times[2] = daySpan;
-                                    continue;
-                                }
-                                else
-                                {
-                                    times[1] = daySpan;
-                                    continue;
-                                }                                
-                            }
-                            else
-                            {
-                                if(times[2] == TimeSpan.Zero)
-                                {
-                                    times[2] = daySpan;
-                                    continue;
-                                }                                
-                            }
-                        }
-                        else if(sections[1].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].StartTime && daySpan <= sections[1].EndTime)
-                        {
-                            if (times[2] == TimeSpan.Zero)
-                            {
-                                times[2] = daySpan;
-                                continue;
-                            }
-                            else
-                            {
-                                if (times[3] == TimeSpan.Zero)
-                                {
-                                    times[3] = daySpan;                                                                 
-                                }
-                            }
-                        }
-                        else if(sections[2].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].EndTime && daySpan <= sections[2].StartTime)
-                        {
-                            if (times[3] == TimeSpan.Zero)
-                            {
-                                if (times[2] == TimeSpan.Zero)
-                                {
-                                    times[4] = daySpan;                                    
-                                }
-                                else
-                                {
-                                    times[3] = daySpan;                             
-                                }
-                            }
-                            else
-                            {
-                                if (times[4] == TimeSpan.Zero)
-                                {
-                                    times[4] = daySpan;                                    
-                                }
-                            }
-                        }
-                        else if(sections[2].StartTime != TimeSpan.Zero && sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].StartTime && daySpan <= sections[2].EndTime)
-                        {
-                            if (times[4] == TimeSpan.Zero)
-                            {
-                                times[4] = daySpan;                                                                                              
-                            }
-                            else
-                            {
-                                if (times[5] == TimeSpan.Zero)
-                                {
-                                    times[5] = daySpan;                                                                  
-                                }
-                            }
-                        }
-                        else if(sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].EndTime && daySpan <= dayMax)
-                        {
-                            if (times[5] == TimeSpan.Zero)
-                            {
-                                times[5] = daySpan;                                
-                            }
-                        }
-                    }
+                        selectTimeSpane(ref times, sections, t, dayMin, dayMax, rule.ShiftMode);
+                    }                    
                     start = TimeSpan.Zero;
                     end = TimeSpan.Zero;
                     total = TimeSpan.Zero;
@@ -391,95 +294,214 @@ namespace TimeTrack_Pro.Code
             }
             return employees.OrderBy(s => s.Id).ToList();
         }
-
-        private void selectTimeSpane(ref TimeSpan[] times, ClassSection[] sections, TimeSpan daySpan, TimeSpan dayMin, TimeSpan dayMax)
+        /// <summary>
+        /// 对输入的签到时间段进行选择
+        /// </summary>
+        /// <param name="times">输出的时间段集合</param>
+        /// <param name="sections"></param>
+        /// <param name="daySpan"></param>
+        /// <param name="dayMin"></param>
+        /// <param name="dayMax"></param>
+        /// <param name="mode"></param>
+        private void selectTimeSpane(ref TimeSpan[] times, ClassSection[] sections, TimeSpan daySpan, TimeSpan dayMin, TimeSpan dayMax, int mode)
         {
-            if(sections[0].StartTime != TimeSpan.Zero && )
-            if (daySpan >= dayMin && sections[0].StartTime > dayMin && daySpan <= sections[0].StartTime)
+            //换班等分线
+            double ratio = mode == 0 ? (double)1 / (double)2 : (double)1 / (double)3;
+            double r = 0;
+            if (sections[0].StartTime == TimeSpan.Zero || sections[0].EndTime == TimeSpan.Zero)
+                return;
+            if (daySpan >= dayMin && daySpan <= sections[0].StartTime)
             {
                 if (times[0] == TimeSpan.Zero)
-                {
-                    times[0] = daySpan;                   
-                }
+                    times[0] = daySpan;
                 return;
             }
-            else if (sections[0].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].StartTime && daySpan <= sections[0].EndTime)
+
+            if (daySpan > sections[0].StartTime && daySpan < sections[0].EndTime)
             {
                 if (times[0] == TimeSpan.Zero)
                 {
                     times[0] = daySpan;
-                    return;
+                }
+                else
+                {
+                    if (times[1] == TimeSpan.Zero)
+                        times[1] = daySpan;
+                    else
+                    {                        
+                        if (sections[0].EndTime.Subtract(times[1]).Ticks > sections[0].EndTime.Subtract(daySpan).Ticks)
+                            times[1] = daySpan;                        
+                    }
+                }
+                return;
+            }
+
+            if (sections[1].StartTime == TimeSpan.Zero && sections[1].EndTime == TimeSpan.Zero)
+            {
+                if (daySpan >= sections[0].EndTime && daySpan <= dayMax)
+                {
+                    if (times[1] == TimeSpan.Zero)
+                        times[1] = daySpan;  
+                    else
+                    {
+                        if (times[1] < sections[0].EndTime)
+                            times[1] = daySpan;
+                        else
+                        {
+                            if (times[1].Subtract(sections[0].EndTime).Ticks > daySpan.Subtract(sections[0].EndTime).Ticks)
+                                times[1] = daySpan;
+                        }
+                    }
+                }
+                return;
+            }
+
+            if (daySpan >= sections[0].EndTime && daySpan <= sections[1].StartTime)
+            {                
+                if(isshiftMode)
+                {
+                    r = (double)daySpan.Subtract(sections[0].EndTime).Ticks / (double)sections[1].StartTime.Subtract(sections[0].EndTime).Ticks;
+                    if (0 <= r && r <= 1)
+                    {
+                        if(r < ratio)
+                        {
+                            if (times[1] == TimeSpan.Zero)
+                                times[1] = daySpan;
+                            else
+                            {
+                                if (times[1] < sections[0].EndTime)
+                                    times[1] = daySpan;
+                                else
+                                {
+                                    if (times[1].Subtract(sections[0].EndTime).Ticks > daySpan.Subtract(sections[0].EndTime).Ticks)
+                                        times[1] = daySpan;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (times[2] == TimeSpan.Zero)
+                                times[2] = daySpan;
+                        }
+                    }                                      
                 }
                 else
                 {
                     if (times[1] == TimeSpan.Zero)
                     {
-                        times[1] = daySpan;                        
-                    }
-                    return;
-                }
-            }
-            else if (sections[1].StartTime != TimeSpan.Zero && sections[0].EndTime != TimeSpan.Zero && daySpan > sections[0].EndTime && daySpan <= sections[1].StartTime)
-            {
-                if (times[1] == TimeSpan.Zero)
-                {
-                    if (times[0] == TimeSpan.Zero)
-                    {
-                        times[2] = daySpan;
-                        return;
+                        if (times[0] == TimeSpan.Zero)
+                        {
+                            if (times[2] == TimeSpan.Zero)                                                           
+                                times[2] = daySpan;
+                        }
+                        else
+                        {                            
+                            times[1] = daySpan;
+                        }
                     }
                     else
-                    {
-                        times[1] = daySpan;
-                        return;
+                    {                                              
+                        if (times[2] == TimeSpan.Zero)
+                        {                            
+                            times[2] = daySpan;
+                        }                                               
                     }
-                }
-                else
-                {
-                    if (times[2] == TimeSpan.Zero)
-                    {
-                        times[2] = daySpan;
-                        
-                    }
-                }
+                }                
+                return;
             }
-            else if (sections[1].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].StartTime && daySpan <= sections[1].EndTime)
+
+            if (daySpan > sections[1].StartTime && daySpan < sections[1].EndTime)
             {
                 if (times[2] == TimeSpan.Zero)
                 {
                     times[2] = daySpan;
-                    
+                }
+                else
+                {
+                    if (times[3] == TimeSpan.Zero)
+                        times[3] = daySpan;
+                    else
+                    {
+                        if (sections[1].EndTime.Subtract(times[3]) > sections[1].EndTime.Subtract(daySpan))
+                            times[3] = daySpan;
+                    }
+                }
+                return;
+            }
+
+            if (sections[2].StartTime == TimeSpan.Zero && sections[2].EndTime == TimeSpan.Zero)
+            {
+                if (daySpan >= sections[1].EndTime && daySpan <= dayMax)
+                {
+                    if (times[3] == TimeSpan.Zero)
+                        times[3] = daySpan;      
+                    else
+                    {
+                        if (times[3] < sections[1].EndTime)
+                            times[3] = daySpan;
+                        else
+                        {
+                            if (times[3].Subtract(sections[1].EndTime).Ticks > daySpan.Subtract(sections[1].EndTime).Ticks)
+                                times[3] = daySpan;
+                        }
+                    }
+                }
+                return;
+            }
+
+            if (daySpan >= sections[1].EndTime && daySpan <= sections[2].StartTime)
+            {
+                if (isshiftMode)
+                {
+                    r = (double)daySpan.Subtract(sections[1].EndTime).Ticks / (double)sections[2].StartTime.Subtract(sections[1].EndTime).Ticks;
+                    if(0 <= r && r <= 1)
+                    {
+                        if(r < ratio)
+                        {
+                            if (times[3] == TimeSpan.Zero)
+                                times[3] = daySpan;
+                            else
+                            {
+                                if (times[3] < sections[1].EndTime)
+                                    times[3] = daySpan;
+                                else
+                                {
+                                    if (times[3].Subtract(sections[1].EndTime).Ticks > daySpan.Subtract(sections[1].EndTime).Ticks)
+                                        times[3] = daySpan;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(times[4] == TimeSpan.Zero)
+                                times[4] = daySpan;
+                        }
+                    }
                 }
                 else
                 {
                     if (times[3] == TimeSpan.Zero)
                     {
-                        times[3] = daySpan;
-                    }
-                }
-            }
-            else if (sections[2].StartTime != TimeSpan.Zero && sections[1].EndTime != TimeSpan.Zero && daySpan > sections[1].EndTime && daySpan <= sections[2].StartTime)
-            {
-                if (times[3] == TimeSpan.Zero)
-                {
-                    if (times[2] == TimeSpan.Zero)
-                    {
-                        times[4] = daySpan;
+                        if (times[2] == TimeSpan.Zero)
+                        {
+                            if (times[4] == TimeSpan.Zero)                                                            
+                                times[4] = daySpan;                            
+                        }
+                        else
+                        {                           
+                            times[3] = daySpan;
+                        }
                     }
                     else
                     {
-                        times[3] = daySpan;
+                        if (times[4] == TimeSpan.Zero)                                                   
+                            times[4] = daySpan;                       
                     }
-                }
-                else
-                {
-                    if (times[4] == TimeSpan.Zero)
-                    {
-                        times[4] = daySpan;
-                    }
-                }
+                }                                                  
+                return;
             }
-            else if (sections[2].StartTime != TimeSpan.Zero && sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].StartTime && daySpan <= sections[2].EndTime)
+
+            if (daySpan > sections[2].StartTime && daySpan < sections[2].EndTime)
             {
                 if (times[4] == TimeSpan.Zero)
                 {
@@ -488,17 +510,31 @@ namespace TimeTrack_Pro.Code
                 else
                 {
                     if (times[5] == TimeSpan.Zero)
-                    {
                         times[5] = daySpan;
+                    else
+                    {
+                        if (sections[2].EndTime.Subtract(times[5]) > sections[2].EndTime.Subtract(daySpan))
+                            times[5] = daySpan;
                     }
                 }
+                return;
             }
-            else if (sections[2].EndTime != TimeSpan.Zero && daySpan > sections[2].EndTime && daySpan <= dayMax)
+
+            if (daySpan >= sections[2].EndTime && daySpan <= dayMax)
             {
                 if (times[5] == TimeSpan.Zero)
+                    times[5] = daySpan;  
+                else
                 {
-                    times[5] = daySpan;
+                    if (times[5] < sections[2].EndTime)
+                        times[5] = daySpan;
+                    else
+                    {
+                        if (times[5].Subtract(sections[2].EndTime).Ticks > daySpan.Subtract(sections[2].EndTime).Ticks)
+                            times[5] = daySpan;
+                    }
                 }
+                return;
             }
         }
 
