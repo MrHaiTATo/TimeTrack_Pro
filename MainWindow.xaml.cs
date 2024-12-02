@@ -22,6 +22,7 @@ namespace TimeTrack_Pro
     {
         private BakDatasHandle center;
         private OriginalDataHandle originalDataHandle;
+        private ExcelHelper sheet;
 
         public WindowState State { get => WindowState.Minimized; }
         public MainWindow()
@@ -30,6 +31,7 @@ namespace TimeTrack_Pro
             One_Load();
             this.DataContext = this;
             web.Navigate(new Uri("http://192.168.1.3"));
+            sheet = new ExcelHelper();
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace TimeTrack_Pro
         private async void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤统计表.xlsx";
-            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.FilePath = fileName;          
             double Msec = 0;
             System.Timers.Timer timer = new System.Timers.Timer(10); // 创建一个每秒触发一次的定时器
             timer.Elapsed += (s, e) => Msec += 10;// 注册事件处理方法                             
@@ -62,8 +64,7 @@ namespace TimeTrack_Pro
             Task task = sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 8));            
             await task;
             timer.Enabled = false;
-            timer.Dispose();
-            sheet.Dispose();
+            timer.Dispose();            
             MessageBox.Show(this,string.Format("用时：{0:0.000} 秒",Msec / 1000));
         }
 
@@ -71,33 +72,30 @@ namespace TimeTrack_Pro
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤异常表.xlsx";
-            ExcelHelper sheet = new ExcelHelper(fileName);
+            sheet.FilePath = fileName;
             sheet.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 8));
-            sheet.Dispose();
+            
         }
 
         private void btn_SummarySheet_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤汇总表.xlsx";
-            ExcelHelper sheet = new ExcelHelper(fileName);
-            sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 8));
-            sheet.Dispose();
+            sheet.FilePath = fileName;
+            sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 8));            
         }
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤原始表.xlsx";
-            ExcelHelper sheet = new ExcelHelper(fileName);
-            sheet.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 8));
-            sheet.Dispose();
+            sheet.FilePath = fileName;
+            sheet.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 8));            
         }
 
         private void btn_AttendanceSheetBeta_Click_1(object sender, RoutedEventArgs e)
         {
             string fileName = @"E:\mahaitao\GitHub\TestData\考勤排班表.xlsx";
-            ExcelHelper sheet = new ExcelHelper(fileName);
-            sheet.CreatAtdSchedulingSheet(Rules.GetRuleModel());
-            sheet.Dispose();
+            sheet.FilePath = fileName;
+            sheet.CreatAtdSchedulingSheet(Rules.GetRuleModel());            
         }
 
         private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)
@@ -123,11 +121,15 @@ namespace TimeTrack_Pro
             string savePath = @"F:\文档\原始表\考勤统计表.xlsx";
             originalDataHandle = new OriginalDataHandle(resourceFile);
             var statistics = originalDataHandle.GetStatisticsSheetModel();
-            ExcelHelper sheet = new ExcelHelper(savePath);
+            sheet.FilePath = savePath;
             await sheet.CreateAtdStatiSheet(statistics);
-            sheet.Dispose();
-            //var summarys = originalDataHandle.GetSummarySheetModel();
-            //var exceptions = originalDataHandle.GetExceptionSheetModel();
+            
+            var summarys = originalDataHandle.GetSummarySheetModel();
+            sheet.FilePath = @"F:\文档\原始表\考勤汇总表.xlsx";
+            sheet.CreatAtdSumSheet(summarys);
+            var exceptions = originalDataHandle.GetExceptionSheetModel();
+            sheet.FilePath = @"F:\文档\原始表\考勤异常表.xlsx";
+            sheet.CreatAtdExpSheet(exceptions);
         }
 
         private void WindowMaximizeCommand(object sender, ExecutedRoutedEventArgs e)

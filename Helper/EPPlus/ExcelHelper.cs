@@ -16,10 +16,21 @@ namespace TimeTrack_Pro.Helper.EPPlus
 {
     public class ExcelHelper : IDisposable
     {
-        private bool disposed;
-        private string fileName = null;
+        private bool disposed;       
         private FileStream fs = null;
         ExcelPackage package = null;
+        private string fileName = null;
+        public string FilePath 
+        {
+            set { fileName = value; }
+            get { return fileName; }
+        }
+
+        public ExcelHelper()
+        {
+            disposed = false;
+        }
+
         public ExcelHelper(string fileName)
         {
             this.fileName = fileName;
@@ -40,16 +51,28 @@ namespace TimeTrack_Pro.Helper.EPPlus
             {
                 package = new ExcelPackage();
             }
+            else
+            {
+                package.Dispose();
+                package = new ExcelPackage();
+            }
         }
 
         private void Save()
         {
             if (!string.IsNullOrEmpty(fileName) && fileName.IndexOf(".xlsx") > 0)
-            {
-                fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                package.SaveAs(fs);
-                fs.Close();
-                fs = null;
+            {               
+                //if (File.Exists(fileName))
+                //    File.Delete(fileName);
+                //fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                //package.SaveAs(fs);
+                //fs.Close();
+                //fs = null;
+                if(package != null)
+                {
+                    package.File = new FileInfo(fileName);
+                    package.Save();
+                }
             }
         }
 
@@ -61,9 +84,9 @@ namespace TimeTrack_Pro.Helper.EPPlus
             foreach (var data in sheetModel.Datas)
             {
                 worksheet = package.Workbook.Worksheets.Add(data.Name + "_" + data.Id);
-                CreateAttendanceStatisticsSheet(worksheet, data);            
-            }            
-            Save();            
+                CreateAttendanceStatisticsSheet(worksheet, data);
+            }
+            Save();
         }
 
         private void CreateAttendanceStatisticsSheet(ExcelWorksheet worksheet, StatisticsData statistic)
@@ -525,7 +548,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
         {
             ExcelWorksheet worksheet = null;
             Creat_init();
-            worksheet = package.Workbook.Worksheets.Add("原始考勤表");
+            worksheet = package.Workbook.Worksheets.Add("考勤原始表");
             CreatOriginalAttendanceSheet(worksheet, sheetModel);
             Save();
         }
@@ -534,7 +557,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
         {
             (string, string)[] values;
             string seat;
-            int days = sheetModel.Date.Day;
+            int days = DateTimeHelper.GetDays(sheetModel.Date.Year, sheetModel.Date.Month);
             int rows = sheetModel.Datas.Count();
             //表格总体设置
             worksheet.Cells[1, 1, rows * 4, days].Style.Numberformat.Format = "@";
@@ -543,41 +566,53 @@ namespace TimeTrack_Pro.Helper.EPPlus
             {
                 worksheet.Columns[k + 1].Width = 6;
             }
+            worksheet.Rows[1].Height = 29.25;
+            worksheet.Cells[1, 1, 1, days].Merge = true;
+            worksheet.Cells[1, 1, 1, days].Value = "考勤原始表";
+            worksheet.Cells[1, 1, 1, days].Style.Font.Bold = true;
+            worksheet.Cells[1, 1, 1, days].Style.Font.Size = 20;
+            worksheet.Cells[1, 1, 1, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            worksheet.Cells[1, 1, 1, days].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            SetBorderCellStyle(worksheet.Cells[1, 1, 1, days], ExcelBorderStyle.Thin, ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);
+            worksheet.Cells[2, 1, 2, days].Merge = true;
+            worksheet.Cells[2, 1, 2, days].Value = "统计日期：" + sheetModel.Date.ToString("yyyy/MM");
+            worksheet.Cells[2, 1, 2, days].Style.Font.Bold = true;
+            SetBorderCellStyle(worksheet.Cells[2, 1, 2, days], ExcelBorderStyle.None, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin, ExcelBorderStyle.Thin);           
             int i = 0;
             //循环构建多个表格
             foreach (var employee in sheetModel.Datas)
             {                
-                worksheet.Rows[1 + i * 4].Height = 29.25;
-                worksheet.Rows[4 + i * 4].Height = 76.5;
-                worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.Font.Bold = true;
+                //worksheet.Rows[1 + i * 4].Height = 29.25;
+                //worksheet.Rows[4 + i * 4].Height = 76.5;
+                //worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                //worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                //worksheet.Cells[1 + i * 4, 1, 1 + i * 4, days].Style.Font.Bold = true;
 
                 //第一行
-                seat = $"A{1 + i * 4}:D{1 + i * 4}";
-                SetMergeCellsStyle(worksheet, seat);
-                worksheet.Cells[seat].Value = "原始考勤记录表：";
+                //seat = $"A{1 + i * 4}:D{1 + i * 4}";
+                //SetMergeCellsStyle(worksheet, seat);
+                //worksheet.Cells[seat].Value = "原始考勤记录表：";
 
-                for (int j = 0; j < 2; j++)
-                {
-                    seat = $"{(char)('J' + j * 8)}{1 + i * 4}:{(char)('K' + j * 8)}{1 + i * 4}";
-                    SetMergeCellsStyle(worksheet, seat);
-                    worksheet.Cells[seat].Value = sheetModel.Date.Year;
-                    worksheet.Cells[$"{(char)('L' + j * 8)}{1 + i * 4}"].Value = "年";
-                    worksheet.Cells[$"{(char)('M' + j * 8)}{1 + i * 4}"].Value = sheetModel.Date.Month.ToString("00");
-                    worksheet.Cells[$"{(char)('N' + j * 8)}{1 + i * 4}"].Value = "月";
-                    if (j == 0)
-                        worksheet.Cells[$"{(char)('O' + j * 8)}{1 + i * 4}"].Value = 1;
-                    else
-                        worksheet.Cells[$"{(char)('O' + j * 8)}{1 + i * 4}"].Value = days;
-                    worksheet.Cells[$"{(char)('P' + j * 8)}{1 + i * 4}"].Value = "月";
-                }
-                worksheet.Cells[$"Q{1 + i * 4}"].Value = "--";
+                //for (int j = 0; j < 2; j++)
+                //{
+                //    seat = $"{(char)('J' + j * 8)}{1 + i * 4}:{(char)('K' + j * 8)}{1 + i * 4}";
+                //    SetMergeCellsStyle(worksheet, seat);
+                //    worksheet.Cells[seat].Value = sheetModel.Date.Year;
+                //    worksheet.Cells[$"{(char)('L' + j * 8)}{1 + i * 4}"].Value = "年";
+                //    worksheet.Cells[$"{(char)('M' + j * 8)}{1 + i * 4}"].Value = sheetModel.Date.Month.ToString("00");
+                //    worksheet.Cells[$"{(char)('N' + j * 8)}{1 + i * 4}"].Value = "月";
+                //    if (j == 0)
+                //        worksheet.Cells[$"{(char)('O' + j * 8)}{1 + i * 4}"].Value = 1;
+                //    else
+                //        worksheet.Cells[$"{(char)('O' + j * 8)}{1 + i * 4}"].Value = days;
+                //    worksheet.Cells[$"{(char)('P' + j * 8)}{1 + i * 4}"].Value = "月";
+                //}
+                //worksheet.Cells[$"Q{1 + i * 4}"].Value = "--";
 
                 //第二行
-                values = new (string, string)[] { ($"A{2 + i * 4}:B{2 + i * 4}","登记号："), ($"E{2 + i * 4}:F{2 + i * 4}", "姓名："),
-                                                  ($"J{2 + i * 4}:K{2 + i * 4}","部门："), ($"O{2 + i * 4}:P{2 + i * 4}","班次："),
-                                                  ($"T{2 + i * 4}:A{(char)('A' + days - 27)}{2 + i * 4}","注：浅青色区域为数据区") };
+                values = new (string, string)[] { ($"A{3 + i * 4}:B{3 + i * 4}","登记号："), ($"E{3 + i * 4}:F{3 + i * 4}", "姓名："),
+                                                  ($"J{3 + i * 4}:K{3 + i * 4}","部门："), ($"O{3 + i * 4}:P{3 + i * 4}","班次："),
+                                                  ($"T{3 + i * 4}:A{(char)('A' + days - 27)}{3 + i * 4}","注：浅青色区域为数据区") };
                 foreach (var (position, content) in values)
                 {
                     SetMergeCellsStyle(worksheet, position);
@@ -587,8 +622,8 @@ namespace TimeTrack_Pro.Helper.EPPlus
                     worksheet.Cells[position].Value = content;
                 }
 
-                values = new (string, string)[] { ($"C{2 + i * 4}:D{2 + i * 4}", employee.Id.ToString("0000")), ($"G{2 + i * 4}:I{2 + i * 4}", employee.Name), 
-                                                  ($"L{2 + i * 4}:N{2 + i * 4}", employee.Department), ($"Q{2 + i * 4}:S{2 + i * 4}", employee.RuleName) };                                                  
+                values = new (string, string)[] { ($"C{3 + i * 4}:D{3 + i * 4}", employee.Id.ToString("0000")), ($"G{3 + i * 4}:I{3 + i * 4}", employee.Name), 
+                                                  ($"L{3 + i * 4}:N{3 + i * 4}", employee.Department), ($"Q{3 + i * 4}:S{3 + i * 4}", employee.RuleName) };                                                  
                 foreach (var (position, content) in values)
                 {
                     SetMergeCellsStyle(worksheet, position);
@@ -600,21 +635,21 @@ namespace TimeTrack_Pro.Helper.EPPlus
                 //第三、四行
                 for (int j = 0; j < days; j++)
                 {                    
-                    SetGeneral2_0(worksheet.Cells[3 + i * 4, j + 1], 12);
-                    SetBorderCellStyle(worksheet.Cells[3 + i * 4, j + 1], ExcelBorderStyle.Thin);
-                    SetBorderColor(worksheet.Cells[3 + i * 4, j + 1], Color.Black);
-                    worksheet.Cells[3 + i * 4, j + 1].Value = j + 1;
-
-                    SetGeneral1_5(worksheet.Cells[4 + i * 4, j + 1], 8);
-                    worksheet.Cells[4 + i * 4, j + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                    SetGeneral2_0(worksheet.Cells[4 + i * 4, j + 1], 12);
                     SetBorderCellStyle(worksheet.Cells[4 + i * 4, j + 1], ExcelBorderStyle.Thin);
                     SetBorderColor(worksheet.Cells[4 + i * 4, j + 1], Color.Black);
+                    worksheet.Cells[4 + i * 4, j + 1].Value = j + 1;
+
+                    SetGeneral1_5(worksheet.Cells[5 + i * 4, j + 1], 8);
+                    worksheet.Cells[5 + i * 4, j + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                    SetBorderCellStyle(worksheet.Cells[5 + i * 4, j + 1], ExcelBorderStyle.Thin);
+                    SetBorderColor(worksheet.Cells[5 + i * 4, j + 1], Color.Black);
                     string val = "";
                     foreach (var item in employee.Datas[j])
                     {
                         val += item.ToString("HH:mm") + "\x20";
                     }
-                    worksheet.Cells[4 + i * 4, j + 1].Value = val;
+                    worksheet.Cells[5 + i * 4, j + 1].Value = val;
                 }
                 i++;
             }

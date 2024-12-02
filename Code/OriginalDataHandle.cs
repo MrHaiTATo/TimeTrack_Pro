@@ -10,6 +10,7 @@ using TimeTrack_Pro.Model;
 using TimeTrack_Pro.Helper;
 using System.Drawing;
 using NPOI.SS.Formula.Functions;
+using HandyControl.Controls;
 
 namespace TimeTrack_Pro.Code
 {
@@ -39,8 +40,22 @@ namespace TimeTrack_Pro.Code
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                 string? message;
                 int year = 0, month = 0;
-                year = 2024;
-                month = 8;
+                string datestr = worksheet.Cells[2, 1].Value.ToString();
+                string t = null;
+                int l = 0;
+                for (int i = 0; i < datestr.Length; i++)
+                {
+                    if (Regex.IsMatch(datestr.ElementAt(i).ToString(), @"^[0-9]+$"))                                            
+                        t += datestr.ElementAt(i).ToString();                    
+                }
+                if(t.Length < 4)
+                {
+                    MessageBox.Show("获取原始表日期失败！");
+                    App.Log.Info("获取原始表日期失败！");
+                    return;
+                }
+                year = Convert.ToInt32(t.Substring(0,4));
+                month = Convert.ToInt32(t.Substring(4,t.Length - 4));
                 originalDatas = new OriginalSheetModel();
                 
                 originalDatas.Datas = new List<OriginalData>();
@@ -48,30 +63,30 @@ namespace TimeTrack_Pro.Code
                 for (int i = 0; ; i++)
                 {                    
                     OriginalData data = new OriginalData();
-                    if (worksheet.Cells[$"C{2 + i * 4}"].Value == null)
+                    if (worksheet.Cells[$"C{3 + i * 4}"].Value == null)
                         break;
-                    message = worksheet.Cells[$"C{2 + i * 4}"].Value.ToString();
+                    message = worksheet.Cells[$"C{3 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
                         break;
                     data.Id = Convert.ToInt32(message);
 
-                    if (worksheet.Cells[$"G{2 + i * 4}"].Value == null)
+                    if (worksheet.Cells[$"G{3 + i * 4}"].Value == null)
                         break;
-                    message = worksheet.Cells[$"G{2 + i * 4}"].Value.ToString();
+                    message = worksheet.Cells[$"G{3 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         break;
                     data.Name = message;
 
-                    if (worksheet.Cells[$"L{2 + i * 4}"].Value == null)
+                    if (worksheet.Cells[$"L{3 + i * 4}"].Value == null)
                         break;
-                    message = worksheet.Cells[$"L{2 + i * 4}"].Value.ToString();
+                    message = worksheet.Cells[$"L{3 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         break;
                     data.Department = message;
 
-                    if (worksheet.Cells[$"Q{2 + i * 4}"].Value == null)
+                    if (worksheet.Cells[$"Q{3 + i * 4}"].Value == null)
                         break;
-                    message = worksheet.Cells[$"Q{2 + i * 4}"].Value.ToString();
+                    message = worksheet.Cells[$"Q{3 + i * 4}"].Value.ToString();
                     if (string.IsNullOrEmpty(message))
                         break;
                     data.RuleName = message;
@@ -81,12 +96,12 @@ namespace TimeTrack_Pro.Code
                     for (int j = 0; j < data.Datas.Count(); j++)
                     {
                         data.Datas[j] = new List<DateTime>();
-                        if (worksheet.Cells[(i + 1) * 4, j + 1].Value == null)
+                        if (worksheet.Cells[5 + i * 4, j + 1].Value == null)
                         {
                             date = date.AddDays(1);
                             continue;
                         }
-                        message = worksheet.Cells[(i + 1) * 4, j + 1].Value.ToString();
+                        message = worksheet.Cells[5 + i * 4, j + 1].Value.ToString();
                         if (string.IsNullOrEmpty(message))
                         {
                             date = date.AddDays(1);
@@ -109,8 +124,10 @@ namespace TimeTrack_Pro.Code
         }
 
         private List<Employee> GetTypeDatas(int Type)
-        {
+        {            
             List<Employee> employees = new List<Employee>();
+            if (OriginalDatas == null)
+                return employees;
             Employee one = null;
             
             TimeSpan span = new TimeSpan(1, 0, 0);
