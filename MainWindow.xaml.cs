@@ -12,6 +12,8 @@ using Quartz;
 using TimeTrack_Pro.Code;
 using TimeTrack_Pro.Demo;
 using TimeTrack_Pro.Helper.EPPlus;
+using TimeTrack_Pro.Model;
+using TimeTrack_Pro.ViewModel;
 
 namespace TimeTrack_Pro
 {
@@ -23,13 +25,15 @@ namespace TimeTrack_Pro
         private BakDatasHandle center;
         private OriginalDataHandle originalDataHandle;
         private ExcelHelper sheet;
+        private MainWindowViewModel VM { get; set; }
 
         public WindowState State { get => WindowState.Minimized; }
         public MainWindow()
-        {
+        {            
             InitializeComponent();
             One_Load();
             this.DataContext = this;
+            VM = (MainWindowViewModel)Resources["MainModel"];
             web.Navigate(new Uri("http://192.168.1.3"));
             sheet = new ExcelHelper();
         }
@@ -146,6 +150,29 @@ namespace TimeTrack_Pro
         {
             NpioDemo npioDemo = new NpioDemo();
             npioDemo.GenerateExcelWithComplexStyles();
+        }
+
+        private void btn_message_Click(object sender, RoutedEventArgs e)
+        {
+            HandyControl.Controls.Growl.Info("Info Message", "InfoMessage");
+        }
+
+        private void StackPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ContextMenu menu = (sender as StackPanel).ContextMenu;
+            MenuItem item = menu.Items[0] as MenuItem;
+            item.Header = Resources["Clear"];
+        }
+
+        private void FuntionOptionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VM.SelectedIndex < 0)
+            {
+                return;
+            };
+            mainContent.Children.Clear();
+            string name = ((sender as ListBox).SelectedItem as LBDataModel).Name;
+            int selectIndex = VM.SelectedIndex;
         }
     }
 }

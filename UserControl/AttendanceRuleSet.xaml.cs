@@ -22,6 +22,10 @@ namespace TimeTrack_Pro.UserControl
                 return;
             if (!Regex.IsMatch(text.Text, @"^[0-9]+$"))
                 return;
+            foreach (var item in e.Changes)
+            {
+                
+            }
         }
     }
 }

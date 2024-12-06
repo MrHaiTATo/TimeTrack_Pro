@@ -555,8 +555,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
 
         private void CreatOriginalAttendanceSheet(ExcelWorksheet worksheet, OriginalSheetModel sheetModel)
         {
-            (string, string)[] values;
-            string seat;
+            (string, string)[] values;            
             int days = DateTimeHelper.GetDays(sheetModel.Date.Year, sheetModel.Date.Month);
             int rows = sheetModel.Datas.Count();
             //表格总体设置
@@ -609,7 +608,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
                 //}
                 //worksheet.Cells[$"Q{1 + i * 4}"].Value = "--";
 
-                //第二行
+                //第三行
                 values = new (string, string)[] { ($"A{3 + i * 4}:B{3 + i * 4}","登记号："), ($"E{3 + i * 4}:F{3 + i * 4}", "姓名："),
                                                   ($"J{3 + i * 4}:K{3 + i * 4}","部门："), ($"O{3 + i * 4}:P{3 + i * 4}","班次："),
                                                   ($"T{3 + i * 4}:A{(char)('A' + days - 27)}{3 + i * 4}","注：浅青色区域为数据区") };
@@ -632,7 +631,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
                     SetBorderColor(worksheet.Cells[position], Color.Black);
                     worksheet.Cells[position].Value = content;
                 }
-                //第三、四行
+                //第四、五行
                 for (int j = 0; j < days; j++)
                 {                    
                     SetGeneral2_0(worksheet.Cells[4 + i * 4, j + 1], 12);

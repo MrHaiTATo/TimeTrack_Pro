@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Image\LeftMainContent\Brush_16x.png" />
+    <None Remove="Resource\Image\LeftMainContent\ButtonClick_16x.png" />
+    <None Remove="Resource\Image\LeftMainContent\ImageBrowser_16x.png" />
+    <None Remove="Resource\Image\LeftMainContent\ImageStack_16x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EPPlus" Version="7.5.1" />
     <PackageReference Include="HandyControl" Version="3.5.1" />
     <PackageReference Include="log4net" Version="3.0.3" />
@@ -21,9 +28,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resource\" />
     <Folder Include="Converter\" />
     <Folder Include="Helper\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\Image\LeftMainContent\Brush_16x.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\Image\LeftMainContent\ButtonClick_16x.png" />
+    <Resource Include="Resource\Image\LeftMainContent\ImageBrowser_16x.png" />
+    <Resource Include="Resource\Image\LeftMainContent\ImageStack_16x.png" />
   </ItemGroup>
 
   <ItemGroup>
