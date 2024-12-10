@@ -24,7 +24,20 @@ namespace TimeTrack_Pro.UserControl
                 return;
             foreach (var item in e.Changes)
             {
-                
+               
+            }
+        }
+
+        private void cbxUnified_Checked(object sender, RoutedEventArgs e)
+        {
+            double t = 1.5;
+            if(cbxUnified.IsChecked.HasValue)
+            {
+                Height = ActualHeight / t;
+            }
+            else
+            {
+                Height = ActualHeight * t;
             }
         }
     }

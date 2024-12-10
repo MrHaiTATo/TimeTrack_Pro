@@ -81,7 +81,7 @@ namespace TimeTrack_Pro.ViewModel
             set
             {
                 int hour = 0, min = 0;
-                if()
+                //if()
             }
         }
 

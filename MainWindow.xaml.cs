@@ -65,7 +65,7 @@ namespace TimeTrack_Pro
             timer.Elapsed += (s, e) => Msec += 10;// 注册事件处理方法                             
             timer.AutoReset = true; // 默认为 true，表示一次性触发后自动重置，继续计时
             timer.Enabled = true; // 启动定时器
-            Task task = sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 8));            
+            Task task = sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 11));            
             await task;
             timer.Enabled = false;
             timer.Dispose();            
@@ -77,7 +77,7 @@ namespace TimeTrack_Pro
         {
             string fileName = @"F:\文档\考勤异常表.xlsx";
             sheet.FilePath = fileName;
-            sheet.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 8));
+            sheet.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 11));
             
         }
 
@@ -85,14 +85,14 @@ namespace TimeTrack_Pro
         {
             string fileName = @"F:\文档\考勤汇总表.xlsx";
             sheet.FilePath = fileName;
-            sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 8));            
+            sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 11));            
         }
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤原始表.xlsx";
             sheet.FilePath = fileName;
-            sheet.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 8));            
+            sheet.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 11));            
         }
 
         private void btn_AttendanceSheetBeta_Click_1(object sender, RoutedEventArgs e)
@@ -107,8 +107,8 @@ namespace TimeTrack_Pro
             DateTime date1 = new DateTime(2024,8,1,2,0,0);
             DateTime date2 = new DateTime(2024, 8, 2, 2, 0, 0);
             TimeSpan span = date2 - date1;
-            string attendancePath = @"F:\文档\BakRcdData.TXT";
-            string employeePath = @"F:\文档\BakUseData.TXT";
+            string attendancePath = @"H:\BakRcdData.TXT";
+            string employeePath = @"H:\BakUseData.TXT";
             center = new BakDatasHandle(attendancePath, employeePath);
         }
 

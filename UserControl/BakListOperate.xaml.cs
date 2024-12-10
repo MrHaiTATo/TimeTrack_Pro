@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,26 @@ namespace TimeTrack_Pro.UserControl
         public BakListOperate()
         {
             InitializeComponent();
+        }
+        
+        private void btnSelectUL_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter = "TXT|*.txt";
+            if(openFile.ShowDialog().HasValue)
+            {
+                tbxUserList.Text = openFile.FileName;
+            }
+        }
+
+        private void btnSelectAL_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFile = new OpenFileDialog();
+            openFile.Filter = "TXT|*.txt";
+            if (openFile.ShowDialog().HasValue)
+            {
+                tbxAtdList.Text = openFile.FileName;
+            }
         }
     }
 }
