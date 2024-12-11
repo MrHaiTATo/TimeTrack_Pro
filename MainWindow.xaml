@@ -15,6 +15,13 @@
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="MainModel">
         </vm:MainWindowViewModel>
+        <Style x:Key="btnDTGoBack" BasedOn="{StaticResource ButtonBaseStyle}" TargetType="Button">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=fm, Path=NavigationService.CanGoBack}" Value="True">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -23,6 +30,8 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <hc:OutlineText Margin="3" Text="考勤排班系统" FontSize="32" FontWeight="Bold" Fill="{DynamicResource PrimaryBrush}" Stroke="Violet" StrokeThickness="2"/>
+            <Button x:Name="btnBack" Content="后退" Margin="10,0,0,0" Click="btnBack_Click"/>
+            <Button x:Name="btnForward" Content="前进" Margin="10,0,0,0" Click="btnForward_Click"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -104,8 +113,8 @@
                 </TabItem>
                 <TabItem Header="主页测试">
                     <Grid x:Name="mainContent">
-                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Source="/UserControl/AttendanceRuleSet.xaml" Margin="10,0,0,10" BorderBrush="{x:Null}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                        <local:BakListOperate HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Source="/UserControl/BakListOperate.xaml" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Grid x:Name="mainGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
                     </Grid>
                 </TabItem>
             </TabControl>

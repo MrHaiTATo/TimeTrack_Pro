@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,23 +16,15 @@ using System.Windows.Shapes;
 namespace TimeTrack_Pro.UserControl
 {
     /// <summary>
-    /// AtdRulesList.xaml 的交互逻辑
+    /// RuleManage.xaml 的交互逻辑
     /// </summary>
-    public partial class AtdRulesList
+    public partial class RuleManage
     {
-        public AtdRulesList()
+        public RuleManage()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "Excel File|*.xls;*.xlsx";
-            if (openFile.ShowDialog().HasValue)
-            {
-                tbxOrgList.Text = openFile.FileName;
-            }
-        }
+        
     }
 }

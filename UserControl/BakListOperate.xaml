@@ -13,15 +13,18 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <Border BorderBrush="#FFCCCCCC" BorderThickness="1" CornerRadius="2,2,2,2" HorizontalAlignment="Left" Width="400" Height="97" VerticalAlignment="Top">
+            <Border BorderThickness="1" CornerRadius="2,2,2,2" HorizontalAlignment="Left" Width="400" Height="97" VerticalAlignment="Top">
+                <Border.BorderBrush>
+                    <SolidColorBrush Color="#FFCCCCCC" Opacity="0.5"/>
+                </Border.BorderBrush>
                 <Grid>
                     <TextBox x:Name="tbxAtdList" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="324"
             hc:InfoElement.Placeholder="请选择一个考勤备份表" hc:InfoElement.Necessary="True"                
@@ -37,10 +40,13 @@
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <Border BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="2,2,2,2" HorizontalAlignment="Left" Width="400" Height="28" VerticalAlignment="Top">
+            <Border BorderThickness="1" CornerRadius="2,2,2,2" HorizontalAlignment="Left" Width="400" Height="28" VerticalAlignment="Top">
+                <Border.BorderBrush>
+                    <SolidColorBrush Color="#FFD6D6D6" Opacity="0.5"/>
+                </Border.BorderBrush>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>

@@ -46,7 +46,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid  Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -112,24 +112,24 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <!---->
-                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="1" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="231" Height="33" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="1" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="231" Height="33" VerticalAlignment="Center" Margin="10,0,10,0">
                         <TextBlock TextWrapping="Wrap" Text="班段1" VerticalAlignment="Center" Height="13" HorizontalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="上班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="33,0,0,0" />
                     <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="下班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="115,0,0,0" />
                     <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="类型" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="180,0,0,0" />
-                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="2" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="232" Height="33" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="2" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="232" Height="33" VerticalAlignment="Center" Margin="10,0,10,0">
                         <TextBlock TextWrapping="Wrap" Text="班段2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Text="上班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="33,0,0,0" />
                     <TextBlock Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Text="下班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="115,0,0,0" />
                     <TextBlock Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Text="类型" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="180,0,0,0" />
-                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="3" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="231" Height="33" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="3" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="231" Height="33" VerticalAlignment="Center" Margin="10,0,10,0">
                         <TextBlock TextWrapping="Wrap" Text="班段3" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Column="3" Grid.Row="1" TextWrapping="Wrap" Text="上班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="33,0,0,0" />
@@ -143,74 +143,74 @@
                     <TextBox Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
                     <TextBox Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="2" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="2" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="2" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="2" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                     <!--周二-->
                     <TextBlock Grid.Row="3" Text="周二：" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="3" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="3" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="3" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="3" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="3" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                     <!--周三-->
                     <TextBlock Grid.Row="4" Text="周三：" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="4" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="4" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="4" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="4" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="4" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="4" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="4" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                     <!--周四-->
                     <TextBlock Grid.Row="5" Text="周四：" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="1" Grid.Row="5" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="5" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="5" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                     <!--周五-->
                     <TextBlock Grid.Row="6" Text="周五：" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="1" Grid.Row="6" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="6" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="6" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="6" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="6" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="6" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                     <!--周六-->
                     <TextBlock Grid.Row="7" Text="周六：" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="7" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="1" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="7" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="1" Grid.Row="7" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="7" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="7" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="7" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="7" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="7" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="7" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="7" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                     <!--周日-->
                     <TextBlock Grid.Row="8" Text="周日：" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="8" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="1" Grid.Row="8" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="8" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="8" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="1" Grid.Row="8" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="8" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="8" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="8" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="8" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="8" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="3" Grid.Row="8" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="3" Grid.Row="8" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0"/>
+                    <TextBox Grid.Column="3" Grid.Row="8" HorizontalAlignment="Left" Margin="11,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="3" Grid.Row="8" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" Margin="90,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="3" Grid.Row="8" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="166,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                 </Grid>
                 <Grid Style="{DynamicResource gdUs}" Height="125" VerticalAlignment="Top">
@@ -220,24 +220,24 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <!---->
-                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" CornerRadius="4,4,4,4" Height="34" VerticalAlignment="Center" Margin="18,0,0,0" HorizontalAlignment="Left" Width="232">
+                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" CornerRadius="4,4,4,4" Height="34" VerticalAlignment="Center" Margin="18,0,18,0" HorizontalAlignment="Left" Width="232">
                         <TextBlock TextWrapping="Wrap" Text="班段1" VerticalAlignment="Center" Height="13" HorizontalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Text="上班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="42,0,0,0" />
                     <TextBlock Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Text="下班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="124,0,0,0" />
                     <TextBlock Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Text="类型" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="200,0,0,0" />
-                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="1" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="232" Height="34" VerticalAlignment="Center" Margin="18,0,0,0">
+                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="1" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="232" Height="34" VerticalAlignment="Center" Margin="18,0,18,0">
                         <TextBlock TextWrapping="Wrap" Text="班段2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="上班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="41,0,0,0" />
                     <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="下班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="123,0,0,0" />
                     <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="类型" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="200,0,0,0" />
-                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="2" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="232" Height="34" VerticalAlignment="Center" Margin="18,0,0,0">
+                    <Border BorderBrush="#FFAFAFAF" BorderThickness="1" Grid.Column="2" CornerRadius="4,4,4,4" HorizontalAlignment="Left" Width="232" Height="34" VerticalAlignment="Center" Margin="18,0,18,0">
                         <TextBlock TextWrapping="Wrap" Text="班段3" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Text="上班" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="41,0,0,0" />
@@ -249,8 +249,8 @@
                     <TextBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="19,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
                     <TextBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="72" HorizontalContentAlignment="Center" Margin="98,0,0,0"/>
                     <ComboBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="174,0,0,0" VerticalAlignment="Center" Width="76" Height="28"/>
-                    <TextBox Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71"/>
-                    <TextBox Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="72" Margin="98,0,0,0"/>
+                    <TextBox Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="71" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="72" Margin="98,0,0,0" HorizontalContentAlignment="Center"/>
                     <ComboBox Grid.Column="2" Grid.Row="2" ItemsSource="{Binding ShiftDataList}" HorizontalAlignment="Left" Margin="175,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                 </Grid>
             </Grid>

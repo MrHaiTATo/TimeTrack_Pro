@@ -13,6 +13,7 @@ using TimeTrack_Pro.Code;
 using TimeTrack_Pro.Demo;
 using TimeTrack_Pro.Helper.EPPlus;
 using TimeTrack_Pro.Model;
+using TimeTrack_Pro.UserControl;
 using TimeTrack_Pro.ViewModel;
 
 namespace TimeTrack_Pro
@@ -170,9 +171,42 @@ namespace TimeTrack_Pro
             {
                 return;
             };
-            mainContent.Children.Clear();
+            //mainContent.Children.Clear();
+            mainGrid.Children.Clear();
             string name = ((sender as ListBox).SelectedItem as LBDataModel).Name;
-            int selectIndex = VM.SelectedIndex;
+            switch (VM.SelectedIndex)
+            {
+                case 0:
+                    fm.Navigate(new Uri("UserControl/BakListOperate.xaml", UriKind.Relative));                   
+                    break;
+                case 1:
+                    fm.Navigate(new Uri("UserControl/AtdRulesList.xaml", UriKind.Relative));                    
+                    break;
+                case 2:
+                    fm.Content = null;                    
+                    break;
+                case 3:
+                    fm.Navigate(new Uri("UserControl/AttendanceRuleSet.xaml", UriKind.Relative));    
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if(fm.NavigationService.CanGoBack)
+            {
+                fm.GoBack();
+            }
+        }
+
+        private void btnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if(fm.NavigationService.CanGoForward)
+            {
+                fm.GoForward();
+            }
         }
     }
 }
