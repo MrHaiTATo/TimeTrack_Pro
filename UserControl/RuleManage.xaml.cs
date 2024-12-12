@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TimeTrack_Pro.Model;
 
 namespace TimeTrack_Pro.UserControl
 {
@@ -25,6 +26,15 @@ namespace TimeTrack_Pro.UserControl
             InitializeComponent();
         }
 
-        
+        private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            AttendanceRule rule = e.Parameter as AttendanceRule;
+
+        }
     }
 }
