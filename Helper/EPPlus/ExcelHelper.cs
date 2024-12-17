@@ -76,9 +76,8 @@ namespace TimeTrack_Pro.Helper.EPPlus
             }
         }
 
-        public async Task CreateAtdStatiSheet(StatisticsSheetModel sheetModel)
-        {
-            await Task.CompletedTask;
+        public void CreateAtdStatiSheet(StatisticsSheetModel sheetModel)
+        {            
             ExcelWorksheet worksheet = null;
             Creat_init();            
             foreach (var data in sheetModel.Datas)

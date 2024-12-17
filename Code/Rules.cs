@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Interop;
 using System.Xml;
 using TimeTrack_Pro.Model;
 
@@ -257,9 +258,20 @@ namespace TimeTrack_Pro.Code
             {
                 _getRuleListFromXlsx(path);
             }
-            catch
+            catch(Exception e)
             {
-                _getRuleListFromXml(path);
+                App.Log.Error(e.Message + $" 异常发生位置：{e.StackTrace}");
+                try
+                {
+                    _getRuleListFromXml(path);
+                }
+                catch (Exception ex)
+                {
+                    string msg = "解析排班表文件失败！";
+                    HandyControl.Controls.Growl.Error(msg, "ErrorMessage");
+                    App.Log.Error(ex.Message + $" 异常发生位置：{ex.StackTrace}");
+                }
+                
             }
         }
 
@@ -268,7 +280,7 @@ namespace TimeTrack_Pro.Code
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
             // 必须设置，否则会报错
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;//非商业
+            //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;//非商业
 
             //创建一个新的Excel包
             using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))

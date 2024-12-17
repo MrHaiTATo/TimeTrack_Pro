@@ -30,11 +30,11 @@ namespace TimeTrack_Pro
 
         public WindowState State { get => WindowState.Minimized; }
         public MainWindow()
-        {            
+        {           
             InitializeComponent();
-            One_Load();
             this.DataContext = this;
             VM = (MainWindowViewModel)Resources["MainModel"];
+            One_Load();                       
             web.Navigate(new Uri("http://192.168.1.3"));
             sheet = new ExcelHelper();
         }
@@ -57,7 +57,7 @@ namespace TimeTrack_Pro
             EppDemo.demo1();
         }
 
-        private async void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
+        private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
             string fileName = @"F:\文档\考勤统计表.xlsx";
             sheet.FilePath = fileName;          
@@ -66,8 +66,7 @@ namespace TimeTrack_Pro
             timer.Elapsed += (s, e) => Msec += 10;// 注册事件处理方法                             
             timer.AutoReset = true; // 默认为 true，表示一次性触发后自动重置，继续计时
             timer.Enabled = true; // 启动定时器
-            Task task = sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 11));            
-            await task;
+            sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 11));                        
             timer.Enabled = false;
             timer.Dispose();            
             MessageBox.Show(this,string.Format("用时：{0:0.000} 秒",Msec / 1000));
@@ -120,14 +119,14 @@ namespace TimeTrack_Pro
             var rules = Rules.RuleList;
         }
 
-        private async void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
+        private void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
         {
             string resourceFile = @"F:\文档\考勤原始表.xlsx";
             string savePath = @"F:\文档\原始表\考勤统计表.xlsx";
             originalDataHandle = new OriginalDataHandle(resourceFile);
             var statistics = originalDataHandle.GetStatisticsSheetModel();
             sheet.FilePath = savePath;
-            await sheet.CreateAtdStatiSheet(statistics);
+            sheet.CreateAtdStatiSheet(statistics);
             
             var summarys = originalDataHandle.GetSummarySheetModel();
             sheet.FilePath = @"F:\文档\原始表\考勤汇总表.xlsx";
@@ -156,6 +155,7 @@ namespace TimeTrack_Pro
         private void btn_message_Click(object sender, RoutedEventArgs e)
         {
             HandyControl.Controls.Growl.Info("Info Message", "InfoMessage");
+            HandyControl.Controls.Growl.Warning("Info Message", "InfoMessage");
         }
 
         private void StackPanel_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -167,7 +167,7 @@ namespace TimeTrack_Pro
 
         private void FuntionOptionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (VM.SelectedIndex < 0)
+            if (VM == null || VM.SelectedIndex < 0)
             {
                 return;
             };
@@ -177,15 +177,18 @@ namespace TimeTrack_Pro
             switch (VM.SelectedIndex)
             {
                 case 0:
+                    //mainGrid.Children.Add(new BakListOperate());
                     fm.Navigate(new Uri("UserControl/BakListOperate.xaml", UriKind.Relative));                   
                     break;
                 case 1:
+                    //mainGrid.Children.Add(new AtdRulesList());
                     fm.Navigate(new Uri("UserControl/AtdRulesList.xaml", UriKind.Relative));                    
                     break;
                 case 2:
                     fm.Content = null;                    
                     break;
                 case 3:
+                    //mainGrid.Children.Add(new AttendanceRuleSet());
                     fm.Navigate(new Uri("UserControl/AttendanceRuleSet.xaml", UriKind.Relative));    
                     break;
                 default:

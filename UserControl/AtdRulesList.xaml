@@ -4,41 +4,75 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimeTrack_Pro.UserControl"
+             xmlns:vm="clr-namespace:TimeTrack_Pro.ViewModel"
              xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="TimeTrack_Pro.UserControl.AtdRulesList"
              mc:Ignorable="d">
-
+    <UserControl.DataContext>
+        <vm:ComboBoxViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style x:Key="inCheckTbx" TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=cbxCustom}" Value="True">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="inCheckBtn" TargetType="Button" BasedOn="{StaticResource ButtonDefault}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=cbxCustom}" Value="True">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="92"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="38"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <Grid Height="47" VerticalAlignment="Top">
+        <Grid Height="92" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <Border BorderThickness="1" CornerRadius="2,2,2,2" HorizontalAlignment="Left" Width="392" Height="47" VerticalAlignment="Top">
+            <Border BorderThickness="1" CornerRadius="2,2,2,2" HorizontalAlignment="Center" Width="392" Height="92" VerticalAlignment="Center">
                 <Border.BorderBrush>
                     <SolidColorBrush Color="#FFAFAFAF" Opacity="0.5"/>
                 </Border.BorderBrush>
                 <Grid>
                     <TextBox x:Name="tbxOrgList" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="324"
-            hc:InfoElement.Placeholder="请选择一个原始表" hc:InfoElement.Necessary="True" 
-            Style="{StaticResource TextBoxExtend}"/>
-                    <Button Content="选择" HorizontalAlignment="Left" Margin="339,10,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                        hc:InfoElement.Placeholder="请选择一个原始表" hc:InfoElement.Necessary="True" 
+                        Style="{StaticResource TextBoxExtend}"/>
+                    <Button x:Name="btnOrgList" Content="选择" HorizontalAlignment="Left" Margin="339,10,0,0" VerticalAlignment="Top" Click="btnOrgList_Click"/>
+                    <TextBox x:Name="tbxShiftList" HorizontalAlignment="Left" Margin="10,52,0,0" TextWrapping="Wrap" Width="324"
+                        hc:InfoElement.Placeholder="请选择一个排班表" hc:InfoElement.Necessary="True"                
+                        Style="{DynamicResource inCheckTbx}" Height="28" VerticalAlignment="Top"/>
+                    <Button x:Name="btnSelectSL" Content="选择" HorizontalAlignment="Left" Margin="339,52,0,0" VerticalAlignment="Top" Click="btnSelectSL_Click" Style="{DynamicResource inCheckBtn}"/>
                 </Grid>
             </Border>
             <Button Content="加载文件" Margin="5,11,0,0" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left"/>
         </Grid>
-        <hc:CheckComboBox Margin="0,10,0,10" Grid.Row="1" 
-                  ItemsSource="{Binding DataList}"
-                  ShowSelectAllButton="True"
-                  hc:InfoElement.ShowClearButton="True"
-                  hc:InfoElement.Placeholder="请选择至少一个规则"
-                  hc:InfoElement.Title="考勤规则："                         
-                  Style="{StaticResource CheckComboBoxPlus}" HorizontalAlignment="Left" Width="399"/>
-        <Grid Height="28" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Row="2">
+        <Grid Grid.Row="1" HorizontalAlignment="Left" Margin="0,5,0,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <CheckBox x:Name="cbxCustom" Content="自定义考情规则" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="False"/>
+            <hc:CheckComboBox x:Name="ccbxRules" 
+        ItemsSource="{Binding DataList}"
+        ShowSelectAllButton="True"
+        hc:InfoElement.ShowClearButton="True"
+        hc:InfoElement.Placeholder="请选择至少一个规则"                                          
+        Style="{StaticResource CheckComboBoxPlus}" HorizontalAlignment="Left" Width="390" VerticalAlignment="Top" IsEnabled="{Binding IsChecked, ElementName=cbxCustom}" Grid.Row="1" Margin="0,2,0,0"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <hc:DatePicker x:Name="dpDate" HorizontalAlignment="Left" VerticalAlignment="Center" Width="390"
+                   hc:InfoElement.Placeholder="选择报表月份"/>
+        </Grid>
+        <Grid Height="28" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="80"/>
@@ -53,12 +87,12 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Content="统计表" Grid.Column="0" HorizontalAlignment="Center"/>
-                    <CheckBox Content="汇总表" Grid.Column="1" HorizontalAlignment="Center"/>
-                    <CheckBox Content="异常表" Grid.Column="2" HorizontalAlignment="Center"/>
+                    <CheckBox x:Name="cbxTJL" Content="统计表" Grid.Column="0" HorizontalAlignment="Center"/>
+                    <CheckBox x:Name="cbxHZL" Content="汇总表" Grid.Column="1" HorizontalAlignment="Center"/>
+                    <CheckBox x:Name="cbxYCL" Content="异常表" Grid.Column="2" HorizontalAlignment="Center"/>
                 </Grid>
             </Border>
-            <Button Content="生成" HorizontalAlignment="Left" Grid.Column="1" Margin="5,0,0,0"/>
+            <Button x:Name="btnBuild" Content="生成" HorizontalAlignment="Left" Grid.Column="1" Margin="5,0,0,0" Click="btnBuild_Click"/>
         </Grid>
 
     </Grid>

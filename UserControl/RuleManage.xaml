@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:TimeTrack_Pro.UserControl"
              xmlns:cmd="clr-namespace:TimeTrack_Pro.Command"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="500">
+             d:DesignHeight="450" d:DesignWidth="450">
     <UserControl.CommandBindings>
         <CommandBinding Command="cmd:RuleEditCommand.RuleEdit" 
                         CanExecute="CommandBinding_CanExecute"

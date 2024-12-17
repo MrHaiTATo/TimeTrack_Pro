@@ -113,7 +113,7 @@
                 </TabItem>
                 <TabItem Header="主页测试">
                     <Grid x:Name="mainContent">
-                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Source="/UserControl/BakListOperate.xaml" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <Grid x:Name="mainGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
                     </Grid>
                 </TabItem>
