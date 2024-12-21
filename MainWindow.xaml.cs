@@ -143,7 +143,7 @@ namespace TimeTrack_Pro
 
         private void CopyCommand(object sender, ExecutedRoutedEventArgs e)
         {            
-                   
+            
         }
 
         private void btn_Npio_Click(object sender, RoutedEventArgs e)

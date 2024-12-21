@@ -32,7 +32,7 @@ namespace TimeTrack_Pro.Code
             init(path);
         }
 
-        public void init(string path)
+        private void init(string path)
         {          
             //创建一个新的Excel包
             using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))

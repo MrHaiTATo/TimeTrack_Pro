@@ -30,7 +30,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="92"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid Height="92" VerticalAlignment="Center">
@@ -53,7 +53,7 @@
                     <Button x:Name="btnSelectSL" Content="选择" HorizontalAlignment="Left" Margin="339,52,0,0" VerticalAlignment="Top" Click="btnSelectSL_Click" Style="{DynamicResource inCheckBtn}"/>
                 </Grid>
             </Border>
-            <Button Content="加载文件" Margin="5,11,0,0" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left"/>
+            <Button Content="加载文件" Margin="5,11,0,0" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Visibility="Collapsed"/>
         </Grid>
         <Grid Grid.Row="1" HorizontalAlignment="Left" Margin="0,5,0,5">
             <Grid.RowDefinitions>
@@ -70,7 +70,7 @@
         </Grid>
         <Grid Grid.Row="2">
             <hc:DatePicker x:Name="dpDate" HorizontalAlignment="Left" VerticalAlignment="Center" Width="390"
-                   hc:InfoElement.Placeholder="选择报表月份"/>
+                   hc:InfoElement.Placeholder="选择报表月份" Margin="0,5,0,5" Visibility="Collapsed"/>
         </Grid>
         <Grid Height="28" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -92,7 +92,8 @@
                     <CheckBox x:Name="cbxYCL" Content="异常表" Grid.Column="2" HorizontalAlignment="Center"/>
                 </Grid>
             </Border>
-            <Button x:Name="btnBuild" Content="生成" HorizontalAlignment="Left" Grid.Column="1" Margin="5,0,0,0" Click="btnBuild_Click"/>
+            <ToggleButton x:Name="btnBuild" Content="生成" HorizontalAlignment="Left" Grid.Column="1" 
+                          Margin="5,0,0,0" Style="{StaticResource ToggleButtonLoading}" Click="btnBuild_Click"/>
         </Grid>
 
     </Grid>

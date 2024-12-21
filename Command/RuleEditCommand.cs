@@ -13,7 +13,7 @@ namespace TimeTrack_Pro.Command
         static RuleEditCommand()
         {
             InputGestureCollection inputs = new InputGestureCollection();
-            inputs.Add(new KeyGesture(Key.R, ModifierKeys.Control, "Ctrl+R"));
+            inputs.Add(new KeyGesture(Key.E, ModifierKeys.Control, "Ctrl+E"));
             ruleEdit = new RoutedUICommand(
               "RuleEdit", "RuleEdit", typeof(RuleEditCommand), inputs);
         }

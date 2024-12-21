@@ -31,9 +31,14 @@ namespace TimeTrack_Pro.UserControl
             e.CanExecute = true;
         }
 
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void RuleEditCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             AttendanceRule rule = e.Parameter as AttendanceRule;
+            
+        }
+
+        private void DeleteCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
 
         }
     }

@@ -24,8 +24,14 @@ namespace TimeTrack_Pro.Code
         private List<BakUseData> employees;
         public List<BakUseData> Employees { get { return employees; } }
 
+        public BakDatasHandle() { }
 
         public BakDatasHandle(string attendanceFile, string employeeFile)
+        {
+            _init(attendanceFile, employeeFile);
+        }
+
+        public void LoadFile(string attendanceFile, string employeeFile)
         {
             _init(attendanceFile, employeeFile);
         }
@@ -116,7 +122,7 @@ namespace TimeTrack_Pro.Code
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine(e.Message);
+                        App.Log.Error(e.Message + $" 异常发生位置：{e.StackTrace}");
                     }
                 }
                 employees.RemoveAll(e =>

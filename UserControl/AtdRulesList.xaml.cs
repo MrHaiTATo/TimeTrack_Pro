@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TimeTrack_Pro.Code;
+using TimeTrack_Pro.Helper.EPPlus;
 
 namespace TimeTrack_Pro.UserControl
 {
@@ -27,10 +29,12 @@ namespace TimeTrack_Pro.UserControl
             OL,            
             SL
         }
-
+        private OriginalDataHandle OriginalData;
+        private ExcelHelper sheet;
         public AtdRulesList()
         {
             InitializeComponent();
+            sheet = new ExcelHelper();
         }
 
         private void btnOrgList_Click(object sender, RoutedEventArgs e)
@@ -43,16 +47,17 @@ namespace TimeTrack_Pro.UserControl
             SelectFile(SFile.SL);
         }
 
-        private void btnBuild_Click(object sender, RoutedEventArgs e)
+        private async void btnBuild_Click(object sender, RoutedEventArgs e)
         {
             string msg = "";
+            btnBuild.IsEnabled = false;
             if (string.IsNullOrEmpty(tbxOrgList.Text))
             {
                 msg = "未选择原始表！";
                 Growl.Warning(msg, "InfoMessage");
                 App.Log.Warn(msg);
                 tbxOrgList.Focus();
-                return;
+                goto inputErrorHandle;
             }
             if (!cbxCustom.IsChecked.Value && string.IsNullOrEmpty(tbxShiftList.Text))
             {
@@ -60,7 +65,7 @@ namespace TimeTrack_Pro.UserControl
                 Growl.Warning(msg, "InfoMessage");
                 App.Log.Warn(msg);
                 tbxShiftList.Focus();
-                return;
+                goto inputErrorHandle;
             }
             if (cbxCustom.IsChecked.Value && ccbxRules.SelectedItems.Count == 0)
             {
@@ -68,20 +73,35 @@ namespace TimeTrack_Pro.UserControl
                 Growl.Warning(msg, "InfoMessage");
                 App.Log.Warn(msg);
                 ccbxRules.Focus();
-                return;
+                goto inputErrorHandle;
             }
-            OpenFolderDialog openFolder = new OpenFolderDialog();
-            openFolder.FolderOk += (s, ev) => {
-                if(cbxCustom.IsChecked.Value)
+            OpenFolderDialog openFolder = new OpenFolderDialog();            
+            if(openFolder.ShowDialog().Value)
+            {
+                try
                 {
-
+                    OriginalData = new OriginalDataHandle(tbxOrgList.Text);
+                    if (cbxCustom.IsChecked.Value)
+                    {
+                        Rules.RuleList.Clear();
+                    }
+                    else
+                    {
+                        Rules.GetRuleList(tbxShiftList.Text);
+                    }
+                    await BuildList(openFolder.FolderName);
+                    Growl.Info("生成完成！", "InfoMessage");
                 }
-                else
+                catch (Exception ex)
                 {
-
+                    Growl.Error(ex.Message, "ErrorMessage");
+                    App.Log.Error(ex.Message + $" 异常发生位置：{ex.StackTrace}");
                 }
-            };
-            openFolder.ShowDialog();
+            }
+
+inputErrorHandle:
+            btnBuild.IsChecked = false;
+            btnBuild.IsEnabled = true;
         }
 
         private void SelectFile(SFile file)
@@ -99,21 +119,24 @@ namespace TimeTrack_Pro.UserControl
             openFile.ShowDialog();
         }
 
-        private void BuildList()
+        private async Task BuildList(string savePath)
         {
             int year = dpDate.DisplayDate.Year;
             int month = dpDate.DisplayDate.Month;
             if (cbxTJL.IsChecked.HasValue)
             {
-
+                sheet.FilePath = savePath + "\\考勤统计表.xlsx";
+                await Task.Run(() => sheet.CreateAtdStatiSheet(OriginalData.GetStatisticsSheetModel()));
             }
             if (cbxHZL.IsChecked.HasValue)
             {
-
+                sheet.FilePath = savePath + "\\考勤汇总表.xlsx";
+                await Task.Run(() => sheet.CreatAtdSumSheet(OriginalData.GetSummarySheetModel()));
             }
             if (cbxYCL.IsChecked.HasValue)
             {
-
+                sheet.FilePath = savePath + "\\考勤异常表.xlsx";
+                await Task.Run(() => sheet.CreatAtdExpSheet(OriginalData.GetExceptionSheetModel()));
             }
         }
     }

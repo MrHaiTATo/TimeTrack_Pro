@@ -70,9 +70,17 @@ namespace TimeTrack_Pro.Helper.EPPlus
                 //fs = null;
                 if(package != null)
                 {
-                    package.File = new FileInfo(fileName);
-                    package.Save();
-                }
+                    try
+                    {
+                        package.File = new FileInfo(fileName);
+                        package.Save();                        
+                    }
+                    catch (Exception e)
+                    {
+                        HandyControl.Controls.Growl.Error(e.Message, "ErrorMessage");
+                        App.Log.Error(e.Message + $" 异常发生位置：{e.StackTrace}");                        
+                    }                   
+                }                
             }
         }
 
@@ -558,7 +566,8 @@ namespace TimeTrack_Pro.Helper.EPPlus
             int days = DateTimeHelper.GetDays(sheetModel.Date.Year, sheetModel.Date.Month);
             int rows = sheetModel.Datas.Count();
             //表格总体设置
-            worksheet.Cells[1, 1, rows * 4, days].Style.Numberformat.Format = "@";
+            if(rows > 0)
+                worksheet.Cells[1, 1, rows * 4, days].Style.Numberformat.Format = "@";
   
             for (int k = 0; k < days; k++)
             {

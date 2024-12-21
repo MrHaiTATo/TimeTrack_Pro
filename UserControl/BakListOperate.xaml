@@ -57,7 +57,7 @@
                     <Button x:Name="btnSelectSL" Content="选择" HorizontalAlignment="Left" Margin="339,94,0,0" VerticalAlignment="Top" Click="btnSelectSL_Click" Style="{DynamicResource inCheckBtn}"/>
                 </Grid>
             </Border>
-            <Button Content="加载文件" Margin="10,11,0,0" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left"/>
+            <Button Content="加载文件" Margin="10,11,0,0" VerticalAlignment="Top" Grid.Column="1" HorizontalAlignment="Left" Visibility="Collapsed"/>
         </Grid>
         <Grid Grid.Row="1" HorizontalAlignment="Left" Margin="0,5,0,5">
             <Grid.RowDefinitions>

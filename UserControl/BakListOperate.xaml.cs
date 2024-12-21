@@ -40,6 +40,7 @@ namespace TimeTrack_Pro.UserControl
         {
             InitializeComponent();
             sheet = new ExcelHelper();
+            center = new BakDatasHandle();
         }
         
         private void btnSelectUL_Click(object sender, RoutedEventArgs e)
@@ -109,21 +110,31 @@ namespace TimeTrack_Pro.UserControl
                 App.Log.Warn(msg);
                 goto inputErrorHandle;
             }
-            OpenFolderDialog openFolder = new OpenFolderDialog();
-            openFolder.FolderOk += (s, ev) => {                
-            };
+            OpenFolderDialog openFolder = new OpenFolderDialog();           
             if(openFolder.ShowDialog().Value)
             {
-                center = new BakDatasHandle(tbxAtdList.Text, tbxUserList.Text);
-                if (cbxCustom.IsChecked.Value)
+                try
                 {
-                    Rules.RuleList.Clear();
+                    string atdFile = tbxAtdList.Text;
+                    string usersFile = tbxUserList.Text;
+                    await Task.Run(() => center.LoadFile(atdFile, usersFile));
+                    if (cbxCustom.IsChecked.Value)
+                    {
+                        Rules.RuleList.Clear();
+                    }
+                    else
+                    {
+                        Rules.GetRuleList(tbxShiftList.Text);
+                    }
+                    await BuildList(openFolder.FolderName);
+                    Growl.Info("生成完成！", "InfoMessage");
                 }
-                else
+                catch (Exception ex)
                 {
-                    Rules.GetRuleList(tbxShiftList.Text);
+                    Growl.Error(ex.Message, "ErrorMessage");
+                    App.Log.Error(ex.Message + $" 异常发生位置：{ex.StackTrace}");
                 }
-                await BuildList(openFolder.FolderName);
+                
             }
 
 inputErrorHandle:
