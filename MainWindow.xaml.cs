@@ -26,6 +26,7 @@ namespace TimeTrack_Pro
         private BakDatasHandle center;
         private OriginalDataHandle originalDataHandle;
         private ExcelHelper sheet;
+        private Helper.NPOI.ExcelHelper excelHelper;
         private MainWindowViewModel VM { get; set; }
 
         public WindowState State { get => WindowState.Minimized; }
@@ -37,6 +38,7 @@ namespace TimeTrack_Pro
             One_Load();                       
             web.Navigate(new Uri("http://192.168.1.3"));
             sheet = new ExcelHelper();
+            excelHelper = new Helper.NPOI.ExcelHelper();
         }
 
         /// <summary>
@@ -59,14 +61,14 @@ namespace TimeTrack_Pro
 
         private void btn_attendanceSheetBeta_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤统计表.xlsx";
-            sheet.FilePath = fileName;          
+            string fileName = @"F:\文档\考勤统计表.xls";
+            excelHelper.FilePath = fileName;          
             double Msec = 0;
             System.Timers.Timer timer = new System.Timers.Timer(10); // 创建一个每秒触发一次的定时器
             timer.Elapsed += (s, e) => Msec += 10;// 注册事件处理方法                             
             timer.AutoReset = true; // 默认为 true，表示一次性触发后自动重置，继续计时
             timer.Enabled = true; // 启动定时器
-            sheet.CreateAtdStatiSheet(center.GetStatisticsSheetModel(2024, 11));                        
+            excelHelper.CreateAtdStatiSheets(center.GetStatisticsSheetModel(2024, 8));
             timer.Enabled = false;
             timer.Dispose();            
             MessageBox.Show(this,string.Format("用时：{0:0.000} 秒",Msec / 1000));
@@ -107,8 +109,8 @@ namespace TimeTrack_Pro
             DateTime date1 = new DateTime(2024,8,1,2,0,0);
             DateTime date2 = new DateTime(2024, 8, 2, 2, 0, 0);
             TimeSpan span = date2 - date1;
-            string attendancePath = @"H:\BakRcdData.TXT";
-            string employeePath = @"H:\BakUseData.TXT";
+            string attendancePath = @"F:\文档\BakRcdData.TXT";
+            string employeePath = @"F:\文档\BakUseData.TXT";
             center = new BakDatasHandle(attendancePath, employeePath);
         }
 
@@ -189,7 +191,7 @@ namespace TimeTrack_Pro
                     break;
                 case 3:
                     //mainGrid.Children.Add(new AttendanceRuleSet());
-                    fm.Navigate(new Uri("UserControl/AttendanceRuleSet.xaml", UriKind.Relative));    
+                    fm.Navigate(new Uri("UserControl/RuleManage.xaml", UriKind.Relative));    
                     break;
                 default:
                     break;

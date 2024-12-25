@@ -23,7 +23,7 @@ namespace TimeTrack_Pro.Demo
             boldFont.FontName = "Arial";
             boldFont.IsBold = true;
             boldFont.FontHeightInPoints = 16;
-
+             
             // 设置单元格样式
             ICellStyle headerStyle = workbook.CreateCellStyle();
             headerStyle.SetFont(boldFont);
@@ -35,10 +35,12 @@ namespace TimeTrack_Pro.Demo
             headerStyle.BorderLeft = BorderStyle.Thin;
             headerStyle.BorderRight = BorderStyle.Thin;
             headerStyle.BorderTop = BorderStyle.Thin;
+            
 
             // 设置单元格数字格式
             ICellStyle decimalStyle = workbook.CreateCellStyle();
             decimalStyle.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
+            
 
             // 创建列标题
             IRow headerRow = sheet.CreateRow(0);
@@ -48,7 +50,7 @@ namespace TimeTrack_Pro.Demo
             headerRow.GetCell(1).CellStyle = headerStyle;
             headerRow.CreateCell(2).SetCellValue("Price");
             headerRow.GetCell(2).CellStyle = headerStyle;
-
+            
             // 添加数据行
             for (int i = 1; i <= 5; i++)
             {
@@ -58,7 +60,7 @@ namespace TimeTrack_Pro.Demo
                 dataRow.CreateCell(2).CellStyle = decimalStyle;
                 dataRow.GetCell(2).SetCellValue(i * 100.23);
             }
-
+            
             // 合并单元格
             CellRangeAddress merged = new CellRangeAddress(
                 0, 0,
