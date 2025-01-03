@@ -11,6 +11,12 @@ using TimeTrack_Pro.Helper;
 using System.Drawing;
 using NPOI.SS.Formula.Functions;
 using HandyControl.Controls;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
+using NPOI.HPSF;
+using System.Security.Cryptography.Xml;
 
 namespace TimeTrack_Pro.Code
 {
@@ -29,98 +35,209 @@ namespace TimeTrack_Pro.Code
         
         public OriginalDataHandle(string path)
         {
-            init(path);
+            //init(path);
+            intit_by_npio(path);
         }
 
         private void init(string path)
-        {          
+        {
             //创建一个新的Excel包
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
+            try
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                string? message;
-                int year = 0, month = 0;
-                string datestr = worksheet.Cells[2, 1].Value.ToString();
-                string t = null;
-                int l = 0;
-                for (int i = 0; i < datestr.Length; i++)
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
                 {
-                    if (Regex.IsMatch(datestr.ElementAt(i).ToString(), @"^[0-9]+$"))                                            
-                        t += datestr.ElementAt(i).ToString();                    
-                }
-                if(t.Length < 4)
-                {
-                    MessageBox.Show("获取原始表日期失败！");
-                    App.Log.Info("获取原始表日期失败！");
-                    return;
-                }
-                year = Convert.ToInt32(t.Substring(0,4));
-                month = Convert.ToInt32(t.Substring(4,t.Length - 4));
-                originalDatas = new OriginalSheetModel();
-                
-                originalDatas.Datas = new List<OriginalData>();
-                originalDatas.Date = new DateTime(year, month, 31);
-                for (int i = 0; ; i++)
-                {                    
-                    OriginalData data = new OriginalData();
-                    if (worksheet.Cells[$"C{3 + i * 4}"].Value == null)
-                        break;
-                    message = worksheet.Cells[$"C{3 + i * 4}"].Value.ToString();
-                    if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
-                        break;
-                    data.Id = Convert.ToInt32(message);
-
-                    if (worksheet.Cells[$"G{3 + i * 4}"].Value == null)
-                        break;
-                    message = worksheet.Cells[$"G{3 + i * 4}"].Value.ToString();
-                    if (string.IsNullOrEmpty(message))
-                        break;
-                    data.Name = message;
-
-                    if (worksheet.Cells[$"L{3 + i * 4}"].Value == null)
-                        break;
-                    message = worksheet.Cells[$"L{3 + i * 4}"].Value.ToString();
-                    if (string.IsNullOrEmpty(message))
-                        break;
-                    data.Department = message;
-
-                    if (worksheet.Cells[$"Q{3 + i * 4}"].Value == null)
-                        break;
-                    message = worksheet.Cells[$"Q{3 + i * 4}"].Value.ToString();
-                    if (string.IsNullOrEmpty(message))
-                        break;
-                    data.RuleName = message;
-
-                    data.Datas = new List<DateTime>[32];
-                    DateTime date = new DateTime(year, month, 1);
-                    for (int j = 0; j < data.Datas.Count(); j++)
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    string? message;
+                    int year = 0, month = 0;
+                    string datestr = worksheet.Cells[2, 1].Value.ToString();
+                    string t = null;
+                    for (int i = 0; i < datestr.Length; i++)
                     {
-                        data.Datas[j] = new List<DateTime>();
-                        if (worksheet.Cells[5 + i * 4, j + 1].Value == null)
-                        {
-                            date = date.AddDays(1);
-                            continue;
-                        }
-                        message = worksheet.Cells[5 + i * 4, j + 1].Value.ToString();
-                        if (string.IsNullOrEmpty(message))
-                        {
-                            date = date.AddDays(1);
-                            continue;
-                        }
-                        string[] times = message.Split(' ');
-                        foreach (string time in times)
-                        {
-                            if (!Regex.IsMatch(time, @"^[0-9]{2}:[0-9]{2}$"))
-                                continue;
-                            DateTime dtime = DateTime.Parse(time);
-                            
-                            data.Datas[j].Add(new DateTime(date.Year,date.Month,date.Day,dtime.Hour,dtime.Minute,dtime.Second));
-                        }
-                        date = date.AddDays(1);
+                        if (Regex.IsMatch(datestr.ElementAt(i).ToString(), @"^[0-9]+$"))
+                            t += datestr.ElementAt(i).ToString();
                     }
-                    originalDatas.Datas.Add(data);
+                    if (t.Length < 4)
+                    {
+                        MessageBox.Show("获取原始表日期失败！");
+                        App.Log.Info("获取原始表日期失败！");
+                        return;
+                    }
+                    year = Convert.ToInt32(t.Substring(0, 4));
+                    month = Convert.ToInt32(t.Substring(4, t.Length - 4));
+                    originalDatas = new OriginalSheetModel();
+
+                    originalDatas.Datas = new List<OriginalData>();
+                    originalDatas.Date = new DateTime(year, month, 1);
+                    for (int i = 0; ; i++)
+                    {
+                        OriginalData data = new OriginalData();
+                        if (worksheet.Cells[$"C{3 + i * 4}"].Value == null)
+                            break;
+                        message = worksheet.Cells[$"C{3 + i * 4}"].Value.ToString();
+                        if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
+                            break;
+                        data.Id = Convert.ToInt32(message);
+
+                        if (worksheet.Cells[$"G{3 + i * 4}"].Value == null)
+                            break;
+                        message = worksheet.Cells[$"G{3 + i * 4}"].Value.ToString();
+                        if (string.IsNullOrEmpty(message))
+                            break;
+                        data.Name = message;
+
+                        if (worksheet.Cells[$"L{3 + i * 4}"].Value == null)
+                            break;
+                        message = worksheet.Cells[$"L{3 + i * 4}"].Value.ToString();
+                        if (string.IsNullOrEmpty(message))
+                            break;
+                        data.Department = message;
+
+                        if (worksheet.Cells[$"Q{3 + i * 4}"].Value == null)
+                            break;
+                        message = worksheet.Cells[$"Q{3 + i * 4}"].Value.ToString();
+                        if (string.IsNullOrEmpty(message))
+                            break;
+                        data.RuleName = message;
+
+                        data.Datas = new List<DateTime>[32];
+                        DateTime date = new DateTime(year, month, 1);
+                        for (int j = 0; j < data.Datas.Count(); j++)
+                        {
+                            data.Datas[j] = new List<DateTime>();
+                            if (worksheet.Cells[5 + i * 4, j + 1].Value == null)
+                            {
+                                date = date.AddDays(1);
+                                continue;
+                            }
+                            message = worksheet.Cells[5 + i * 4, j + 1].Value.ToString();
+                            if (string.IsNullOrEmpty(message))
+                            {
+                                date = date.AddDays(1);
+                                continue;
+                            }
+                            string[] times = message.Split(' ');
+                            foreach (string time in times)
+                            {
+                                if (!Regex.IsMatch(time, @"^[0-9]{2}:[0-9]{2}$"))
+                                    continue;
+                                DateTime dtime = DateTime.Parse(time);
+                                data.Datas[j].Add(new DateTime(date.Year, date.Month, date.Day, dtime.Hour, dtime.Minute, dtime.Second));
+                            }
+                            date = date.AddDays(1);
+                        }
+                        originalDatas.Datas.Add(data);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                App.Log.Error(e.Message + $" 异常发生位置：{e.StackTrace}");
+            }            
+        }
+
+        private void intit_by_npio(string path)
+        {
+            try
+            {
+                using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook workbook = null;
+                    if (path.IndexOf(".xlsx") > 0) // 2007版本
+                        workbook = new XSSFWorkbook(file);
+                    else if (path.IndexOf(".xls") > 0) // 2003版本
+                        workbook = new HSSFWorkbook(file);
+                    if (workbook != null)
+                    {
+                        ISheet sheet = workbook.GetSheetAt(0);
+                        string? message;
+                        int year = 0, month = 0;
+                        string datestr = sheet.GetRow(1).GetCell(0).StringCellValue;
+                        string t = null;
+                        for (int i = 0; i < datestr.Length; i++)
+                        {
+                            if (Regex.IsMatch(datestr.ElementAt(i).ToString(), @"^[0-9]+$"))
+                                t += datestr.ElementAt(i).ToString();
+                        }
+                        if (t.Length < 4)
+                        {
+                            MessageBox.Show("获取原始表日期失败！");
+                            App.Log.Info("获取原始表日期失败！");
+                            return;
+                        }
+                        year = Convert.ToInt32(t.Substring(0, 4));
+                        month = Convert.ToInt32(t.Substring(4, t.Length - 4));
+                        originalDatas = new OriginalSheetModel();
+
+                        originalDatas.Datas = new List<OriginalData>();
+                        originalDatas.Date = new DateTime(year, month, 1);
+                        int k = 0;
+                        while (true)
+                        {
+                            OriginalData data = new OriginalData();
+                            if (sheet.GetRow(2 + k * 4) == null)
+                                break;
+                            if (sheet.GetRow(2 + k * 4).GetCell(2) == null)
+                                break;
+                            message = sheet.GetRow(2 + k * 4).GetCell(2).ToString();
+                            if (string.IsNullOrEmpty(message) || !Regex.IsMatch(message, @"^[0-9]+$"))
+                                break;
+                            data.Id = Convert.ToInt32(message);
+                            if (sheet.GetRow(2 + k * 4).GetCell(6) == null)
+                                break;
+                            message = sheet.GetRow(2 + k * 4).GetCell(6).ToString();
+                            if (string.IsNullOrEmpty(message))
+                                break;
+                            data.Name = message;
+                            if (sheet.GetRow(2 + k * 4).GetCell(11) == null)
+                                break;
+                            message = sheet.GetRow(2 + k * 4).GetCell(11).ToString();
+                            if (string.IsNullOrEmpty(message))
+                                break;
+                            data.Department = message;
+                            if (sheet.GetRow(2 + k * 4).GetCell(16) == null)
+                                break;
+                            message = sheet.GetRow(2 + k * 4).GetCell(16).ToString();
+                            if (string.IsNullOrEmpty(message))
+                                break;
+                            data.RuleName = message;
+
+                            data.Datas = new List<DateTime>[32];
+                            DateTime date = new DateTime(year, month, 1);
+                            for (int j = 0; j < data.Datas.Count(); j++)
+                            {
+                                data.Datas[j] = new List<DateTime>();
+                                if (sheet.GetRow(4 + k * 4).GetCell(j) == null)
+                                {
+                                    date = date.AddDays(1);
+                                    continue;
+                                }
+                                message = sheet.GetRow(4 + k * 4).GetCell(j).ToString();
+                                if (string.IsNullOrEmpty(message))
+                                {
+                                    date = date.AddDays(1);
+                                    continue;
+                                }
+                                string[] times = message.Split(' ');
+                                foreach (string time in times)
+                                {                                    
+                                    if (!Regex.IsMatch(time, @"^[0-9]{2}:[0-9]{2}$"))
+                                        continue;
+                                    DateTime dtime = DateTime.Parse(time);
+                                    data.Datas[j].Add(new DateTime(date.Year, date.Month, date.Day, dtime.Hour, dtime.Minute, dtime.Second));                                    
+                                }
+                                date = date.AddDays(1);
+                            }
+                            originalDatas.Datas.Add(data);
+                            k++;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                App.Log.Error(e.Message + $" 异常发生位置：{e.StackTrace}");
+            }
+                     
         }
 
         private List<Employee> GetTypeDatas(int Type)

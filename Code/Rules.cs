@@ -1,4 +1,7 @@
-﻿using OfficeOpenXml;
+﻿using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,114 +19,60 @@ namespace TimeTrack_Pro.Code
     {
         public static readonly AttendanceRule DefaultRule = new AttendanceRule
         {
-            //RuleName = "白班",
-            //Inter_dayTime = new TimeSpan(0, 0, 0),
-            //SerialNumber = 0,
-            //AlarmsTimes = 6,
-            //AttendanceWay = 0,
-            //StatsUnit = 0,
-            //StatsWay = 0,
-            //ShiftMode = 0,
-            //AllowLate = 0,
-            //AllowEarly = 0,
-            //Classes = new ClassSection[][] { 
-            //    /*星期日*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    },
-            //    /*星期一*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    },
-            //    /*星期二*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    },
-            //    /*星期三*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    },
-            //    /*星期四*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    },
-            //    /*星期五*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    },
-            //    /*星期六*/
-            //    new ClassSection[3] {
-            //        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 0, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
-            //        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
-            //    }
-            //}
             RuleName = "白班",
             Inter_dayTime = new TimeSpan(0, 0, 0),
             SerialNumber = 0,
-            AlarmsTimes = 0,
+            AlarmsTimes = 6,
             AttendanceWay = 0,
             StatsUnit = 0,
             StatsWay = 0,
             ShiftMode = 0,
             AllowLate = 0,
             AllowEarly = 0,
-            Classes = new ClassSection[7][] { 
-                    /*星期日*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    },
-                    /*星期一*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    },
-                    /*星期二*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    },
-                    /*星期三*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    },
-                    /*星期四*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    },
-                    /*星期五*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    },
-                    /*星期六*/
-                    new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
-                    }
-            }   
+            Classes = new ClassSection[][] { 
+                /*星期日*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期一*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期二*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期三*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期四*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期五*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                },
+                /*星期六*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(18, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(19, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
+                }
+            }
         };
 
         private static List<AttendanceRule> list = new List<AttendanceRule>
@@ -197,48 +146,48 @@ namespace TimeTrack_Pro.Code
                 ShiftMode = 0,
                 AllowLate = 0,
                 AllowEarly = 0,
-                Classes = new ClassSection[7][] { 
+                Classes = new ClassSection[][] { 
                     /*星期日*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     },
                     /*星期一*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     },
                     /*星期二*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     },
                     /*星期三*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     },
                     /*星期四*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     },
                     /*星期五*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     },
                     /*星期六*/
                     new ClassSection[3] {
-                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(7, 50, 0), EndTime = new TimeSpan(11, 50, 0), Type = 0 },
-                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(13, 30, 0), EndTime = new TimeSpan(17, 30, 0), Type = 0 },
-                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(17, 31, 0), EndTime = new TimeSpan(23, 0, 0), Type = 1 }
+                        new ClassSection { Name = "班段1", StartTime = new TimeSpan(8, 30, 0), EndTime = new TimeSpan(12, 0, 0), Type = 0 },
+                        new ClassSection { Name = "班段2", StartTime = new TimeSpan(14, 30, 0), EndTime = new TimeSpan(17, 15, 0), Type = 0 },
+                        new ClassSection { Name = "班段3", StartTime = new TimeSpan(18, 30, 0), EndTime = new TimeSpan(20, 30, 0), Type = 1 }
                     }
                 }
             }
@@ -256,7 +205,7 @@ namespace TimeTrack_Pro.Code
         {
             try
             {
-                _getRuleListFromXlsx(path);
+                _getRuleListByEPPlus(path);
             }
             catch(Exception e)
             {
@@ -275,7 +224,7 @@ namespace TimeTrack_Pro.Code
             }
         }
 
-        private static void _getRuleListFromXlsx(string path)
+        private static void _getRuleListByEPPlus(string path)
         {
             // 在 Excel 包类上使用许可证上下文属性
             // 删除许可证异常
@@ -339,13 +288,16 @@ namespace TimeTrack_Pro.Code
                         rule.AllowEarly = Convert.ToInt32(worksheet.Cells[$"J{5 + num * 15}"].Value);
                         rule.Classes = new ClassSection[7][];
                         ClassSection[] classes;
+                        int week = 1;
                         for (int i = 0; i < 7; i++)
                         {
                             classes = new ClassSection[3];
-                            if (i < 6)
-                                rule.Classes[i + 1] = classes;
-                            else
-                                rule.Classes[0] = classes;
+                            rule.Classes[week] = classes;
+                            week++;
+                            //if (i < 6)
+                            //    rule.Classes[i + 1] = classes;
+                            //else
+                            //    rule.Classes[0] = classes;
                             for (int j = 0; j < 3; j++)
                             {
                                 classes[j] = new ClassSection();
@@ -384,6 +336,29 @@ namespace TimeTrack_Pro.Code
                         num++;
                     }
                 }
+            }
+        }
+
+        private static void _getRuleListByEPIO(string path)
+        {
+            try
+            {
+                using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook workbook = null;
+                    if (path.IndexOf(".xlsx") > 0) // 2007版本
+                        workbook = new XSSFWorkbook(file);
+                    else if (path.IndexOf(".xls") > 0) // 2003版本
+                        workbook = new HSSFWorkbook(file);
+                    if (workbook != null)
+                    {
+                        ISheet sheet = workbook.GetSheetAt(0);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                App.Log.Error(e.Message + $" 异常发生位置：{e.StackTrace}");
             }
         }
 

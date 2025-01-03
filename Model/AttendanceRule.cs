@@ -63,7 +63,66 @@ namespace TimeTrack_Pro.Model
 		/// <summary>
 		/// 上、下班标准
 		/// </summary>
-        public ClassSection[][]? Classes { get; set; }
+		public ClassSection[][]? Classes { get; set; }
+
+		public void Init()
+		{
+			RuleName = "";
+			Inter_dayTime = new TimeSpan(0, 0, 0);
+			SerialNumber = 0;
+			AlarmsTimes = 0;
+			AttendanceWay = 0;
+			StatsUnit = 0;
+			StatsWay = 0;
+			ShiftMode = 0;
+			AllowLate = 0;
+			AllowEarly = 0;
+			Classes = new ClassSection[][] { 
+                /*星期日*/
+                new ClassSection[3] {
+					new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+					new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+					new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+				},
+                /*星期一*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+                },
+                /*星期二*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+                },
+                /*星期三*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+                },
+                /*星期四*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+                },
+                /*星期五*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+                },
+                /*星期六*/
+                new ClassSection[3] {
+                    new ClassSection { Name = "班段1", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段2", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 },
+                    new ClassSection { Name = "班段3", StartTime = new TimeSpan(0, 0, 0), EndTime = new TimeSpan(0, 0, 0), Type = 0 }
+                }
+			};
+
+        }
 
 		public string GetStdTimeStr(int year, int month)
 		{							
@@ -113,9 +172,9 @@ namespace TimeTrack_Pro.Model
 					for (int j = 0; j < 3; j++)
 					{
 						rule.Classes[i][j] = new ClassSection();
-						rule.Classes[i][j].Name = Classes[i][j].Name;
-                        rule.Classes[i][j].StartTime = Classes[i][j].StartTime;
-                        rule.Classes[i][j].EndTime = Classes[i][j].EndTime;
+						rule.Classes[i][j].Name = this.Classes[i][j].Name;
+                        rule.Classes[i][j].StartTime = this.Classes[i][j].StartTime;
+                        rule.Classes[i][j].EndTime = this.Classes[i][j].EndTime;
                     }
 				}
 			}

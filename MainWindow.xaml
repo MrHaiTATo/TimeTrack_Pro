@@ -7,7 +7,7 @@
         xmlns:hc="https://handyorg.github.io/handycontrol" xmlns:local1="clr-namespace:TimeTrack_Pro" x:Name="window" x:Class="TimeTrack_Pro.MainWindow"
         xmlns:vm="clr-namespace:TimeTrack_Pro.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="600" Width="800" WindowStartupLocation="CenterScreen">
     <Window.CommandBindings>
         <CommandBinding Command="SystemCommands.MaximizeWindowCommand" Executed="WindowMaximizeCommand"/>
         <CommandBinding Command="ApplicationCommands.Copy" Executed="CopyCommand"/>
@@ -58,11 +58,11 @@
             <TabControl x:Name="tabCtls" Grid.Column="1">
                 <TabItem Header="示例演示" FontSize="16">
                     <Grid>
-                        <StackPanel Margin="767,10,10,10">
+                        <StackPanel Margin="10,10,10,10">
                             <Button Style="{StaticResource ButtonIcon}" Background="{StaticResource PrimaryBrush}" Foreground="{DynamicResource TextIconBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="48"
                         hc:IconElement.Geometry="{StaticResource CloseGeometry}" hc:BorderElement.CornerRadius="24" Height="48"/>
                         </StackPanel>
-                        <StackPanel Margin="10,10,767,10">
+                        <StackPanel Margin="10,10,0,10" HorizontalAlignment="Left" Width="148">
                             <Button x:Name="btn_demo" Content="智能排班demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_demo_Click"/>
                             <Button x:Name="btn_Excel" Content="EPPlus操作demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_Excel_Click" Margin="0,10,0,0"/>
                             <Button x:Name="btn_Npio" Content="NPIO操作demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,10,0,0" Click="btn_Npio_Click"/>
@@ -113,8 +113,7 @@
                 </TabItem>
                 <TabItem Header="主页测试">
                     <Grid x:Name="mainContent">
-                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Grid x:Name="mainGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                     </Grid>
                 </TabItem>
             </TabControl>

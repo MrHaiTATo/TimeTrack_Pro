@@ -417,7 +417,7 @@ namespace TimeTrack_Pro.Code
         public OriginalSheetModel GetOriginalSheetModel(int year, int month)
         {
             OriginalSheetModel sheetModel = new OriginalSheetModel();
-            sheetModel.Date = new DateTime(year, month, DateTimeHelper.GetDays(month));
+            sheetModel.Date = new DateTime(year, month, DateTimeHelper.GetDays(year, month));
             sheetModel.Datas = GetOriginalDatas(year, month);
             return sheetModel;
         }

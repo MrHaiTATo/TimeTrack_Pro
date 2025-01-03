@@ -77,31 +77,31 @@ namespace TimeTrack_Pro
 
         private void btn_exceptionBeta_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤异常表.xlsx";
-            sheet.FilePath = fileName;
-            sheet.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 11));
+            string fileName = @"F:\文档\考勤异常表.xls";
+            excelHelper.FilePath = fileName;
+            excelHelper.CreatAtdExpSheet(center.GetExceptionSheetModel(2024, 8));
             
         }
 
         private void btn_SummarySheet_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤汇总表.xlsx";
-            sheet.FilePath = fileName;
-            sheet.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 11));            
+            string fileName = @"F:\文档\考勤汇总表.xls";
+            excelHelper.FilePath = fileName;
+            excelHelper.CreatAtdSumSheet(center.GetSummarySheetModel(2024, 8));            
         }
 
         private void btn_OriginalSheet_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @"F:\文档\考勤原始表.xlsx";
-            sheet.FilePath = fileName;
-            sheet.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 11));            
+            string fileName = @"F:\文档\考勤原始表.xls";
+            excelHelper.FilePath = fileName;
+            excelHelper.CreatAtdOrgSheet(center.GetOriginalSheetModel(2024, 8));            
         }
 
         private void btn_AttendanceSheetBeta_Click_1(object sender, RoutedEventArgs e)
         {
-            string fileName = @"E:\mahaitao\GitHub\TestData\考勤排班表.xlsx";
-            sheet.FilePath = fileName;
-            sheet.CreatAtdSchedulingSheet(Rules.GetRuleModel());            
+            string fileName = @"E:\mahaitao\GitHub\TestData\考勤排班表.xls";
+            excelHelper.FilePath = fileName;
+            excelHelper.CreatAtdSchedulingSheet(Rules.GetRuleModel());            
         }
 
         private void btn_DataReadBeta_Click(object sender, RoutedEventArgs e)
@@ -123,16 +123,17 @@ namespace TimeTrack_Pro
 
         private void btn_OriginalReadBeta_Click(object sender, RoutedEventArgs e)
         {
-            string resourceFile = @"F:\文档\考勤原始表.xlsx";
-            string savePath = @"F:\文档\原始表\考勤统计表.xlsx";
+            string resourceFile = @"F:\文档\考勤原始表.xls";            
             originalDataHandle = new OriginalDataHandle(resourceFile);
+
             var statistics = originalDataHandle.GetStatisticsSheetModel();
-            sheet.FilePath = savePath;
+            sheet.FilePath = @"F:\文档\原始表\考勤统计表.xlsx";
             sheet.CreateAtdStatiSheet(statistics);
             
             var summarys = originalDataHandle.GetSummarySheetModel();
             sheet.FilePath = @"F:\文档\原始表\考勤汇总表.xlsx";
             sheet.CreatAtdSumSheet(summarys);
+
             var exceptions = originalDataHandle.GetExceptionSheetModel();
             sheet.FilePath = @"F:\文档\原始表\考勤异常表.xlsx";
             sheet.CreatAtdExpSheet(exceptions);
@@ -172,25 +173,20 @@ namespace TimeTrack_Pro
             if (VM == null || VM.SelectedIndex < 0)
             {
                 return;
-            };
-            //mainContent.Children.Clear();
-            mainGrid.Children.Clear();
+            };           
             string name = ((sender as ListBox).SelectedItem as LBDataModel).Name;
             switch (VM.SelectedIndex)
             {
-                case 0:
-                    //mainGrid.Children.Add(new BakListOperate());
+                case 0:                    
                     fm.Navigate(new Uri("UserControl/BakListOperate.xaml", UriKind.Relative));                   
                     break;
-                case 1:
-                    //mainGrid.Children.Add(new AtdRulesList());
+                case 1:                    
                     fm.Navigate(new Uri("UserControl/AtdRulesList.xaml", UriKind.Relative));                    
                     break;
                 case 2:
                     fm.Content = null;                    
                     break;
-                case 3:
-                    //mainGrid.Children.Add(new AttendanceRuleSet());
+                case 3:                    
                     fm.Navigate(new Uri("UserControl/RuleManage.xaml", UriKind.Relative));    
                     break;
                 default:

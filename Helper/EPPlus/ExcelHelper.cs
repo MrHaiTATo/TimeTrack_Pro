@@ -575,7 +575,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
             }
             worksheet.Rows[1].Height = 29.25;
             worksheet.Cells[1, 1, 1, days].Merge = true;
-            worksheet.Cells[1, 1, 1, days].Value = "考勤原始表";
+            worksheet.Cells[1, 1, 1, days].Value = "考\x20勤\x20原\x20始\x20表";
             worksheet.Cells[1, 1, 1, days].Style.Font.Bold = true;
             worksheet.Cells[1, 1, 1, days].Style.Font.Size = 20;
             worksheet.Cells[1, 1, 1, days].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -771,21 +771,22 @@ namespace TimeTrack_Pro.Helper.EPPlus
                 SetBorderColor(worksheet.Cells[position], Color.Black);
                 worksheet.Cells[position].Value = content;
             }
-
+            int week = 1;
             for (int i = 0; i < 7; i++)
             {
+                week = week % 7;
                 values = new (string, string)[] {
                              /*班段1*/
-                            ($"{(char)('B' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][0].StartTime.Hours, rule.Classes[i][0].StartTime.Minutes)), 
-                            ($"{(char)('C' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][0].EndTime.Hours, rule.Classes[i][0].EndTime.Minutes)), 
+                            ($"{(char)('B' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[week][0].StartTime.Hours, rule.Classes[week][0].StartTime.Minutes)), 
+                            ($"{(char)('C' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[week][0].EndTime.Hours, rule.Classes[week][0].EndTime.Minutes)), 
                             ($"{(char)('D' + x)}{8 + y + i}",rule.Classes[i][0].Type.ToString()),
                              /*班段2*/
-                            ($"{(char)('E' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][1].StartTime.Hours, rule.Classes[i][1].StartTime.Minutes)), 
-                            ($"{(char)('F' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][1].EndTime.Hours, rule.Classes[i][1].EndTime.Minutes)),  
+                            ($"{(char)('E' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[week][1].StartTime.Hours, rule.Classes[week][1].StartTime.Minutes)), 
+                            ($"{(char)('F' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[week][1].EndTime.Hours, rule.Classes[week][1].EndTime.Minutes)),  
                             ($"{(char)('G' + x)}{8 + y + i}",rule.Classes[i][1].Type.ToString()),
                              /*班段3*/
-                            ($"{(char)('H' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][2].StartTime.Hours, rule.Classes[i][2].StartTime.Minutes)), 
-                            ($"{(char)('I' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[i][2].EndTime.Hours, rule.Classes[i][2].EndTime.Minutes)),  
+                            ($"{(char)('H' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[week][2].StartTime.Hours, rule.Classes[week][2].StartTime.Minutes)), 
+                            ($"{(char)('I' + x)}{8 + y + i}",string.Format("{0:00}:{1:00}", rule.Classes[week][2].EndTime.Hours, rule.Classes[week][2].EndTime.Minutes)),  
                             ($"{(char)('J' + x)}{8 + y + i}",rule.Classes[i][2].Type.ToString()),
                         };
                 foreach (var (position, content) in values)
@@ -796,6 +797,7 @@ namespace TimeTrack_Pro.Helper.EPPlus
                     SetBorderColor(worksheet.Cells[position], Color.Black);
                     worksheet.Cells[position].Value = content;
                 }
+                week++;
             }
 
         }
