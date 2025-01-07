@@ -9,12 +9,15 @@ namespace TimeTrack_Pro.Code
 {
     public class SmartScheduling
     {
+        private int year = 2000;
+        private int month = 1;
+        private int day = 1;
         private int min = 0;
         private int max = 0;
         private int hours = 24;
         private int point = 10;
         private List<DateTime> datas = new List<DateTime>();
-        private List<DateTime[]> splitPoint = new List<DateTime[]>();
+        private List<DateTime>[] splitPoint = null;
         public SmartScheduling(OriginalSheetModel model) 
         {
             _load(model);
@@ -37,10 +40,17 @@ namespace TimeTrack_Pro.Code
 
         private void _init_splitPoint()
         {
-            DateTime time = new DateTime(0,0,0);
+            splitPoint = new List<DateTime>[24];
+            DateTime time = new DateTime(year,month,day,0,0,0);
+            int n = 60 / point;
             for (int h = 0; h < hours; h++)
             {
-
+                splitPoint[h] = new List<DateTime>();
+                for (int i = 0; i < n; i++)
+                {
+                    splitPoint[h].Add(time);
+                    time = time.AddMinutes(point);
+                }
             }
         }
     }

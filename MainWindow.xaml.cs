@@ -49,9 +49,12 @@ namespace TimeTrack_Pro
             ExcelHelper.EPPlus_Init();
         }
 
-        private async void btn_demo_Click(object sender, RoutedEventArgs e)
+        private void btn_demo_Click(object sender, RoutedEventArgs e)
         {
-            await SmartDemo.Demo.demo1();
+            //await SmartDemo.Demo.demo1();
+            string resourceFile = @"F:\文档\考勤原始表.xls";
+            originalDataHandle = new OriginalDataHandle(resourceFile);
+            SmartScheduling scheduling = new SmartScheduling(originalDataHandle.OriginalDatas);
         }
 
         private void btn_Excel_Click(object sender, RoutedEventArgs e)
