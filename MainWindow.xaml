@@ -58,23 +58,19 @@
             <TabControl x:Name="tabCtls" Grid.Column="1">
                 <TabItem Header="示例演示" FontSize="16">
                     <Grid>
-                        <StackPanel Margin="10,10,10,10">
-                            <Button Style="{StaticResource ButtonIcon}" Background="{StaticResource PrimaryBrush}" Foreground="{DynamicResource TextIconBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="48"
-                        hc:IconElement.Geometry="{StaticResource CloseGeometry}" hc:BorderElement.CornerRadius="24" Height="48"/>
-                        </StackPanel>
-                        <StackPanel Margin="10,10,0,10" HorizontalAlignment="Left" Width="148">
+                        <UniformGrid Margin="10,10,0,0" HorizontalAlignment="Left" Rows="4" Columns="4" Width="553" Height="159" VerticalAlignment="Top">
                             <Button x:Name="btn_demo" Content="智能排班demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_demo_Click"/>
-                            <Button x:Name="btn_Excel" Content="EPPlus操作demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_Excel_Click" Margin="0,10,0,0"/>
-                            <Button x:Name="btn_Npio" Content="NPIO操作demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,10,0,0" Click="btn_Npio_Click"/>
-                            <Button x:Name="btn_AttendanceStatisticsSheetBeta" Content="考勤统计表测试" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_attendanceSheetBeta_Click" Margin="0,10,0,0"/>
-                            <Button x:Name="btn_exceptionBeta" Content="异常表测试" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_exceptionBeta_Click" Margin="0,10,0,0"/>
-                            <Button x:Name="btn_SummarySheetBeta" Content="考勤汇总表测试" HorizontalAlignment="Left"  Click="btn_SummarySheet_Click" Margin="0,10,0,0"/>
-                            <Button x:Name="btn_OriginalSheetBeta" Content="考勤原始表测试" HorizontalAlignment="Left"  Click="btn_OriginalSheet_Click" Margin="0,10,0,0"/>
-                            <Button x:Name="btn_AttendanceSheetBeta" Content="考勤排班表测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_AttendanceSheetBeta_Click_1"/>
-                            <Button x:Name="btn_DataReadBeta" Content="数据读取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_DataReadBeta_Click"/>
-                            <Button x:Name="btn_ShiftReadBeta" Content="排班数据获取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_ShiftReadBeta_Click"/>
-                            <Button x:Name="btn_OriginalReadBeta" Content="原始数据获取测试" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_OriginalReadBeta_Click"/>
-                            <Button Command="SystemCommands.MaximizeWindowCommand" Content="最大化"  HorizontalAlignment="Left" Margin="0,10,0,0">
+                            <Button x:Name="btn_Excel" Content="EPPlus操作demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_Excel_Click"/>
+                            <Button x:Name="btn_Npio" Content="NPIO操作demo" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_Npio_Click"/>
+                            <Button x:Name="btn_AttendanceStatisticsSheetBeta" Content="考勤统计表测试" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_attendanceSheetBeta_Click"/>
+                            <Button x:Name="btn_exceptionBeta" Content="异常表测试" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="btn_exceptionBeta_Click"/>
+                            <Button x:Name="btn_SummarySheetBeta" Content="考勤汇总表测试" HorizontalAlignment="Left"  Click="btn_SummarySheet_Click"/>
+                            <Button x:Name="btn_OriginalSheetBeta" Content="考勤原始表测试" HorizontalAlignment="Left"  Click="btn_OriginalSheet_Click"/>
+                            <Button x:Name="btn_AttendanceSheetBeta" Content="考勤排班表测试" HorizontalAlignment="Left" Click="btn_AttendanceSheetBeta_Click_1"/>
+                            <Button x:Name="btn_DataReadBeta" Content="数据读取测试" HorizontalAlignment="Left" Click="btn_DataReadBeta_Click"/>
+                            <Button x:Name="btn_ShiftReadBeta" Content="排班数据获取测试" HorizontalAlignment="Left" Click="btn_ShiftReadBeta_Click"/>
+                            <Button x:Name="btn_OriginalReadBeta" Content="原始数据获取测试" HorizontalAlignment="Left" Click="btn_OriginalReadBeta_Click"/>
+                            <Button Command="SystemCommands.MaximizeWindowCommand" Content="最大化"  HorizontalAlignment="Left">
                                 <Button.Triggers>
                                     <EventTrigger RoutedEvent="Button.Click">
                                         <BeginStoryboard>
@@ -90,8 +86,9 @@
                                     </EventTrigger>
                                 </Button.Triggers>
                             </Button>
-                            <Button x:Name="btn_message" Content="信息提示" HorizontalAlignment="Left" Margin="0,10,0,0" Click="btn_message_Click" />
-                        </StackPanel>
+                            <Button x:Name="btn_message" Content="信息提示" HorizontalAlignment="Left" Click="btn_message_Click" />
+                            <Button x:Name="btn_createFile" Content="创建CSV文件" HorizontalAlignment="Left" Click="btn_createFile_Click"/>
+                        </UniformGrid>
                         <!--<TextBox x:Name="tbxDemo" HorizontalAlignment="Left" Margin="268,21,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="218">
                             <TextBox.InputBindings>
                                 <KeyBinding Key="D" Modifiers="Alt" Command="SystemCommands.MaximizeWindowCommand"></KeyBinding>
@@ -101,11 +98,11 @@
                         <!--<Button Content="Copy" Command="ApplicationCommands.Copy" HorizontalAlignment="Left" Margin="268,68,0,0" VerticalAlignment="Top"/>-->
                     </Grid>
                 </TabItem>
-                <TabItem Header="网页测试">
+                <!--<TabItem Header="网页测试">
                     <Grid>
                         <WebBrowser x:Name="web" />
                     </Grid>
-                </TabItem>
+                </TabItem>-->
                 <TabItem Header="考情规则设置测试">
                     <Grid>
                         <local:AttendanceRuleSet Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
@@ -113,7 +110,7 @@
                 </TabItem>
                 <TabItem Header="主页测试">
                     <Grid x:Name="mainContent">
-                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Frame x:Name="fm" NavigationUIVisibility="Hidden" Margin="10,10,0,0" BorderBrush="{x:Null}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
                 </TabItem>
             </TabControl>

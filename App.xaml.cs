@@ -20,7 +20,7 @@ namespace TimeTrack_Pro
         {
             base.OnStartup(e);           
             XmlConfigurator.Configure(new FileInfo("log4net.config")); // 从 log4net.config 读取配置
-            _log.Info("程序开始");
+            _log.Info("start");
             // 示例日志记录
             //_log.Debug("Debug message");
             //_log.Info("Info message");
@@ -37,7 +37,7 @@ namespace TimeTrack_Pro
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            _log.Info("程序结束");
+            _log.Info("end");
         }
 
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)

@@ -192,7 +192,7 @@ namespace TimeTrack_Pro.Code
                     AvabDatas = GetEmployeeAndAttendanceDataByDateTime(selectTime, et)//获取对应时间的数据
                                                                         .Where(a => a.UserIndex == employee.Index)
                                                                         .Where(a => a.ClockTime >= employee.CreatedTime)
-                                                                        .ToList();
+                                                                        .ToList(); 
                 }
                 //姓名
                 sheet.Name = employee.Name;

@@ -36,7 +36,7 @@ namespace TimeTrack_Pro
             this.DataContext = this;
             VM = (MainWindowViewModel)Resources["MainModel"];
             One_Load();                       
-            web.Navigate(new Uri("http://192.168.1.3"));
+            //web.Navigate(new Uri("http://192.168.1.3"));
             sheet = new ExcelHelper();
             excelHelper = new Helper.NPOI.ExcelHelper();
         }
@@ -211,6 +211,14 @@ namespace TimeTrack_Pro
             {
                 fm.GoForward();
             }
+        }
+
+        private void btn_createFile_Click(object sender, RoutedEventArgs e)
+        {
+            string resourceFile = @"F:\文档\考勤原始表.xls";
+            originalDataHandle = new OriginalDataHandle(resourceFile);
+            SmartScheduling scheduling = new SmartScheduling(originalDataHandle.OriginalDatas);
+            scheduling.CreateFile_CSV();
         }
     }
 }
