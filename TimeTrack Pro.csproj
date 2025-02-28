@@ -30,6 +30,7 @@
   <ItemGroup>
     <Folder Include="Helper\" />
     <Folder Include="Behaviors\" />
+    <Folder Include="Behaviors\" />
   </ItemGroup>
 
   <ItemGroup>

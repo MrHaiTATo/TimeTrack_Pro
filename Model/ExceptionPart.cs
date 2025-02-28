@@ -15,7 +15,7 @@ namespace TimeTrack_Pro.Model
         /// <summary>
         /// 异常签到数据
         /// </summary>
-        public string?[] ESignUpDatas { get; set; }
+        public string?[]? ESignUpDatas { get; set; }
         /// <summary>
         /// 迟到/早退
         /// </summary>
@@ -32,7 +32,7 @@ namespace TimeTrack_Pro.Model
 
         private void Init()
         {
-            ESignUpDatas = new string[6];
+            ESignUpDatas = new string?[6];
         }
     }
 }
