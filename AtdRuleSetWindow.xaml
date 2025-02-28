@@ -1,0 +1,94 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TimeTrack_Pro"
+        xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="TimeTrack_Pro.AtdRuleSetWindow"
+        mc:Ignorable="d"
+        Title="考勤规则" Height="330" Width="646" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="dgHeaderStyle" BasedOn="{StaticResource DataGridColumnHeaderStyle}" TargetType="DataGridColumnHeader">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TabControl TabStripPlacement="Left" >
+            <TabItem Header="固定排班">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Name="Dgguding" ItemsSource="{Binding AttendanceRules}" Margin="10" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" Background="#FFFBECEC" ColumnHeaderStyle="{DynamicResource dgHeaderStyle}">
+                        <DataGrid.RowHeaderTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+                            </DataTemplate>
+                        </DataGrid.RowHeaderTemplate>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="80" CanUserResize="False" Binding="{Binding SerialNumber}" Header="序号"/>
+                            <DataGridTextColumn Width="80" CanUserResize="False" Binding="{Binding RuleName}" Header="名称"/>
+                            <DataGridTemplateColumn Width="*" Header="操作">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Name="gdpb_edit" Content="编辑" Click="gdpb_edit_Click" Margin="0,0,10,0"/>
+                                            <Button Name="gdpb_delete" Content="删除" Click="gdpb_delete_Click"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Column="1">
+                        <Button Name="arAdd" Margin="10" Content="添加" Click="arAdd_Click"/>
+                        <Button Name="arImport" Margin="10" Content="导入" Click="arImport_Click"/>
+                        <Button Name="arExport" Margin="10" Content="导出" Click="arExport_Click"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="轮班制">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Name="Dglunban" Margin="10" ItemsSource="{Binding LunBanItems}" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" Background="#FFECF0FB" ColumnHeaderStyle="{DynamicResource dgHeaderStyle}">
+                        <DataGrid.RowHeaderTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+                            </DataTemplate>
+                        </DataGrid.RowHeaderTemplate>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="80" CanUserResize="False" Binding="{Binding ShiftName}" Header="班次名称"/>
+                            <DataGridTemplateColumn Width="*" Header="时间段">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="{Binding TimeStart}" Margin="0,0,10,0" Width="70" Height="30" />
+                                            <TextBlock FontSize="16" Text="--" Margin="0,0,10,0" />
+                                            <TextBox Text="{Binding TimeEnd}" Width="70" Height="30" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="80" Header="操作">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Name="lb_delete" Content="删除" Click="lb_delete_Click"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Column="1">
+                        <Button Name="lbAdd" Margin="10" Content="添加" Click="lbAdd_Click"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>

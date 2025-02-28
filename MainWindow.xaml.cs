@@ -220,5 +220,11 @@ namespace TimeTrack_Pro
             SmartScheduling scheduling = new SmartScheduling(originalDataHandle.OriginalDatas);
             scheduling.CreateFile_CSV();
         }
+
+        private void atdRuleMI_Click(object sender, RoutedEventArgs e)
+        {
+            AtdRuleSetWindow atdRuleSetWindow = new AtdRuleSetWindow();            
+            atdRuleSetWindow.ShowDialog();
+        }
     }
 }

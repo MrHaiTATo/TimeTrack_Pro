@@ -9,11 +9,11 @@ using TimeTrack_Pro.Helper;
 namespace TimeTrack_Pro.Model
 {
     public class AttendanceRule
-    {				
+    {
 		/// <summary>
 		/// 规则名称
 		/// </summary>
-		public string? RuleName { get; set; }
+		public string? RuleName { get; set; } 
 				
 		/// <summary>
 		/// 跨天时间

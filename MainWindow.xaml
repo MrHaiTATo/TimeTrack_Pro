@@ -25,15 +25,23 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="28"/>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <hc:OutlineText Margin="3" Text="考勤排班系统" FontSize="32" FontWeight="Bold" Fill="{DynamicResource PrimaryBrush}" Stroke="Violet" StrokeThickness="2"/>
+        <Menu>
+            <MenuItem Header="设置">
+                <MenuItem x:Name="atdRuleMI" Header="考勤规则" Click="atdRuleMI_Click" />
+            </MenuItem>
+
+        </Menu>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <hc:OutlineText Margin="3" Text="考勤排班工具" FontSize="32" FontWeight="Bold" Fill="{DynamicResource PrimaryBrush}" Stroke="Violet" StrokeThickness="2"/>
             <Button x:Name="btnBack" Content="后退" Margin="10,0,0,0" Click="btnBack_Click"/>
             <Button x:Name="btnForward" Content="前进" Margin="10,0,0,0" Click="btnForward_Click"/>
         </StackPanel>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2
+              ">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="225"/>
                 <ColumnDefinition/>
